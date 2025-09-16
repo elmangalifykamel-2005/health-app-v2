@@ -1,0 +1,994 @@
+/* أنماط تطبيق التغذية - نظام موحد */
+/* Nutrition App Styles - Unified System */
+
+/* استيراد الأنماط الأساسية */
+@import '../../../shared/styles/variables.css';
+@import '../../../shared/styles/mixins.css';
+@import '../../../shared/styles/components.css';
+
+/* متغيرات خاصة بالتغذية */
+:root {
+    --nutrition-primary: #4caf50;
+    --nutrition-secondary: #8bc34a;
+    --nutrition-accent: #ff9800;
+    --nutrition-success: #2e7d32;
+    --nutrition-warning: #f57c00;
+    --nutrition-error: #d32f2f;
+    --nutrition-info: #1976d2;
+    
+    /* ألوان الفئات الغذائية */
+    --category-grains: #8bc34a;
+    --category-proteins: #f44336;
+    --category-vegetables: #4caf50;
+    --category-fruits: #ff9800;
+    --category-dairy: #2196f3;
+    --category-fish: #00bcd4;
+    --category-nuts: #795548;
+    --category-oils: #ffc107;
+    
+    /* ألوان المؤشرات الغذائية */
+    --gi-low: #4caf50;
+    --gi-medium: #ff9800;
+    --gi-high: #f44336;
+    
+    /* أحجام خاصة */
+    --nutrition-card-width: 280px;
+    --nutrition-card-height: 320px;
+    --recipe-card-width: 300px;
+    --recipe-card-height: 400px;
+}
+
+/* الحاوي الرئيسي */
+.nutrition-app {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: var(--font-family);
+    direction: rtl;
+}
+
+.nutrition-app[dir="ltr"] {
+    direction: ltr;
+}
+
+/* شريط التنقل */
+.nutrition-nav {
+    background: var(--surface-color);
+    box-shadow: var(--shadow-md);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--nutrition-primary);
+}
+
+.nav-brand i {
+    font-size: 1.5rem;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background: var(--nutrition-primary-light);
+    color: var(--nutrition-primary);
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    background: var(--nutrition-primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.language-toggle,
+.settings-btn {
+    padding: 0.5rem;
+    border: none;
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.language-toggle:hover,
+.settings-btn:hover {
+    background: var(--nutrition-primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* المحتوى الرئيسي */
+.nutrition-main {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nutrition-content {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* عرض لوحة التحكم */
+.dashboard-view {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    color: var(--nutrition-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.dashboard-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* شبكة الإحصائيات */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--nutrition-primary), var(--nutrition-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* أقسام لوحة التحكم */
+.dashboard-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.view-all-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--nutrition-primary);
+    color: var(--nutrition-primary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.view-all-btn:hover {
+    background: var(--nutrition-primary);
+    color: white;
+    transform: translateX(-3px);
+}
+
+/* شبكة الأطعمة */
+.foods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--nutrition-card-width), 1fr));
+    gap: 1.5rem;
+}
+
+/* بطاقة الطعام */
+.food-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    height: var(--nutrition-card-height);
+    display: flex;
+    flex-direction: column;
+}
+
+.food-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.food-card-header {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+}
+
+.food-image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.food-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.food-card:hover .food-image img {
+    transform: scale(1.1);
+}
+
+.food-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--nutrition-primary-light), var(--nutrition-secondary-light));
+    color: var(--nutrition-primary);
+    font-size: 3rem;
+}
+
+.category-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    backdrop-filter: blur(10px);
+}
+
+.favorite-btn {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.favorite-btn:hover {
+    background: var(--nutrition-error);
+    color: white;
+    transform: scale(1.1);
+}
+
+.favorite-btn.active {
+    background: var(--nutrition-error);
+    color: white;
+}
+
+.food-card-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.food-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.food-category {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.nutrition-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.nutrition-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nutrition-label {
+    color: var(--text-secondary);
+}
+
+.nutrition-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.food-card-footer {
+    padding: 0 1rem 1rem;
+    margin-top: auto;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--nutrition-primary), var(--nutrition-secondary));
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* شبكة الوصفات */
+.recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--recipe-card-width), 1fr));
+    gap: 1.5rem;
+}
+
+/* بطاقة الوصفة */
+.recipe-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    height: var(--recipe-card-height);
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.recipe-image {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+}
+
+.recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recipe-card:hover .recipe-image img {
+    transform: scale(1.1);
+}
+
+.recipe-difficulty {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: var(--border-radius);
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.recipe-rating {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.recipe-card-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.recipe-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.recipe-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.recipe-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.recipe-tag {
+    padding: 0.25rem 0.5rem;
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* قسم الفلاتر */
+.filters-section {
+    background: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.search-bar {
+    margin-bottom: 1rem;
+}
+
+.search-input-group {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-input-group i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    z-index: 2;
+}
+
+.search-input-group input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: var(--background-primary);
+    transition: all 0.3s ease;
+}
+
+.search-input-group input:focus {
+    outline: none;
+    border-color: var(--nutrition-primary);
+    box-shadow: 0 0 0 3px var(--nutrition-primary-light);
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.filter-select,
+.filter-input {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--background-primary);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--nutrition-primary);
+    box-shadow: 0 0 0 3px var(--nutrition-primary-light);
+}
+
+.filter-toggle-btn {
+    padding: 0.75rem 1rem;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.filter-toggle-btn:hover {
+    background: var(--nutrition-primary);
+    color: white;
+    border-color: var(--nutrition-primary);
+}
+
+.advanced-filters {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.allergens-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--nutrition-primary);
+}
+
+/* النوافذ المنبثقة */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--background-secondary);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: var(--nutrition-error);
+    color: white;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* تقييم النجوم */
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.star {
+    color: #ddd;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.star.half {
+    background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* شاشة التحميل */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--nutrition-primary);
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* الرسوم البيانية */
+.chart-container {
+    background: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.chart-canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* الاستجابة للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .nutrition-nav {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-menu {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .nav-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    .nutrition-main {
+        padding: 1rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+    }
+    
+    .foods-grid,
+    .recipes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .advanced-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        margin: 0.5rem;
+        max-height: 95vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .nutrition-nav {
+        padding: 0.75rem;
+    }
+    
+    .nav-brand {
+        font-size: 1.1rem;
+    }
+    
+    .nav-item {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}
+
+/* الوضع المظلم */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --nutrition-primary: #66bb6a;
+        --nutrition-secondary: #a5d6a7;
+    }
+}
+
+/* تحسينات الأداء */
+.food-card,
+.recipe-card {
+    contain: layout style paint;
+}
+
+.food-image img,
+.recipe-image img {
+    will-change: transform;
+}
+
+/* تحسينات إمكانية الوصول */
+.nav-item:focus,
+.view-details-btn:focus,
+.filter-select:focus,
+.filter-input:focus {
+    outline: 2px solid var(--nutrition-primary);
+    outline-offset: 2px;
+}
+
+/* تأثيرات الحركة */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.food-card,
+.recipe-card {
+    animation: fadeInUp 0.6s ease;
+}
+
+.stat-card {
+    animation: slideInRight 0.6s ease;
+}
+
+/* طباعة */
+@media print {
+    .nutrition-nav,
+    .filters-section,
+    .modal-overlay {
+        display: none;
+    }
+    
+    .nutrition-main {
+        padding: 0;
+    }
+    
+    .food-card,
+    .recipe-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}

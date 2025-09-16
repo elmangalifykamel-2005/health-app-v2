@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عنوان الصفحة - صحتك بالدنيا</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- الأنماط المخصصة للصفحة -->
+    <style>
+        body {
+            background: linear-gradient(120deg, #e3f0ff 0%, #e8f5e8 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(76,175,80,0.13);
+            padding: 40px 32px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px 0;
+            background: linear-gradient(90deg, #388e3c 60%, #1976d2 100%);
+            color: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(76,175,80,0.13);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.97;
+        }
+        
+        /* أنماط موحدة لأزرار التنقل */
+        .navigation-buttons {
+            display: flex;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .standard-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .standard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .standard-btn:active {
+            transform: translateY(0);
+        }
+        
+        .back-btn {
+            background-color: #388e3c;
+            color: white;
+        }
+        
+        .history-back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* تخصيص عرض الأزرار على الأجهزة المختلفة */
+        @media (max-width: 768px) {
+            .navigation-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .standard-btn {
+                flex: 1;
+                justify-content: center;
+                font-size: 14px;
+            }
+            
+            .container {
+                margin: 20px;
+                padding: 20px 15px;
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 20px 0 15px 0;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- أزرار التنقل -->
+        <div class="navigation-buttons">
+            <button class="back-btn standard-btn" onclick="navigationService.navigateTo(getPagePath('main'))">
+                <i class="fas fa-arrow-right"></i> العودة للرئيسية
+            </button>
+            
+            <button class="history-back-btn standard-btn" onclick="window.history.back()">
+                <i class="fas fa-chevron-right"></i> رجوع
+            </button>
+        </div>
+        
+        <!-- عنوان الصفحة -->
+        <div class="header">
+            <h1>عنوان الصفحة</h1>
+            <p>وصف الصفحة يضاف هنا</p>
+        </div>
+        
+        <!-- محتوى الصفحة -->
+        <div class="content">
+            <!-- هنا يضاف محتوى الصفحة -->
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من وجود صفحة سابقة للعودة إليها
+            const historyBackBtn = document.querySelector('.history-back-btn');
+            
+            // إخفاء زر العودة إذا لم تكن هناك صفحة سابقة
+            if (historyBackBtn && window.history.length <= 1) {
+                historyBackBtn.style.display = 'none';
+            }
+            
+            // تخصيص زر العودة إذا كانت هناك معلمة returnPath
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnPath = urlParams.get('returnPath');
+            
+            if (returnPath && historyBackBtn) {
+                historyBackBtn.onclick = function() {
+                    window.location.href = returnPath;
+                };
+            }
+            
+            // تطبيق إعدادات اللغة إذا كانت متاحة
+            if (window.languageService) {
+                languageService.applyLanguageSettings();
+            }
+            
+            // التحقق من حالة تسجيل الدخول إذا كان ذلك مطلوبًا
+            if (window.firebaseService && firebaseService.auth) {
+                firebaseService.auth.onAuthStateChanged(function(user) {
+                    if (user) {
+                        console.log("✅ المستخدم مسجل الدخول:", user.uid);
+                        initializePage(user);
+                    } else {
+                        console.log("⚠️ المستخدم غير مسجل الدخول");
+                        // يمكن هنا التوجيه إلى صفحة تسجيل الدخول إذا كانت الصفحة تتطلب ذلك
+                    }
+                });
+            } else {
+                // استخدام التخزين المحلي إذا كان Firebase غير متاح
+                initializePage(null);
+            }
+        });
+        
+        // دالة تهيئة الصفحة - تستبدل بالمنطق الخاص بالصفحة
+        function initializePage(user) {
+            console.log("تم تهيئة الصفحة بنجاح");
+            // أضف هنا منطق تهيئة الصفحة الخاص بك
+        }
+    </script>
+</body>
+</html>

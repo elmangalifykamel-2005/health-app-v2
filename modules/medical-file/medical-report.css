@@ -1,0 +1,324 @@
+/* 
+ * ملف الأنماط الخاص بصفحة تقرير التحليل الطبي
+ */
+
+/* إعدادات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+    direction: rtl;
+}
+
+/* الحاوية الرئيسية */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* رأس الصفحة */
+.header {
+    background: linear-gradient(135deg, #4CAF50, #2196F3);
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* المحتوى */
+.content {
+    padding: 40px;
+}
+
+/* ملخص الحالة الصحية */
+.health-summary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 40px;
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+}
+
+.health-summary h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.health-summary p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* بطاقات البيانات */
+.data-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    color: #4A6572;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.card h3 i {
+    margin-left: 10px;
+    color: #6C63FF;
+}
+
+/* قسم الرسوم البيانية */
+.charts-section {
+    margin-bottom: 40px;
+}
+
+.charts-section h2 {
+    font-size: 2rem;
+    color: #4A6572;
+    margin-bottom: 30px;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 30px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.chart-card h3 {
+    font-size: 1.3rem;
+    color: #4A6572;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+}
+
+/* قسم المؤشرات الحيوية */
+.vital-signs {
+    margin-bottom: 40px;
+}
+
+.vital-signs h2 {
+    font-size: 2rem;
+    color: #4A6572;
+    margin-bottom: 30px;
+}
+
+.vital-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.vital-item {
+    background: #F8F9FA;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.vital-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #6C63FF;
+    margin-bottom: 10px;
+}
+
+.vital-label {
+    color: #4A6572;
+    font-size: 1rem;
+}
+
+/* قسم التوصيات */
+.recommendations {
+    background: #F8F9FA;
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+}
+
+.recommendations h2 {
+    font-size: 2rem;
+    color: #4A6572;
+    margin-bottom: 30px;
+}
+
+.rec-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.rec-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.rec-icon {
+    background: #6C63FF;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+.rec-content h3 {
+    font-size: 1.3rem;
+    color: #4A6572;
+    margin-bottom: 10px;
+}
+
+.rec-content p {
+    color: #6C757D;
+    line-height: 1.6;
+}
+
+/* قسم التذييل */
+.footer {
+    background: #4A6572;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    margin-top: 40px;
+}
+
+.footer p {
+    margin-bottom: 10px;
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.footer-nav a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.footer-nav a:hover {
+    opacity: 0.8;
+}
+
+/* زر الطباعة */
+.print-btn {
+    background: #6C63FF;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 30px auto;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.print-btn i {
+    margin-left: 10px;
+}
+
+.print-btn:hover {
+    background: #5A5AFF;
+    transform: translateY(-2px);
+}
+
+/* نمط التوافق مع الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .content {
+        padding: 20px;
+    }
+    
+    .health-summary {
+        padding: 30px 20px;
+    }
+    
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .health-summary h2, .charts-section h2, .vital-signs h2, .recommendations h2 {
+        font-size: 1.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.7rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    .vital-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

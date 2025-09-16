@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنبيهات النوم - تطبيق الحياة الصحية</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../theme.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <h1 id="page-title">تنبيهات النوم</h1>
+            <div class="language-switch">
+                <button class="lang-btn" data-lang="ar">عربي</button>
+                <button class="lang-btn" data-lang="en">English</button>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="notifications-container">
+            <!-- Sleep Time Reminders -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-moon"></i>
+                    <h2 id="bedtime-title">تذكير وقت النوم</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="bedtime-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="bedtime-content">
+                    <div class="time-setting">
+                        <label id="bedtime-label">وقت النوم المفضل:</label>
+                        <input type="time" id="bedtime-input" value="22:00">
+                    </div>
+                    <div class="reminder-options">
+                        <label id="reminder-before-label">التذكير قبل:</label>
+                        <select id="bedtime-reminder">
+                            <option value="15">15 دقيقة</option>
+                            <option value="30" selected>30 دقيقة</option>
+                            <option value="60">ساعة واحدة</option>
+                            <option value="120">ساعتين</option>
+                        </select>
+                    </div>
+                    <div class="days-selection">
+                        <label id="active-days-label">الأيام النشطة:</label>
+                        <div class="days-grid">
+                            <button class="day-btn active" data-day="0" id="day-sun">الأحد</button>
+                            <button class="day-btn active" data-day="1" id="day-mon">الإثنين</button>
+                            <button class="day-btn active" data-day="2" id="day-tue">الثلاثاء</button>
+                            <button class="day-btn active" data-day="3" id="day-wed">الأربعاء</button>
+                            <button class="day-btn active" data-day="4" id="day-thu">الخميس</button>
+                            <button class="day-btn" data-day="5" id="day-fri">الجمعة</button>
+                            <button class="day-btn" data-day="6" id="day-sat">السبت</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wake Up Reminders -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-sun"></i>
+                    <h2 id="wakeup-title">تذكير وقت الاستيقاظ</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="wakeup-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="wakeup-content">
+                    <div class="time-setting">
+                        <label id="wakeup-label">وقت الاستيقاظ المفضل:</label>
+                        <input type="time" id="wakeup-input" value="06:00">
+                    </div>
+                    <div class="smart-alarm">
+                        <label class="checkbox-container" id="smart-alarm-label">
+                            <input type="checkbox" id="smart-alarm-toggle">
+                            <span class="checkmark"></span>
+                            المنبه الذكي (الاستيقاظ في النوم الخفيف)
+                        </label>
+                        <p class="smart-alarm-desc" id="smart-alarm-desc">يوقظك في أفضل وقت خلال 30 دقيقة قبل الوقت المحدد</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleep Tracking Reminders -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h2 id="tracking-title">تذكير تسجيل النوم</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="tracking-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="tracking-content">
+                    <div class="reminder-options">
+                        <label id="morning-reminder-label">تذكير صباحي لتسجيل جودة النوم:</label>
+                        <input type="time" id="morning-reminder" value="07:00">
+                    </div>
+                    <div class="reminder-options">
+                        <label id="evening-reminder-label">تذكير مسائي لتسجيل أنشطة ما قبل النوم:</label>
+                        <input type="time" id="evening-reminder" value="21:00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleep Tips Notifications -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-lightbulb"></i>
+                    <h2 id="tips-title">نصائح النوم اليومية</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="tips-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="tips-content">
+                    <div class="frequency-setting">
+                        <label id="tips-frequency-label">تكرار النصائح:</label>
+                        <select id="tips-frequency">
+                            <option value="daily" selected>يومياً</option>
+                            <option value="weekly">أسبوعياً</option>
+                            <option value="biweekly">كل أسبوعين</option>
+                        </select>
+                    </div>
+                    <div class="time-setting">
+                        <label id="tips-time-label">وقت إرسال النصائح:</label>
+                        <input type="time" id="tips-time" value="19:00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Reminders -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h2 id="assessment-title">تذكير التقييم الأسبوعي</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="assessment-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="assessment-content">
+                    <div class="day-setting">
+                        <label id="assessment-day-label">يوم التقييم الأسبوعي:</label>
+                        <select id="assessment-day">
+                            <option value="0" selected>الأحد</option>
+                            <option value="1">الإثنين</option>
+                            <option value="2">الثلاثاء</option>
+                            <option value="3">الأربعاء</option>
+                            <option value="4">الخميس</option>
+                            <option value="5">الجمعة</option>
+                            <option value="6">السبت</option>
+                        </select>
+                    </div>
+                    <div class="time-setting">
+                        <label id="assessment-time-label">وقت التذكير:</label>
+                        <input type="time" id="assessment-time" value="18:00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Sound Settings -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-volume-up"></i>
+                    <h2 id="sound-title">إعدادات الصوت</h2>
+                </div>
+                <div class="notification-content">
+                    <div class="sound-setting">
+                        <label id="notification-sound-label">صوت التنبيه:</label>
+                        <select id="notification-sound">
+                            <option value="default">الافتراضي</option>
+                            <option value="gentle">هادئ</option>
+                            <option value="nature">أصوات الطبيعة</option>
+                            <option value="chime">جرس</option>
+                        </select>
+                        <button class="test-sound-btn" id="test-sound-btn">
+                            <i class="fas fa-play"></i> تجربة الصوت
+                        </button>
+                    </div>
+                    <div class="volume-setting">
+                        <label id="volume-label">مستوى الصوت:</label>
+                        <input type="range" id="volume-slider" min="0" max="100" value="70">
+                        <span id="volume-value">70%</span>
+                    </div>
+                    <div class="vibration-setting">
+                        <label class="checkbox-container" id="vibration-label">
+                            <input type="checkbox" id="vibration-toggle" checked>
+                            <span class="checkmark"></span>
+                            تفعيل الاهتزاز
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Do Not Disturb -->
+            <div class="notification-section">
+                <div class="section-header">
+                    <i class="fas fa-moon"></i>
+                    <h2 id="dnd-title">عدم الإزعاج</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dnd-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="notification-content" id="dnd-content">
+                    <div class="time-range">
+                        <div class="time-setting">
+                            <label id="dnd-start-label">من الساعة:</label>
+                            <input type="time" id="dnd-start" value="22:00">
+                        </div>
+                        <div class="time-setting">
+                            <label id="dnd-end-label">إلى الساعة:</label>
+                            <input type="time" id="dnd-end" value="07:00">
+                        </div>
+                    </div>
+                    <p class="dnd-desc" id="dnd-desc">لن يتم إرسال أي تنبيهات خلال هذه الفترة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-section">
+            <button class="save-btn" id="save-btn">
+                <i class="fas fa-save"></i>
+                <span id="save-text">حفظ الإعدادات</span>
+            </button>
+        </div>
+
+        <!-- Permission Request -->
+        <div class="permission-section" id="permission-section" style="display: none;">
+            <div class="permission-card">
+                <i class="fas fa-bell"></i>
+                <h3 id="permission-title">تفعيل التنبيهات</h3>
+                <p id="permission-desc">للحصول على تنبيهات النوم، يرجى السماح للتطبيق بإرسال الإشعارات</p>
+                <button class="permission-btn" id="enable-notifications">
+                    <i class="fas fa-check"></i>
+                    <span id="enable-text">تفعيل التنبيهات</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="sleep-utils.js"></script>
+    <script>
+        // Notification settings data
+        let notificationSettings = {
+            bedtime: {
+                enabled: true,
+                time: '22:00',
+                reminderBefore: 30,
+                activeDays: [0, 1, 2, 3, 4]
+            },
+            wakeup: {
+                enabled: true,
+                time: '06:00',
+                smartAlarm: false
+            },
+            tracking: {
+                enabled: true,
+                morningReminder: '07:00',
+                eveningReminder: '21:00'
+            },
+            tips: {
+                enabled: true,
+                frequency: 'daily',
+                time: '19:00'
+            },
+            assessment: {
+                enabled: true,
+                day: 0,
+                time: '18:00'
+            },
+            sound: {
+                type: 'default',
+                volume: 70,
+                vibration: true
+            },
+            doNotDisturb: {
+                enabled: false,
+                start: '22:00',
+                end: '07:00'
+            }
+        };
+
+        // Language translations
+        const translations = {
+            ar: {
+                'page-title': 'تنبيهات النوم',
+                'bedtime-title': 'تذكير وقت النوم',
+                'bedtime-label': 'وقت النوم المفضل:',
+                'reminder-before-label': 'التذكير قبل:',
+                'active-days-label': 'الأيام النشطة:',
+                'day-sun': 'الأحد',
+                'day-mon': 'الإثنين',
+                'day-tue': 'الثلاثاء',
+                'day-wed': 'الأربعاء',
+                'day-thu': 'الخميس',
+                'day-fri': 'الجمعة',
+                'day-sat': 'السبت',
+                'wakeup-title': 'تذكير وقت الاستيقاظ',
+                'wakeup-label': 'وقت الاستيقاظ المفضل:',
+                'smart-alarm-label': 'المنبه الذكي (الاستيقاظ في النوم الخفيف)',
+                'smart-alarm-desc': 'يوقظك في أفضل وقت خلال 30 دقيقة قبل الوقت المحدد',
+                'tracking-title': 'تذكير تسجيل النوم',
+                'morning-reminder-label': 'تذكير صباحي لتسجيل جودة النوم:',
+                'evening-reminder-label': 'تذكير مسائي لتسجيل أنشطة ما قبل النوم:',
+                'tips-title': 'نصائح النوم اليومية',
+                'tips-frequency-label': 'تكرار النصائح:',
+                'tips-time-label': 'وقت إرسال النصائح:',
+                'assessment-title': 'تذكير التقييم الأسبوعي',
+                'assessment-day-label': 'يوم التقييم الأسبوعي:',
+                'assessment-time-label': 'وقت التذكير:',
+                'sound-title': 'إعدادات الصوت',
+                'notification-sound-label': 'صوت التنبيه:',
+                'test-sound-btn': 'تجربة الصوت',
+                'volume-label': 'مستوى الصوت:',
+                'vibration-label': 'تفعيل الاهتزاز',
+                'dnd-title': 'عدم الإزعاج',
+                'dnd-start-label': 'من الساعة:',
+                'dnd-end-label': 'إلى الساعة:',
+                'dnd-desc': 'لن يتم إرسال أي تنبيهات خلال هذه الفترة',
+                'save-text': 'حفظ الإعدادات',
+                'permission-title': 'تفعيل التنبيهات',
+                'permission-desc': 'للحصول على تنبيهات النوم، يرجى السماح للتطبيق بإرسال الإشعارات',
+                'enable-text': 'تفعيل التنبيهات'
+            },
+            en: {
+                'page-title': 'Sleep Notifications',
+                'bedtime-title': 'Bedtime Reminder',
+                'bedtime-label': 'Preferred bedtime:',
+                'reminder-before-label': 'Remind before:',
+                'active-days-label': 'Active days:',
+                'day-sun': 'Sunday',
+                'day-mon': 'Monday',
+                'day-tue': 'Tuesday',
+                'day-wed': 'Wednesday',
+                'day-thu': 'Thursday',
+                'day-fri': 'Friday',
+                'day-sat': 'Saturday',
+                'wakeup-title': 'Wake Up Reminder',
+                'wakeup-label': 'Preferred wake up time:',
+                'smart-alarm-label': 'Smart Alarm (Wake up during light sleep)',
+                'smart-alarm-desc': 'Wakes you up at the best time within 30 minutes before set time',
+                'tracking-title': 'Sleep Tracking Reminder',
+                'morning-reminder-label': 'Morning reminder to log sleep quality:',
+                'evening-reminder-label': 'Evening reminder to log pre-sleep activities:',
+                'tips-title': 'Daily Sleep Tips',
+                'tips-frequency-label': 'Tips frequency:',
+                'tips-time-label': 'Tips delivery time:',
+                'assessment-title': 'Weekly Assessment Reminder',
+                'assessment-day-label': 'Weekly assessment day:',
+                'assessment-time-label': 'Reminder time:',
+                'sound-title': 'Sound Settings',
+                'notification-sound-label': 'Notification sound:',
+                'test-sound-btn': 'Test Sound',
+                'volume-label': 'Volume level:',
+                'vibration-label': 'Enable vibration',
+                'dnd-title': 'Do Not Disturb',
+                'dnd-start-label': 'From:',
+                'dnd-end-label': 'To:',
+                'dnd-desc': 'No notifications will be sent during this period',
+                'save-text': 'Save Settings',
+                'permission-title': 'Enable Notifications',
+                'permission-desc': 'To receive sleep notifications, please allow the app to send notifications',
+                'enable-text': 'Enable Notifications'
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLanguage();
+            loadNotificationSettings();
+            setupEventListeners();
+            checkNotificationPermission();
+        });
+
+        // Load saved settings
+        function loadNotificationSettings() {
+            const saved = localStorage.getItem('sleepNotificationSettings');
+            if (saved) {
+                notificationSettings = { ...notificationSettings, ...JSON.parse(saved) };
+            }
+            updateUI();
+        }
+
+        // Update UI with current settings
+        function updateUI() {
+            // Bedtime settings
+            document.getElementById('bedtime-toggle').checked = notificationSettings.bedtime.enabled;
+            document.getElementById('bedtime-input').value = notificationSettings.bedtime.time;
+            document.getElementById('bedtime-reminder').value = notificationSettings.bedtime.reminderBefore;
+            
+            // Update active days
+            document.querySelectorAll('.day-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', notificationSettings.bedtime.activeDays.includes(index));
+            });
+
+            // Wake up settings
+            document.getElementById('wakeup-toggle').checked = notificationSettings.wakeup.enabled;
+            document.getElementById('wakeup-input').value = notificationSettings.wakeup.time;
+            document.getElementById('smart-alarm-toggle').checked = notificationSettings.wakeup.smartAlarm;
+
+            // Tracking settings
+            document.getElementById('tracking-toggle').checked = notificationSettings.tracking.enabled;
+            document.getElementById('morning-reminder').value = notificationSettings.tracking.morningReminder;
+            document.getElementById('evening-reminder').value = notificationSettings.tracking.eveningReminder;
+
+            // Tips settings
+            document.getElementById('tips-toggle').checked = notificationSettings.tips.enabled;
+            document.getElementById('tips-frequency').value = notificationSettings.tips.frequency;
+            document.getElementById('tips-time').value = notificationSettings.tips.time;
+
+            // Assessment settings
+            document.getElementById('assessment-toggle').checked = notificationSettings.assessment.enabled;
+            document.getElementById('assessment-day').value = notificationSettings.assessment.day;
+            document.getElementById('assessment-time').value = notificationSettings.assessment.time;
+
+            // Sound settings
+            document.getElementById('notification-sound').value = notificationSettings.sound.type;
+            document.getElementById('volume-slider').value = notificationSettings.sound.volume;
+            document.getElementById('volume-value').textContent = notificationSettings.sound.volume + '%';
+            document.getElementById('vibration-toggle').checked = notificationSettings.sound.vibration;
+
+            // Do not disturb settings
+            document.getElementById('dnd-toggle').checked = notificationSettings.doNotDisturb.enabled;
+            document.getElementById('dnd-start').value = notificationSettings.doNotDisturb.start;
+            document.getElementById('dnd-end').value = notificationSettings.doNotDisturb.end;
+
+            // Toggle content visibility
+            toggleContent('bedtime', notificationSettings.bedtime.enabled);
+            toggleContent('wakeup', notificationSettings.wakeup.enabled);
+            toggleContent('tracking', notificationSettings.tracking.enabled);
+            toggleContent('tips', notificationSettings.tips.enabled);
+            toggleContent('assessment', notificationSettings.assessment.enabled);
+            toggleContent('dnd', notificationSettings.doNotDisturb.enabled);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Toggle switches
+            document.getElementById('bedtime-toggle').addEventListener('change', (e) => {
+                notificationSettings.bedtime.enabled = e.target.checked;
+                toggleContent('bedtime', e.target.checked);
+            });
+
+            document.getElementById('wakeup-toggle').addEventListener('change', (e) => {
+                notificationSettings.wakeup.enabled = e.target.checked;
+                toggleContent('wakeup', e.target.checked);
+            });
+
+            document.getElementById('tracking-toggle').addEventListener('change', (e) => {
+                notificationSettings.tracking.enabled = e.target.checked;
+                toggleContent('tracking', e.target.checked);
+            });
+
+            document.getElementById('tips-toggle').addEventListener('change', (e) => {
+                notificationSettings.tips.enabled = e.target.checked;
+                toggleContent('tips', e.target.checked);
+            });
+
+            document.getElementById('assessment-toggle').addEventListener('change', (e) => {
+                notificationSettings.assessment.enabled = e.target.checked;
+                toggleContent('assessment', e.target.checked);
+            });
+
+            document.getElementById('dnd-toggle').addEventListener('change', (e) => {
+                notificationSettings.doNotDisturb.enabled = e.target.checked;
+                toggleContent('dnd', e.target.checked);
+            });
+
+            // Time inputs
+            document.getElementById('bedtime-input').addEventListener('change', (e) => {
+                notificationSettings.bedtime.time = e.target.value;
+            });
+
+            document.getElementById('wakeup-input').addEventListener('change', (e) => {
+                notificationSettings.wakeup.time = e.target.value;
+            });
+
+            // Day buttons
+            document.querySelectorAll('.day-btn').forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('active');
+                    if (btn.classList.contains('active')) {
+                        if (!notificationSettings.bedtime.activeDays.includes(index)) {
+                            notificationSettings.bedtime.activeDays.push(index);
+                        }
+                    } else {
+                        notificationSettings.bedtime.activeDays = notificationSettings.bedtime.activeDays.filter(day => day !== index);
+                    }
+                });
+            });
+
+            // Volume slider
+            document.getElementById('volume-slider').addEventListener('input', (e) => {
+                notificationSettings.sound.volume = parseInt(e.target.value);
+                document.getElementById('volume-value').textContent = e.target.value + '%';
+            });
+
+            // Test sound button
+            document.getElementById('test-sound-btn').addEventListener('click', testNotificationSound);
+
+            // Save button
+            document.getElementById('save-btn').addEventListener('click', saveSettings);
+
+            // Enable notifications button
+            document.getElementById('enable-notifications').addEventListener('click', requestNotificationPermission);
+
+            // Language switching
+            setupLanguageSwitching();
+        }
+
+        // Toggle content visibility
+        function toggleContent(section, show) {
+            const content = document.getElementById(section + '-content');
+            if (content) {
+                content.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        // Check notification permission
+        function checkNotificationPermission() {
+            if ('Notification' in window) {
+                if (Notification.permission === 'default') {
+                    document.getElementById('permission-section').style.display = 'block';
+                }
+            }
+        }
+
+        // Request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        document.getElementById('permission-section').style.display = 'none';
+                        showSuccessMessage('تم تفعيل التنبيهات بنجاح!');
+                    }
+                });
+            }
+        }
+
+        // Test notification sound
+        function testNotificationSound() {
+            // Play test sound based on selected type
+            const soundType = document.getElementById('notification-sound').value;
+            const volume = document.getElementById('volume-slider').value / 100;
+            
+            // Create audio element for testing
+            const audio = new Audio();
+            switch(soundType) {
+                case 'gentle':
+                    // Use gentle sound
+                    break;
+                case 'nature':
+                    // Use nature sound
+                    break;
+                case 'chime':
+                    // Use chime sound
+                    break;
+                default:
+                    // Use default system sound
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('اختبار الصوت', {
+                            body: 'هذا اختبار لصوت التنبيه',
+                            icon: '../assets/images/sleep-icon.png'
+                        });
+                    }
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            // Collect all current settings
+            notificationSettings.bedtime.time = document.getElementById('bedtime-input').value;
+            notificationSettings.bedtime.reminderBefore = parseInt(document.getElementById('bedtime-reminder').value);
+            
+            notificationSettings.wakeup.time = document.getElementById('wakeup-input').value;
+            notificationSettings.wakeup.smartAlarm = document.getElementById('smart-alarm-toggle').checked;
+            
+            notificationSettings.tracking.morningReminder = document.getElementById('morning-reminder').value;
+            notificationSettings.tracking.eveningReminder = document.getElementById('evening-reminder').value;
+            
+            notificationSettings.tips.frequency = document.getElementById('tips-frequency').value;
+            notificationSettings.tips.time = document.getElementById('tips-time').value;
+            
+            notificationSettings.assessment.day = parseInt(document.getElementById('assessment-day').value);
+            notificationSettings.assessment.time = document.getElementById('assessment-time').value;
+            
+            notificationSettings.sound.type = document.getElementById('notification-sound').value;
+            notificationSettings.sound.vibration = document.getElementById('vibration-toggle').checked;
+            
+            notificationSettings.doNotDisturb.start = document.getElementById('dnd-start').value;
+            notificationSettings.doNotDisturb.end = document.getElementById('dnd-end').value;
+
+            // Save to localStorage
+            localStorage.setItem('sleepNotificationSettings', JSON.stringify(notificationSettings));
+            
+            // Schedule notifications
+            scheduleNotifications();
+            
+            // Show success message
+            showSuccessMessage(getCurrentLanguage() === 'ar' ? 'تم حفظ الإعدادات بنجاح!' : 'Settings saved successfully!');
+        }
+
+        // Schedule notifications
+        function scheduleNotifications() {
+            // Clear existing notifications
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.getNotifications().then(notifications => {
+                        notifications.forEach(notification => notification.close());
+                    });
+                });
+            }
+
+            // Schedule new notifications based on settings
+            if (notificationSettings.bedtime.enabled) {
+                scheduleBedtimeReminder();
+            }
+            
+            if (notificationSettings.wakeup.enabled) {
+                scheduleWakeupAlarm();
+            }
+            
+            if (notificationSettings.tracking.enabled) {
+                scheduleTrackingReminders();
+            }
+            
+            if (notificationSettings.tips.enabled) {
+                scheduleTipsNotifications();
+            }
+            
+            if (notificationSettings.assessment.enabled) {
+                scheduleAssessmentReminder();
+            }
+        }
+
+        // Schedule bedtime reminder
+        function scheduleBedtimeReminder() {
+            const bedtime = notificationSettings.bedtime.time;
+            const reminderBefore = notificationSettings.bedtime.reminderBefore;
+            const activeDays = notificationSettings.bedtime.activeDays;
+            
+            // Calculate reminder time
+            const [hours, minutes] = bedtime.split(':').map(Number);
+            const reminderTime = new Date();
+            reminderTime.setHours(hours, minutes - reminderBefore, 0, 0);
+            
+            // Schedule for active days
+            activeDays.forEach(day => {
+                // Implementation would depend on service worker or notification API
+                console.log(`Scheduling bedtime reminder for day ${day} at ${reminderTime.toTimeString()}`);
+            });
+        }
+
+        // Schedule wake up alarm
+        function scheduleWakeupAlarm() {
+            const wakeupTime = notificationSettings.wakeup.time;
+            const smartAlarm = notificationSettings.wakeup.smartAlarm;
+            
+            console.log(`Scheduling wake up alarm at ${wakeupTime}, smart alarm: ${smartAlarm}`);
+        }
+
+        // Schedule tracking reminders
+        function scheduleTrackingReminders() {
+            const morningTime = notificationSettings.tracking.morningReminder;
+            const eveningTime = notificationSettings.tracking.eveningReminder;
+            
+            console.log(`Scheduling tracking reminders: morning ${morningTime}, evening ${eveningTime}`);
+        }
+
+        // Schedule tips notifications
+        function scheduleTipsNotifications() {
+            const frequency = notificationSettings.tips.frequency;
+            const time = notificationSettings.tips.time;
+            
+            console.log(`Scheduling tips notifications: ${frequency} at ${time}`);
+        }
+
+        // Schedule assessment reminder
+        function scheduleAssessmentReminder() {
+            const day = notificationSettings.assessment.day;
+            const time = notificationSettings.assessment.time;
+            
+            console.log(`Scheduling assessment reminder: day ${day} at ${time}`);
+        }
+
+        // Show success message
+        function showSuccessMessage(message) {
+            // Create and show success toast
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Language switching setup
+        function setupLanguageSwitching() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.dataset.lang;
+                    switchLanguage(lang);
+                });
+            });
+        }
+
+        // Switch language
+        function switchLanguage(lang) {
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Update text content
+            Object.keys(translations[lang]).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.tagName === 'INPUT' && element.type === 'submit') {
+                        element.value = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // Update direction and language attributes
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        // Initialize language
+        function initializeLanguage() {
+            const savedLang = localStorage.getItem('selectedLanguage') || 'ar';
+            switchLanguage(savedLang);
+        }
+
+        // Get current language
+        function getCurrentLanguage() {
+            return localStorage.getItem('selectedLanguage') || 'ar';
+        }
+    </script>
+
+    <style>
+        /* Additional styles for notifications page */
+        .notifications-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .notification-section {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #4CAF50, #64B5F6);
+            color: white;
+        }
+
+        .section-header i {
+            font-size: 24px;
+            margin-left: 15px;
+        }
+
+        .section-header h2 {
+            flex: 1;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.3);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .notification-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .notification-content.active {
+            display: block;
+        }
+
+        .time-setting, .reminder-options, .frequency-setting, .day-setting, .sound-setting, .volume-setting {
+            margin-bottom: 20px;
+        }
+
+        .time-setting label, .reminder-options label, .frequency-setting label, .day-setting label, .sound-setting label, .volume-setting label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .time-setting input, .reminder-options select, .frequency-setting select, .day-setting select, .sound-setting select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .time-setting input:focus, .reminder-options select:focus, .frequency-setting select:focus, .day-setting select:focus, .sound-setting select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .day-btn {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .day-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .day-btn:hover {
+            border-color: #4CAF50;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input {
+            margin-left: 10px;
+        }
+
+        .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: #4CAF50;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .checkbox-container .checkmark:after {
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .smart-alarm-desc, .dnd-desc {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .test-sound-btn {
+            background: #64B5F6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .test-sound-btn:hover {
+            background: #42A5F5;
+        }
+
+        .volume-setting {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .volume-setting label {
+            margin-bottom: 0;
+            min-width: 120px;
+        }
+
+        #volume-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        #volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        #volume-value {
+            min-width: 40px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .time-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .save-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #4CAF50, #64B5F6);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .save-btn i {
+            margin-left: 10px;
+        }
+
+        .permission-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .permission-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .permission-card i {
+            font-size: 48px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .permission-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .permission-card p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .permission-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .permission-btn:hover {
+            background: #45a049;
+        }
+
+        .permission-btn i {
+            margin-left: 8px;
+            font-size: 16px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .notifications-container {
+                padding: 10px;
+            }
+            
+            .section-header {
+                padding: 15px;
+            }
+            
+            .section-header h2 {
+                font-size: 16px;
+            }
+            
+            .notification-content {
+                padding: 15px;
+            }
+            
+            .time-range {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .days-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+            
+            .volume-setting {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .volume-setting label {
+                min-width: auto;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

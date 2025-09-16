@@ -1,0 +1,20 @@
+/**
+ * ملف الأنماط الرئيسي للتطبيق
+ * Main Application Stylesheet
+ * 
+ * هذا الملف يستورد جميع ملفات الأنماط الأخرى
+ * This file imports all other stylesheets
+ */
+
+/* استيراد أنماط المتغيرات والخطوط */
+@import 'variables.css';
+@import 'fonts.css';
+
+/* استيراد أنماط المكونات الأساسية */
+@import 'components.css';
+
+/* استيراد أنماط الوحدات المخصصة */
+@import 'modules.css';
+
+/* استيراد أنماط الطباعة */
+@import 'print.css';

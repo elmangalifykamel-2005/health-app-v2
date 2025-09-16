@@ -1,0 +1,381 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<!-- استدعاء الملفات المشتركة -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="config/app-config.js"></script>
+<script src="firebase-config.js"></script>
+<script src="config/shared-functions.js"></script>
+<link rel="stylesheet" href="config/shared-styles.css">
+
+<style>
+.sidebar {
+    position: fixed;
+    top: 70px;
+    right: -280px;
+    height: calc(100vh - 70px);
+    width: 260px;
+    background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 0;
+    z-index: 100;
+    transition: right 0.4s cubic-bezier(.25,.8,.25,1);
+    border-left: 3px solid #388e3c;
+    direction: rtl;
+    overflow-y: auto;
+}
+.sidebar.open {
+    right: 0;
+}
+.sidebar-close-btn {
+    position: absolute;
+    top: 15px;
+    left: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    color: #388e3c;
+    font-size: 1.4em;
+    cursor: pointer;
+    z-index: 110;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.sidebar-close-btn:hover {
+    background: #388e3c;
+    color: white;
+    transform: scale(1.1);
+}
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+.sidebar-logo {
+    color: #388e3c;
+    font-size: 1.6em;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.sidebar-subtitle {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+.beta-badge-sidebar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ff9800;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.7em;
+    font-weight: 500;
+    margin-top: 8px;
+}
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    padding: 0 15px;
+}
+.sidebar-menu li {
+    margin-bottom: 6px;
+}
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    color: #388e3c;
+    text-decoration: none;
+    font-size: 1.05em;
+    border-radius: 15px;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+.sidebar-menu a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #388e3c, #4CAF50);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+.sidebar-menu a:hover::before,
+.sidebar-menu a.active::before {
+    width: 100%;
+}
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    color: white;
+    transform: translateX(-5px);
+    box-shadow: 0 4px 15px rgba(56, 142, 60, 0.25);
+    border-color: #388e3c;
+}
+.sidebar-menu i {
+    font-size: 1.2em;
+    min-width: 24px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+.sidebar-menu a:hover i {
+    transform: scale(1.15);
+}
+.menu-section {
+    margin-bottom: 20px;
+}
+.section-title {
+    color: #388e3c;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 20px 10px 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #e8f5e8;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        width: 280px;
+        right: -290px;
+    }
+    .sidebar-menu a {
+        font-size: 1.1em;
+        padding: 16px 18px;
+    }
+}
+</style>
+
+<div class="sidebar" id="sidebar-content">
+    <button class="sidebar-close-btn" title="إغلاق القائمة" onclick="document.getElementById('sidebar-content').classList.remove('open');document.getElementById('sidebarBackdrop').classList.remove('open');">
+        <i class="fa-solid fa-times"></i>
+    </button>
+    
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            صحتك بالدنيا
+        </div>
+        <div class="sidebar-subtitle">رحلتك نحو حياة أفضل</div>
+        <div class="beta-badge-sidebar">
+            <i class="fas fa-code"></i>
+            نسخة تجريبية
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+        <div class="menu-section">
+            <div class="section-title">القياسات والمتابعة</div>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('healthState', 'healthstate.html')">
+                    <i class="fa-solid fa-ruler-combined"></i> 
+                    قياساتي
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('sleep', 'index.html')">
+                    <i class="fa-solid fa-moon"></i> 
+                    نومي
+                </a>
+            </li>
+        </div>
+
+        <div class="menu-section">
+            <div class="section-title">الصحة العامة</div>
+            <li>
+                <a href="user-profile.html">
+                    <i class="fa-solid fa-user-circle"></i> 
+                    ملفي الشخصي
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('mentalHealth', 'mental-health.html')">
+                    <i class="fa-solid fa-brain"></i> 
+                    صحتي النفسية
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('healthState', 'healthstate.html')">
+                    <i class="fa-solid fa-notes-medical"></i> 
+                    حالتي الصحية
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('medicalFile', 'medical-profile.html')">
+                    <i class="fa-solid fa-file-medical"></i> 
+                    ملفي الطبي
+                </a>
+            </li>
+        </div>
+
+        <div class="menu-section">
+            <div class="section-title">التغذية والرياضة</div>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('nutrition', 'index.html')">
+                    <i class="fa-solid fa-apple-whole"></i> 
+                    خطتي الغذائية
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('healthyRecipes', 'healthy-recipes.html')">
+                    <i class="fa-solid fa-bowl-food"></i> 
+                    وصفات صحية
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('about', 'certificates.html')">
+                    <i class="fa-solid fa-dumbbell"></i> 
+                    الرياضة والتمارين
+                </a>
+            </li>
+        </div>
+
+        <div class="menu-section">
+            <div class="section-title">المعرفة والأدلة</div>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('herbs', 'herbs.html')">
+                    <i class="fa-solid fa-seedling"></i> 
+                    الأعشاب الطبية
+                </a>
+            </li>
+            <li>
+                <a href="javascript:navigationService.navigateToModule('studies', 'studies.html')">
+                    <i class="fa-solid fa-microscope"></i> 
+                    الدراسات والأبحاث
+                </a>
+            </li>
+        </div>
+        <div class="menu-section">
+            <div class="section-title">حسابي</div>
+            <li>
+                <a href="user-profile.html">
+                    <i class="fa-solid fa-user"></i> 
+                    <span id="userName">ملفي الشخصي</span>
+                </a>
+            </li>
+            <li id="loginMenuItem" style="display: none;">
+                <a href="javascript:navigationService.navigateTo(getPagePath('login'))">
+                    <i class="fa-solid fa-sign-in-alt"></i> 
+                    تسجيل الدخول
+                </a>
+            </li>
+            <li id="logoutMenuItem" style="display: none;">
+                <a href="javascript:userService.logout()">
+                    <i class="fa-solid fa-sign-out-alt"></i> 
+                    تسجيل الخروج
+                </a>
+            </li>
+        </div>
+    </ul>
+    
+    <div id="connectionStatus" class="connection-status">
+        <i class="fas fa-wifi"></i> 
+        <span id="connectionStatusText">متصل</span>
+    </div>
+</div>
+
+<script>
+    // تحديث معلومات المستخدم في الشريط الجانبي
+    document.addEventListener('DOMContentLoaded', function() {
+        // تحديث حالة الاتصال
+        updateConnectionStatus();
+        
+        // تحديث معلومات المستخدم
+        updateUserInfo();
+        
+        // الاستماع لتغيرات حالة المستخدم
+        if (window.firebaseService) {
+            firebaseService.auth.onAuthStateChanged(updateUserInfo);
+        }
+    });
+    
+    function updateUserInfo() {
+        const userName = document.getElementById('userName');
+        const loginMenuItem = document.getElementById('loginMenuItem');
+        const logoutMenuItem = document.getElementById('logoutMenuItem');
+        
+        if (window.firebaseService && firebaseService.isAuthenticated()) {
+            // المستخدم مسجل الدخول
+            firebaseService.data.get(APP_CONFIG.firebase.collections.profile, 'userData')
+                .then(userData => {
+                    if (userData && userData.fullName) {
+                        userName.textContent = userData.fullName;
+                    } else {
+                        userName.textContent = 'ملفي الشخصي';
+                    }
+                })
+                .catch(() => {
+                    userName.textContent = 'ملفي الشخصي';
+                });
+            
+            loginMenuItem.style.display = 'none';
+            logoutMenuItem.style.display = 'block';
+        } else {
+            // المستخدم غير مسجل الدخول
+            userName.textContent = 'ملفي الشخصي';
+            loginMenuItem.style.display = 'block';
+            logoutMenuItem.style.display = 'none';
+        }
+    }
+    
+    function updateConnectionStatus() {
+        const statusIcon = document.querySelector('#connectionStatus i');
+        const statusText = document.getElementById('connectionStatusText');
+        
+        if (window.firebaseService && firebaseService.isInitialized) {
+            statusIcon.className = 'fas fa-wifi';
+            statusText.textContent = 'متصل';
+            document.getElementById('connectionStatus').className = 'connection-status connected';
+        } else {
+            statusIcon.className = 'fas fa-wifi-slash';
+            statusText.textContent = 'غير متصل';
+            document.getElementById('connectionStatus').className = 'connection-status disconnected';
+        }
+    }
+</script>
+
+<style>
+    .connection-status {
+        background: #e8f5e8;
+        color: #388e3c;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin: 15px;
+        font-size: 0.85em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .connection-status.connected {
+        background: #e8f5e8;
+        color: #388e3c;
+    }
+    
+    .connection-status.disconnected {
+        background: #fbe9e7;
+        color: #d32f2f;
+    }
+</style>

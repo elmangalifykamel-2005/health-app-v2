@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تحليل التحاليل الطبية - صحتك بالدنيا</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- الأنماط الموحدة -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="medical-test-analyzer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- استدعاء الملفات المشتركة -->
+  <script src="../../config/app-config.js"></script>
+  <script src="../../firebase-config.js"></script>
+  <script src="../../config/shared-functions.js"></script>
+  <script src="../../config/navigation-helpers.js"></script>
+  <script src="../../config/navigation-fixes.js"></script>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" id="btn-go-back">
+      <i class="fas fa-arrow-right"></i> رجوع
+    </button>
+    <h1>تحليل التحاليل الطبية</h1>
+    <div id="medical-analysis-card" class="analysis-card"></div>
+  </div>
+  <script type="module">
+    import medicalTestsReference from './medical-tests-ref.js';
+
+    // جلب آخر نتيجة لكل نوع تحليل (أساسي أو آخر)
+    function getLatestResultsPerTest() {
+      const allTests = JSON.parse(localStorage.getItem('medicalTests') || '[]');
+      const latestTests = {};
+      allTests.forEach(test => {
+        // إذا كان التحليل أساسي (cbc, lipid, sugar, kidney, liver) استخدم type فقط كمفتاح
+        const mainTypes = ['cbc', 'lipid', 'sugar', 'kidney', 'liver'];
+        const key = mainTypes.includes(test.type) ? test.type : ((test.section || '') + '_' + test.type);
+        if (
+          !latestTests[key] ||
+          (test.date && latestTests[key].date && new Date(test.date) > new Date(latestTests[key].date)) ||
+          (!latestTests[key].date && test.date)
+        ) {
+          latestTests[key] = test;
+        }
+      });
+      return Object.values(latestTests);
+    }
+
+    function analyzeMedicalTests(tests) {
+      let risks = [];
+      let warnings = [];
+      let recommendations = [];
+      let details = [];
+
+      tests.forEach(test => {
+        // القسم والتحليل
+        const section = test.section || test.type;
+        let refSection = medicalTestsReference[section] || medicalTestsReference[test.type];
+        if (!refSection) {
+          for (const sec in medicalTestsReference) {
+            if (medicalTestsReference[sec][test.type]) {
+              refSection = medicalTestsReference[sec];
+              break;
+            }
+          }
+        }
+        if (!refSection) return;
+        const refTest = refSection[test.type] || refSection;
+
+        let testDetail = `<div class="test-details">
+          <div class="test-title">${refTest.name || test.type}</div>
+          <div class="test-en">${refTest.nameEn || ''}</div>
+          <div class="test-section">القسم: ${section}</div>
+          <div>النتيجة المدخلة: <strong>${
+            test.result !== undefined ? test.result : (test.results ? Object.values(test.results).join(', ') : '')
+          }</strong></div>
+          <div>القيم المرجعية: ${refTest.ranges}</div>
+          ${test.date ? `<div>تاريخ التحليل: ${test.date}</div>` : ''}
+        `;
+
+        // إذا كان التحليل يحتوي على نتائج فرعية (مثل CBC)
+        if (test.results && typeof test.results === 'object') {
+          testDetail += `<ul class="test-result-list">`;
+          Object.entries(test.results).forEach(([subTest, value]) => {
+            let subWarning = '';
+            let subDiagnosis = '';
+            if (refTest.subTests && refTest.subTests[subTest]) {
+              const subRef = refTest.subTests[subTest];
+              if (subRef.ranges && Array.isArray(subRef.ranges)) {
+                const v = parseFloat(value);
+                if (v < subRef.ranges[0] || v > subRef.ranges[1]) {
+                  warnings.push(subRef.warnings || `خلل في ${subTest}`);
+                  risks.push(subTest);
+                  subWarning = `<span class="sub-warning">تحذير: ${subRef.warnings || ''}</span>`;
+                } else {
+                  subWarning = `<span class="sub-normal">طبيعي</span>`;
+                }
+                if (subRef.diagnosis) {
+                  const diag = subRef.diagnosis(v);
+                  if (diag && diag !== 'طبيعي') {
+                    subDiagnosis = `<div class="diagnosis">${diag}</div>`;
+                    recommendations.push(subRef.warnings);
+                  }
+                }
+              }
+            }
+            testDetail += `<li>${subTest}: <strong>${value}</strong> ${subWarning} ${subDiagnosis}</li>`;
+          });
+          testDetail += `</ul>`;
+        }
+
+        // تحليل النتيجة الأساسية
+        let outOfRange = false;
+        let mainDiagnosis = '';
+        if (refTest.warnings) {
+          if (test.result !== undefined && Array.isArray(refTest.ranges)) {
+            const value = parseFloat(test.result);
+            if (value < refTest.ranges[0] || value > refTest.ranges[1]) {
+              warnings.push(refTest.warnings);
+              risks.push(refTest.name);
+              outOfRange = true;
+              testDetail += `<div style="color:#d84315;">تحذير: ${refTest.warnings}</div>`;
+            }
+            if (refTest.diagnosis) {
+              const diag = refTest.diagnosis(value);
+              if (diag && diag !== 'طبيعي') {
+                mainDiagnosis = `<div class="diagnosis">${diag}</div>`;
+                recommendations.push(refTest.warnings);
+              }
+            }
+          } else if (test.result !== undefined && typeof refTest.ranges === 'string') {
+            warnings.push(refTest.warnings);
+            testDetail += `<div style="color:#d84315;">تحذير: ${refTest.warnings}</div>`;
+            if (refTest.diagnosis) {
+              const diag = refTest.diagnosis(test.result);
+              if (diag && diag !== 'طبيعي') {
+                mainDiagnosis = `<div class="diagnosis">${diag}</div>`;
+                recommendations.push(refTest.warnings);
+              }
+            }
+          }
+        }
+        if (mainDiagnosis) testDetail += mainDiagnosis;
+        if (!outOfRange && !(test.results && typeof test.results === 'object')) {
+          testDetail += `<div style="color:#388e3c;">النتيجة ضمن النطاق المرجعي أو تحتاج مراجعة الطبيب.</div>`;
+        }
+        testDetail += `</div>`;
+        details.push(testDetail);
+      });
+
+      // إزالة التكرار في التوصيات
+      recommendations = [...new Set(recommendations)];
+
+      if (risks.length > 0) {
+        recommendations.push("ينصح بإجراء تحاليل إضافية أو مراجعة الطبيب المختص بناءً على نتائج التحاليل.");
+      }
+
+      return { risks, warnings, recommendations, details };
+    }
+
+    function renderMedicalAnalysisCard() {
+      const tests = getLatestResultsPerTest();
+      const cardDiv = document.getElementById("medical-analysis-card");
+      if (!tests.length) {
+        cardDiv.innerHTML = `
+          <div class="empty-msg">
+            لم يتم إدخال أي نتائج تحاليل حتى الآن.<br>
+            يرجى إضافة نتائج التحاليل الطبية لعرض التحليل الشامل.
+          </div>
+        `;
+        return;
+      }
+      const analysis = analyzeMedicalTests(tests);
+
+      cardDiv.innerHTML = `
+        <strong>تفاصيل كل تحليل (آخر نتيجة لكل تحليل):</strong>
+        ${analysis.details.join('')}
+        <hr>
+        <strong>الأمراض أو الحالات المحتملة:</strong>
+        <ul>${analysis.risks.length ? analysis.risks.map(r=>`<li>${r}</li>`).join('') : '<li>لا توجد أمراض واضحة بناءً على التحاليل الحالية.</li>'}</ul>
+        <strong>عوامل الخطورة:</strong>
+        <ul>${analysis.warnings.length ? analysis.warnings.map(w=>`<li>${w}</li>`).join('') : '<li>لا توجد عوامل خطورة واضحة.</li>'}</ul>
+        <strong>التوصيات والتحذيرات:</strong>
+        <ul>${analysis.recommendations.length ? analysis.recommendations.map(r=>`<li class="recommend">${r}</li>`).join('') : '<li>لا توجد توصيات خاصة حالياً.</li>'}</ul>
+      `;
+    }
+
+    window.onload = function() {
+      // تطبيق إصلاحات التنقل
+      if (window.navigationFixes && typeof navigationFixes.fixMedicalFilePage === 'function') {
+        navigationFixes.fixMedicalFilePage();
+      }
+      renderMedicalAnalysisCard();
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>المعلومات الأساسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- ملفات الإعدادات والتوابع -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/modal-helpers.js"></script>
+    <script src="medical-forms.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0008;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        /* أنماط موحدة لأزرار التنقل في النوافذ المنبثقة */
+        .modal-navigation {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        
+        .close-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 18px;
+            max-width: 400px;
+            width: 90vw;
+            margin: auto;
+            padding: 32px 22px;
+            box-shadow: 0 8px 40px #388e3c33;
+        }
+        .modal-box h2 {
+            color: #388e3c;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .modal-box p {
+            color: #f44336;
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+        .modal-box label {
+            display: block;
+            margin-bottom: 6px;
+            color: #388e3c;
+            font-weight: bold;
+        }
+        .modal-box input, .modal-box select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1.5px solid #e8f5e8;
+            margin-bottom: 12px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .modal-actions button {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        .modal-actions .save-btn {
+            background: #388e3c;
+            color: #fff;
+        }
+        .modal-actions .save-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .modal-actions .skip-btn {
+            background: #eee;
+            color: #388e3c;
+        }
+        .modal-actions .save-btn:hover:not(:disabled) {
+            background: #2e7d32;
+        }
+        .modal-actions .skip-btn:hover {
+            background: #ddd;
+        }
+        .status-message {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            display: none;
+        }
+        .status-connected {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .status-disconnected {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-box">
+        <div class="modal-navigation">
+            <button class="close-btn" onclick="returnToMedicalProfile()">
+                <i class="fas fa-times"></i> إغلاق
+            </button>
+        </div>
+        
+        <h2>المعلومات الأساسية</h2>
+        <p>يجب إدخال هذه البيانات لتحسين دقة البرنامج. يمكنك التخطي لكن ستظهر لك تنبيهات لاحقاً.</p>
+        
+        <div id="statusMessage" class="status-message">
+            <i class="fas fa-circle-notch fa-spin"></i> جاري الاتصال...
+        </div>
+        
+        <form id="basicInfoForm">
+            <label>الاسم الكامل</label>
+            <input type="text" name="fullName" required>
+            
+            <label>تاريخ الميلاد</label>
+            <input type="date" name="birthDate" required>
+            
+            <label>الجنس</label>
+            <select name="gender" required>
+                <option value="">اختر</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
+            
+            <label>فصيلة الدم</label>
+            <select name="bloodType" required>
+                <option value="">اختر</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+            
+            <label>الطول (سم)</label>
+            <input type="number" name="height" placeholder="170" min="50" max="250" required>
+            
+            <label>الوزن (كجم)</label>
+            <input type="number" name="weight" placeholder="70" min="20" max="300" required>
+            
+            <label>جهة الاتصال الطارئة</label>
+            <input type="text" name="emergencyName" placeholder="اسم جهة الاتصال" required>
+            <input type="text" name="emergencyRelation" placeholder="العلاقة" required>
+            <input type="tel" name="emergencyPhone" placeholder="رقم الهاتف" required>
+            
+            <div class="modal-actions">
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+                <button type="button" class="skip-btn" id="skipBasicInfo">
+                    <i class="fas fa-times"></i> تخطي
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // تعريف المتغيرات العامة
+        let currentLang = localStorage.getItem('hl_language') || 'ar';
+
+        function showStatus(message, type = 'connecting') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = 'status-message status-' + type;
+            statusDiv.innerHTML = message;
+            statusDiv.style.display = 'block';
+            
+            if (type !== 'connecting') {
+                setTimeout(() => statusDiv.style.display = 'none', 3000);
+            }
+        }
+
+        function fillForm(data) {
+            Object.keys(data).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input && data[key]) input.value = data[key];
+            });
+        }
+
+        function loadData() {
+            showStatus('<i class="fas fa-circle-notch fa-spin"></i> جاري تحميل البيانات...', 'connecting');
+            
+            // تحميل البيانات من Firestore مباشرة
+            const user = firebase.auth().currentUser;
+            if (user) {
+                firebase.firestore().collection('users').doc(user.uid).get()
+                    .then(doc => {
+                        if (doc.exists && doc.data().basicInfo) {
+                            const data = doc.data().basicInfo;
+                            if (data && !data.skipped) {
+                                fillForm(data);
+                                showStatus('<i class="fas fa-check-circle"></i> تم تحميل البيانات', 'connected');
+                            } else {
+                                showStatus('<i class="fas fa-info-circle"></i> لا توجد بيانات مسجلة', 'connected');
+                            }
+                        } else {
+                            showStatus('<i class="fas fa-info-circle"></i> لا توجد بيانات مسجلة', 'connected');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('خطأ في تحميل البيانات:', error);
+                        // Fallback للـ localStorage
+                        const storageKey = `${user.uid}_basicInfo`;
+                        const localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                        
+                        if (Object.keys(localData).length > 0) {
+                            fillForm(localData);
+                            showStatus('<i class="fas fa-database"></i> تم التحميل من التخزين المحلي', 'disconnected');
+                        } else {
+                            showStatus('<i class="fas fa-info-circle"></i> لا توجد بيانات مسجلة', 'disconnected');
+                        }
+                    });
+            } else {
+                showStatus('<i class="fas fa-exclamation-triangle"></i> أنت غير مسجل الدخول', 'disconnected');
+            }
+        }
+
+        // ----------- حفظ البيانات -----------
+        document.getElementById('basicInfoForm').onsubmit = function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(this).entries());
+            const saveBtn = document.querySelector('.save-btn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+            saveBtn.disabled = true;
+            
+            // حفظ البيانات في Firestore مباشرة
+            const user = firebase.auth().currentUser;
+            if (user) {
+                firebase.firestore().collection('users').doc(user.uid).set({
+                    basicInfo: data
+                }, { merge: true })
+                .then(() => {
+                    // حفظ في localStorage أيضاً كنسخة احتياطية
+                    const storageKey = `${user.uid}_basicInfo`;
+                    localStorage.setItem(storageKey, JSON.stringify(data));
+                    
+                    // إخطار الصفحة الأصلية إذا كانت موجودة
+                    if (window.opener) {
+                        window.opener.postMessage({type: 'basicInfoUpdated'}, '*');
+                    } else if (window.parent) {
+                        window.parent.postMessage({type: 'basicInfoUpdated'}, '*');
+                    }
+                    alert('✅ تم حفظ المعلومات بنجاح!');
+                    // إغلاق النافذة فقط بدون إعادة التوجيه
+                    setTimeout(function(){ window.close && window.close(); }, 300);
+                })
+                .catch((error) => {
+                    console.error('خطأ في حفظ البيانات:', error);
+                    // حفظ في localStorage في حالة الفشل
+                    const storageKey = `${user.uid}_basicInfo`;
+                    localStorage.setItem(storageKey, JSON.stringify(data));
+                    alert('⚠️ تم حفظ المعلومات محلياً');
+                    // إغلاق النافذة فقط بدون إعادة التوجيه
+                    setTimeout(function(){ window.close && window.close(); }, 300);
+                })
+                .finally(() => {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                });
+            } else {
+                alert('⚠️ أنت غير مسجل الدخول');
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        };
+
+        // كود تخطي البيانات تم استبداله بـ setupCancelButton
+        // إضافة دعم زر التخطي ليحفظ خاصية skipped في البيانات
+        document.getElementById('skipBasicInfo').onclick = function() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                firebase.firestore().collection('users').doc(user.uid).set({
+                    basicInfo: { skipped: true }
+                }, { merge: true })
+                .finally(() => {
+                    if (window.opener) {
+                        window.opener.postMessage({type: 'basicInfoUpdated'}, '*');
+                    } else if (window.parent) {
+                        window.parent.postMessage({type: 'basicInfoUpdated'}, '*');
+                    }
+                    setTimeout(function(){ window.close && window.close(); }, 300);
+                });
+            } else {
+                if (window.opener) {
+                    window.opener.postMessage({type: 'basicInfoUpdated'}, '*');
+                } else if (window.parent) {
+                    window.parent.postMessage({type: 'basicInfoUpdated'}, '*');
+                }
+                setTimeout(function(){ window.close && window.close(); }, 300);
+            }
+        };
+
+        // ----------- تهيئة الصفحة -----------
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من حالة تسجيل الدخول
+            checkUserAuthentication();
+            
+            // إعداد زر الإلغاء والتخطي
+            setupCancelButton('skipBasicInfo');
+            
+            // التحقق من حالة اتصال Firebase
+            if (firebase.apps.length) {
+                showStatus('<i class="fas fa-check-circle"></i> متصل بقاعدة البيانات', 'connected');
+                loadData();
+            } else {
+                showStatus('<i class="fas fa-exclamation-triangle"></i> غير متصل - سيتم الحفظ محلياً', 'disconnected');
+                // محاولة تحميل بيانات من localStorage
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    const storageKey = `${user.uid}_basicInfo`;
+                    const localData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                    if (Object.keys(localData).length > 0) {
+                        fillForm(localData);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

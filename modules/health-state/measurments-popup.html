@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>قياساتي | Healthy Life</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 38px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 22px #00968833;
+            padding: 24px 18px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-bottom: 20px;
+        }
+        .lang-btn {border:none;background:#eee;padding:6px 19px;margin:0 3px;border-radius:10px;cursor:pointer;}
+        .lang-btn.active, .lang-btn:focus {background:#2196F3;color:#fff;}
+        #addMeasurementBtn, #exportBtn {
+            background:#2196F3;color:#fff;padding:10px 18px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;
+            margin-left: 8px;
+        }
+        #exportBtn {
+            background: #009688;
+        }
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background:rgba(0,0,0,0.25); z-index:9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #fff; padding: 30px 16px 16px 16px;
+            border-radius: 14px; box-shadow: 0 2px 18px #00968833;
+            min-width: 340px; max-width: 98vw;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-row {
+            display: flex; flex-direction: column;
+            gap: 4px; margin-bottom:12px;
+        }
+        #measurementsTable th, #measurementsTable td {padding:7px 8px;border:1px solid #eee;text-align:center;}
+        #measurementsTable tbody tr:nth-child(even) {background:#f9f9f9;}
+        @media (max-width: 700px) {
+            .container {padding: 10px 4px;}
+            .modal-content {min-width: 95vw;}
+            #measurementsTable th, #measurementsTable td {font-size: 0.95em;}
+            .form-grid {display: block;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- اختيار اللغة -->
+        <div style="text-align:left; margin-bottom:12px;">
+            <button class="lang-btn" id="lang-ar" style="font-weight:bold;">العربية</button>
+            <button class="lang-btn" id="lang-en">English</button>
+        </div>
+
+        <h2 id="page-title-ar" style="display:block;">سجل قياساتك الصحية</h2>
+        <h2 id="page-title-en" style="display:none;">Your Health Measurements Record</h2>
+
+        <!-- زر إضافة قياس جديد -->
+        <div style="text-align:right;margin:22px 0;">
+            <button id="addMeasurementBtn">
+                <span id="add-btn-ar">إضافة قياس جديد</span>
+                <span id="add-btn-en" style="display:none;">Add New Measurement</span>
+            </button>
+            <button id="exportBtn">
+                <span id="export-btn-ar">تصدير السجل</span>
+                <span id="export-btn-en" style="display:none;">Export Record</span>
+            </button>
+        </div>
+
+        <!-- جدول سجل القياسات -->
+        <div style="overflow-x:auto;">
+            <table id="measurementsTable" style="width:100%;border-collapse:collapse;background:#fff;">
+                <thead>
+                    <tr style="background:#b2dfdb;">
+                        <th id="th-date-ar">التاريخ</th>
+                        <th id="th-date-en" style="display:none;">Date</th>
+                        <th id="th-weight-ar">الوزن</th>
+                        <th id="th-weight-en" style="display:none;">Weight</th>
+                        <th id="th-height-ar">الطول</th>
+                        <th id="th-height-en" style="display:none;">Height</th>
+                        <th id="th-age-ar">السن</th>
+                        <th id="th-age-en" style="display:none;">Age</th>
+                        <th id="th-gender-ar">النوع</th>
+                        <th id="th-gender-en" style="display:none;">Gender</th>
+                        <th id="th-waist-ar">الخصر</th>
+                        <th id="th-waist-en" style="display:none;">Waist</th>
+                        <th id="th-hip-ar">الورك</th>
+                        <th id="th-hip-en" style="display:none;">Hip</th>
+                        <th id="th-activity-ar">النشاط</th>
+                        <th id="th-activity-en" style="display:none;">Activity</th>
+                        <th id="th-bp-ar">الضغط</th>
+                        <th id="th-bp-en" style="display:none;">Blood Pressure</th>
+                        <th id="th-glucose-ar">سكر صايم</th>
+                        <th id="th-glucose-en" style="display:none;">Fasting Glucose</th>
+                        <th id="th-note-ar">ملاحظات</th>
+                        <th id="th-note-en" style="display:none;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- صفوف القياسات -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- نافذة منبثقة لإدخال القياسات -->
+    <div id="measurementsModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content" dir="auto">
+            <div style="text-align: left; margin-bottom:12px;">
+                <button class="lang-btn" id="modal-lang-ar" style="font-weight:bold;">العربية</button>
+                <button class="lang-btn" id="modal-lang-en">English</button>
+            </div>
+            <h2 id="modal-title-ar" style="display:block;">أدخل بياناتك الأساسية</h2>
+            <h2 id="modal-title-en" style="display:none;">Enter Your Basic Measurements</h2>
+            <form id="measurementsForm">
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label id="label-weight-ar" for="weight" style="display:block;">الوزن</label>
+                        <label id="label-weight-en" for="weight" style="display:none;">Weight</label>
+                        <input type="number" id="weight" name="weight" required min="20" max="300" step="0.1">
+                        <select id="weight-unit">
+                            <option value="kg">كجم</option>
+                            <option value="lb">رطل</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-height-ar" for="height" style="display:block;">الطول</label>
+                        <label id="label-height-en" for="height" style="display:none;">Height</label>
+                        <input type="number" id="height" name="height" required min="80" max="250" step="0.1">
+                        <select id="height-unit">
+                            <option value="cm">سم</option>
+                            <option value="in">بوصة</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-dob-ar" for="dob" style="display:block;">تاريخ الميلاد</label>
+                        <label id="label-dob-en" for="dob" style="display:none;">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-gender-ar" style="display:block;">النوع</label>
+                        <label id="label-gender-en" style="display:none;">Gender</label>
+                        <div>
+                            <label><input type="radio" name="gender" value="male" required> <span id="gender-male-ar" style="display:block;">ذكر</span><span id="gender-male-en" style="display:none;">Male</span></label>
+                            <label><input type="radio" name="gender" value="female"> <span id="gender-female-ar" style="display:block;">أنثى</span><span id="gender-female-en" style="display:none;">Female</span></label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-waist-ar" for="waist" style="display:block;">محيط الخصر</label>
+                        <label id="label-waist-en" for="waist" style="display:none;">Waist Circumference</label>
+                        <input type="number" id="waist" name="waist" required min="40" max="200" step="0.1">
+                        <select id="waist-unit">
+                            <option value="cm">سم</option>
+                            <option value="in">بوصة</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-hip-ar" for="hip" style="display:block;">محيط الورك (اختياري)</label>
+                        <label id="label-hip-en" for="hip" style="display:none;">Hip Circumference (optional)</label>
+                        <input type="number" id="hip" name="hip" min="40" max="200" step="0.1">
+                        <select id="hip-unit">
+                            <option value="cm">سم</option>
+                            <option value="in">بوصة</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-activity-ar" for="activity" style="display:block;">النشاط البدني</label>
+                        <label id="label-activity-en" for="activity" style="display:none;">Physical Activity Level</label>
+                        <select id="activity" name="activity" required>
+                            <option value="" disabled selected>-- اختر --</option>
+                            <option value="inactive" id="activity-inactive-ar" style="display:block;">خامل</option>
+                            <option value="inactive" id="activity-inactive-en" style="display:none;">Inactive</option>
+                            <option value="moderate" id="activity-moderate-ar" style="display:block;">متوسط</option>
+                            <option value="moderate" id="activity-moderate-en" style="display:none;">Moderate</option>
+                            <option value="active" id="activity-active-ar" style="display:block;">نشيط</option>
+                            <option value="active" id="activity-active-en" style="display:none;">Active</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label id="label-bp-ar" for="bp" style="display:block;">ضغط الدم (اختياري)</label>
+                        <label id="label-bp-en" for="bp" style="display:none;">Blood Pressure (optional)</label>
+                        <input type="text" id="bp" name="bp" placeholder="120/80">
+                    </div>
+                    <div class="form-row">
+                        <label id="label-glucose-ar" for="glucose" style="display:block;">سكر صايم (اختياري)</label>
+                        <label id="label-glucose-en" for="glucose" style="display:none;">Fasting Glucose (optional)</label>
+                        <input type="number" id="glucose" name="glucose" min="50" max="400" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label id="label-note-ar" for="note" style="display:block;">ملاحظات (اختياري)</label>
+                    <label id="label-note-en" for="note" style="display:none;">Notes (optional)</label>
+                    <textarea id="note" name="note" rows="2"></textarea>
+                </div>
+                <div style="text-align:center;margin-top:18px;">
+                    <button type="submit" id="submit-ar" style="display:block;">حفظ البيانات</button>
+                    <button type="submit" id="submit-en" style="display:none;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // إعدادات اللغة
+        let lang = 'ar';
+
+        function setLang(newLang) {
+            lang = newLang;
+            ['ar','en'].forEach(l=>{
+                document.querySelectorAll(`[id$="-${l}"]`).forEach(el=>el.style.display=(l===lang?'':'none'));
+                document.querySelectorAll(`[id^="activity-"][id$="-"+l]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+            });
+            if(document.getElementById('measurementsModal')) setLangModal(newLang);
+        }
+        function setLangModal(newLang) {
+            ['ar','en'].forEach(l=>{
+                document.querySelectorAll(`#measurementsModal [id$="-${l}"]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+                document.querySelectorAll(`#measurementsModal [id^="activity-"][id$="-"+l]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.remove('active'));
+            document.getElementById('modal-lang-' + lang).classList.add('active');
+        }
+        document.getElementById('lang-ar').onclick = ()=>setLang('ar');
+        document.getElementById('lang-en').onclick = ()=>setLang('en');
+        document.getElementById('modal-lang-ar').onclick = ()=>setLangModal('ar');
+        document.getElementById('modal-lang-en').onclick = ()=>setLangModal('en');
+        function activityTextAr(val) { if(val==='inactive') return 'خامل'; if(val==='moderate') return 'متوسط'; if(val==='active') return 'نشيط'; return '-'; }
+        function activityTextEn(val) { if(val==='inactive') return 'Inactive'; if(val==='moderate') return 'Moderate'; if(val==='active') return 'Active'; return '-'; }
+
+        // تحويل التاريخ إلى صيغة عربية وانجليزية
+        function formatDateAr(dateStr) { try { let d=new Date(dateStr); return d.toLocaleDateString('ar-EG'); } catch(e){ return dateStr; } }
+        function formatDateEn(dateStr) { try { let d=new Date(dateStr); return d.toLocaleDateString('en-US'); } catch(e){ return dateStr; } }
+
+        // إضافة قياس جديد
+        document.getElementById('addMeasurementBtn').onclick = function() {
+            document.getElementById('measurementsModal').style.display = 'flex';
+            setLangModal(lang);
+        };
+        // زر تصدير السجل (واجهة فقط)
+        document.getElementById('exportBtn').onclick = function() {
+            alert(lang==='ar'?'سيتم تصدير السجل لاحقًا':'Export will be available soon');
+        };
+
+        // ربط Firestore
+        let currentUser = null;
+        let measurements = [];
+        function renderTable(measurements) {
+            const tbody = document.querySelector("#measurementsTable tbody");
+            tbody.innerHTML = '';
+            measurements.forEach(m=>{
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${(lang==='ar'?formatDateAr(m.date):formatDateEn(m.date))}</td>
+                        <td style="display:none;">${m.date}</td>
+                        <td>${m.weight} ${m.weightUnit}</td>
+                        <td style="display:none;">${m.weight} ${m.weightUnit}</td>
+                        <td>${m.height} ${m.heightUnit}</td>
+                        <td style="display:none;">${m.height} ${m.heightUnit}</td>
+                        <td>${m.age}</td>
+                        <td style="display:none;">${m.age}</td>
+                        <td>${lang==='ar'?(m.gender==='male'?'ذكر':'أنثى'):(m.gender==='male'?'Male':'Female')}</td>
+                        <td style="display:none;">${m.gender}</td>
+                        <td>${m.waist} ${m.waistUnit}</td>
+                        <td style="display:none;">${m.waist} ${m.waistUnit}</td>
+                        <td>${m.hip?m.hip+' '+m.hipUnit:'-'}</td>
+                        <td style="display:none;">${m.hip?m.hip+' '+m.hipUnit:'-'}</td>
+                        <td>${lang==='ar'?activityTextAr(m.activity):activityTextEn(m.activity)}</td>
+                        <td style="display:none;">${m.activity}</td>
+                        <td>${m.bp||'-'}</td>
+                        <td style="display:none;">${m.bp||'-'}</td>
+                        <td>${m.glucose||'-'}</td>
+                        <td style="display:none;">${m.glucose||'-'}</td>
+                        <td>${m.note||'-'}</td>
+                        <td style="display:none;">${m.note||'-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // إعدادات مشروعك الحقيقية هنا
+        const firebaseConfig = {
+            apiKey: "AIzaSyCdUHldUu83kfgc_qUn-h5rZ8xTl2rhNjA",
+            authDomain: "healthy-wealthy-app.firebaseapp.com",
+            projectId: "healthy-wealthy-app",
+            storageBucket: "healthy-wealthy-app.appspot.com",
+            messagingSenderId: "182436316225",
+            appId: "1:182436316225:web:5cfd34f879204b12ebf2c0"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        auth.signInAnonymously().catch(function(error) {
+            alert("فشل الدخول: " + error.message);
+        });
+
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                currentUser = user;
+                listenMeasurements();
+            }
+        });
+
+        // استماع للقياسات عند أي تغيير في السجل
+        function listenMeasurements() {
+            db.collection('users').doc(currentUser.uid).collection('measurements').orderBy('date', 'desc')
+                .onSnapshot(function(snapshot) {
+                    measurements = [];
+                    snapshot.forEach(function(doc) {
+                        let m = doc.data();
+                        m.id = doc.id;
+                        measurements.push(m);
+                    });
+                    renderTable(measurements);
+                });
+        }
+
+        // حفظ القياس الجديد في Firestore عند إرسال النموذج
+        document.getElementById('measurementsForm').onsubmit = function(e) {
+            e.preventDefault();
+            let dob = document.getElementById('dob').value;
+            let age = dob ? Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000)) : '';
+            let measurement = {
+                date: new Date().toISOString(),
+                weight: document.getElementById('weight').value,
+                weightUnit: document.getElementById('weight-unit').value,
+                height: document.getElementById('height').value,
+                heightUnit: document.getElementById('height-unit').value,
+                age: age,
+                dob: dob,
+                gender: document.querySelector('[name="gender"]:checked').value,
+                waist: document.getElementById('waist').value,
+                waistUnit: document.getElementById('waist-unit').value,
+                hip: document.getElementById('hip').value,
+                hipUnit: document.getElementById('hip-unit').value,
+                activity: document.getElementById('activity').value,
+                bp: document.getElementById('bp').value,
+                glucose: document.getElementById('glucose').value,
+                note: document.getElementById('note').value
+            };
+            db.collection('users').doc(currentUser.uid).collection('measurements').add(measurement)
+                .then(function() {
+                    alert(lang==='ar'?'تم حفظ القياس بنجاح':'Measurement saved successfully');
+                    document.getElementById('measurementsModal').style.display='none';
+                })
+                .catch(function(error) {
+                    alert('حدث خطأ أثناء الحفظ: ' + error.message);
+                });
+        };
+
+        window.onload = function() {
+            setLang(lang);
+        };
+
+    </script>
+</body>
+</html>

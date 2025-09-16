@@ -1,0 +1,39 @@
+<!-- نموذج البيانات الأساسية للمستخدم (جديد) -->
+<div id="basic-info-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:#0008; border:none;">
+  <div class="modal-box" style="max-width:400px; margin:auto; background:#fff; border-radius:18px; padding:32px 22px; box-shadow:0 8px 40px #388e3c33;">
+    <div class="modal-navigation" style="display:flex; justify-content:flex-end; margin-bottom:15px;">
+      <button class="close-btn" onclick="closeBasicInfoModal()" style="background-color:#f44336; color:white; border:none; border-radius:5px; padding:5px 10px; font-size:14px; cursor:pointer;">إغلاق</button>
+    </div>
+    <h2 style="color:#388e3c; text-align:center; margin-bottom:18px;">البيانات الأساسية</h2>
+    <p style="color:#f44336; text-align:center; margin-bottom:18px; font-weight:bold;">يرجى إدخال بيانات صحيحة. عدم إدخال البيانات أو إدخال بيانات غير صحيحة يؤدي إلى نتائج خاطئة.</p>
+    <form id="basic-info-form">
+      <label>الاسم الكامل:</label>
+      <input type="text" name="fullName" required>
+      <label>تاريخ الميلاد:</label>
+      <input type="date" name="birthDate" required>
+      <label>الطول (سم):</label>
+      <input type="number" name="height" min="50" max="250" required>
+      <label>الوزن (كغ):</label>
+      <input type="number" name="weight" min="20" max="300" required>
+      <label>محيط الخصر (سم):</label>
+      <input type="number" name="waist" min="30" max="200" required>
+      <label>فصيلة الدم:</label>
+      <select name="bloodType" required>
+        <option value="">اختر</option>
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+      </select>
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button type="submit" class="save-btn" style="background:#388e3c; color:#fff; border:none; border-radius:10px; padding:10px; font-weight:bold; cursor:pointer; flex:1;">حفظ البيانات</button>
+        <button type="button" class="skip-btn" id="skipBasicInfo" style="background:#eee; color:#388e3c; border:none; border-radius:10px; padding:10px; font-weight:bold; cursor:pointer; flex:1;">تخطي</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="basic-info-modal.js"></script>

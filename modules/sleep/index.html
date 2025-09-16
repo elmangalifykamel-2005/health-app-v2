@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النوم - تطبيق الحياة الصحية</title>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../theme.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="sleep-index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="sleep-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="navigationService.navigateTo(getPagePath('main'))">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h1><i class="fas fa-moon"></i> النوم الصحي</h1>
+                <div class="language-switch">
+                    <button onclick="toggleLanguage()" class="lang-btn">
+                        <i class="fas fa-globe"></i> EN
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sleep Problems Section -->
+        <div class="sleep-problems-main">
+            <h2 data-en="Sleep Problems"><i class="fas fa-exclamation-triangle"></i> مشاكل النوم</h2>
+            <div class="problems-overview">
+                <p data-en="Sleep problems affect millions of people worldwide and can significantly impact quality of life, health, and daily performance.">
+                    تؤثر مشاكل النوم على ملايين الأشخاص حول العالم ويمكن أن تؤثر بشكل كبير على جودة الحياة والصحة والأداء اليومي.
+                </p>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card" onclick="loadProblemDetails('insomnia')">
+                    <div class="problem-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h3 data-en="Insomnia">الأرق</h3>
+                    <p data-en="Difficulty falling asleep or staying asleep">
+                        صعوبة في النوم أو البقاء نائماً
+                    </p>
+                    <button class="learn-more-btn" data-en="Learn More">اعرف المزيد</button>
+                </div>
+
+                <div class="problem-card" onclick="loadProblemDetails('sleep-apnea')">
+                    <div class="problem-icon">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3 data-en="Sleep Apnea">انقطاع النفس النومي</h3>
+                    <p data-en="Breathing interruptions during sleep">
+                        انقطاع التنفس أثناء النوم
+                    </p>
+                    <button class="learn-more-btn" data-en="Learn More">اعرف المزيد</button>
+                </div>
+
+                <div class="problem-card" onclick="loadProblemDetails('restless-legs')">
+                    <div class="problem-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3 data-en="Restless Leg Syndrome">متلازمة تململ الساقين</h3>
+                    <p data-en="Uncomfortable sensations in legs">
+                        أحاسيس غير مريحة في الساقين
+                    </p>
+                    <button class="learn-more-btn" data-en="Learn More">اعرف المزيد</button>
+                </div>
+
+                <div class="problem-card" onclick="loadProblemDetails('circadian-rhythm')">
+                    <div class="problem-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 data-en="Circadian Rhythm Disorders">اضطرابات الإيقاع اليومي</h3>
+                    <p data-en="Disrupted sleep-wake cycle">
+                        اضطراب دورة النوم والاستيقاظ
+                    </p>
+                    <button class="learn-more-btn" data-en="Learn More">اعرف المزيد</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Causes Section -->
+        <div class="causes-section">
+            <h2 data-en="Common Causes of Sleep Problems"><i class="fas fa-search"></i> الأسباب الشائعة لمشاكل النوم</h2>
+            
+            <div class="causes-categories">
+                <div class="cause-category">
+                    <h3 data-en="Nutritional Deficiencies"><i class="fas fa-pills"></i> النقص الغذائي</h3>
+                    <div class="cause-items">
+                        <div class="cause-item highlight-deficiency">
+                            <i class="fas fa-sun"></i>
+                            <div>
+                                <h4 data-en="Vitamin D Deficiency">نقص فيتامين د</h4>
+                                <p data-en="Low vitamin D levels can disrupt sleep patterns and reduce sleep quality">
+                                    انخفاض مستويات فيتامين د يمكن أن يعطل أنماط النوم ويقلل من جودة النوم
+                                </p>
+                            </div>
+                        </div>
+                        <div class="cause-item highlight-deficiency">
+                            <i class="fas fa-leaf"></i>
+                            <div>
+                                <h4 data-en="Magnesium Deficiency">نقص المغنيسيوم</h4>
+                                <p data-en="Magnesium deficiency can cause muscle cramps, restlessness, and difficulty falling asleep">
+                                    نقص المغنيسيوم يمكن أن يسبب تشنجات عضلية وقلق وصعوبة في النوم
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cause-category">
+                    <h3 data-en="Lifestyle Factors"><i class="fas fa-life-ring"></i> عوامل نمط الحياة</h3>
+                    <div class="cause-items">
+                        <div class="cause-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>
+                                <h4 data-en="Screen Time Before Bed">وقت الشاشات قبل النوم</h4>
+                                <p data-en="Blue light exposure disrupts melatonin production">
+                                    التعرض للضوء الأزرق يعطل إنتاج الميلاتونين
+                                </p>
+                            </div>
+                        </div>
+                        <div class="cause-item">
+                            <i class="fas fa-coffee"></i>
+                            <div>
+                                <h4 data-en="Caffeine and Stimulants">الكافيين والمنشطات</h4>
+                                <p data-en="Late caffeine consumption can interfere with sleep">
+                                    تناول الكافيين المتأخر يمكن أن يتداخل مع النوم
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cause-category">
+                    <h3 data-en="Medical Conditions"><i class="fas fa-stethoscope"></i> الحالات الطبية</h3>
+                    <div class="cause-items">
+                        <div class="cause-item">
+                            <i class="fas fa-brain"></i>
+                            <div>
+                                <h4 data-en="Stress and Anxiety">التوتر والقلق</h4>
+                                <p data-en="Mental health conditions can significantly impact sleep">
+                                    حالات الصحة النفسية يمكن أن تؤثر بشكل كبير على النوم
+                                </p>
+                            </div>
+                        </div>
+                        <div class="cause-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <div>
+                                <h4 data-en="Chronic Pain">الألم المزمن</h4>
+                                <p data-en="Physical discomfort can prevent restful sleep">
+                                    عدم الراحة الجسدية يمكن أن تمنع النوم المريح
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- General Solutions Section -->
+        <div class="solutions-section">
+            <h2 data-en="General Solutions for Sleep Problems"><i class="fas fa-lightbulb"></i> الحلول العامة لمشاكل النوم</h2>
+            
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3 data-en="Address Nutritional Deficiencies">معالجة النقص الغذائي</h3>
+                    <ul>
+                        <li data-en="Get vitamin D levels tested and supplement if needed">
+                            فحص مستويات فيتامين د وتناول المكملات إذا لزم الأمر
+                        </li>
+                        <li data-en="Consider magnesium supplementation (300-400mg before bed)">
+                            النظر في مكملات المغنيسيوم (300-400 مجم قبل النوم)
+                        </li>
+                        <li data-en="Eat magnesium-rich foods: nuts, seeds, leafy greens">
+                            تناول الأطعمة الغنية بالمغنيسيوم: المكسرات والبذور والخضروات الورقية
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h3 data-en="Sleep Hygiene">نظافة النوم</h3>
+                    <ul>
+                        <li data-en="Maintain consistent sleep schedule">
+                            الحفاظ على جدول نوم ثابت
+                        </li>
+                        <li data-en="Create comfortable sleep environment">
+                            إنشاء بيئة نوم مريحة
+                        </li>
+                        <li data-en="Keep bedroom cool, dark, and quiet">
+                            الحفاظ على غرفة النوم باردة ومظلمة وهادئة
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h3 data-en="Avoid Sleep Disruptors">تجنب معطلات النوم</h3>
+                    <ul>
+                        <li data-en="No screens 1-2 hours before bed">
+                            عدم استخدام الشاشات 1-2 ساعة قبل النوم
+                        </li>
+                        <li data-en="Limit caffeine after 2 PM">
+                            تقليل الكافيين بعد الساعة 2 ظهراً
+                        </li>
+                        <li data-en="Avoid large meals before bedtime">
+                            تجنب الوجبات الكبيرة قبل النوم
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3 data-en="Relaxation Techniques">تقنيات الاسترخاء</h3>
+                    <ul>
+                        <li data-en="Practice deep breathing exercises">
+                            ممارسة تمارين التنفس العميق
+                        </li>
+                        <li data-en="Try meditation or mindfulness">
+                            تجربة التأمل أو اليقظة الذهنية
+                        </li>
+                        <li data-en="Progressive muscle relaxation">
+                            الاسترخاء التدريجي للعضلات
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation to Helper Pages -->
+        <div class="helper-pages-nav">
+            <h2 data-en="Explore Sleep Tools"><i class="fas fa-tools"></i> استكشف أدوات النوم</h2>
+            <div class="nav-grid">
+                <a href="assessment.html" class="nav-card">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h3 data-en="Sleep Assessment">تقييم النوم</h3>
+                    <p data-en="Evaluate your sleep quality">قيم جودة نومك</p>
+                </a>
+                
+                <a href="tracker.html" class="nav-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3 data-en="Sleep Tracker">متتبع النوم</h3>
+                    <p data-en="Track your daily sleep patterns">تتبع أنماط نومك اليومية</p>
+                </a>
+                
+                <a href="education.html" class="nav-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3 data-en="Studies and Research">الأبحاث والدراسات</h3>
+                    <p data-en="Learn from scientific studies">تعلم من الدراسات العلمية</p>
+                </a>
+                
+                <a href="notifications.html" class="nav-card">
+                    <i class="fas fa-bell"></i>
+                    <h3 data-en="Sleep Reminders">تذكيرات النوم</h3>
+                    <p data-en="Set sleep notifications">ضع تنبيهات النوم</p>
+                </a>
+                
+                <a href="children.html" class="nav-card">
+                    <i class="fas fa-baby"></i>
+                    <h3 data-en="Children Sleep Guide">دليل نوم الأطفال</h3>
+                    <p data-en="Sleep guidance for children">إرشادات النوم للأطفال</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Problem Details Modal -->
+        <div id="problemModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeProblemModal()">&times;</span>
+                <div id="problemDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sleep-utils.js"></script>
+    <script>
+        let currentLanguage = 'ar';
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            
+            if (currentLanguage === 'en') {
+                document.documentElement.lang = 'en';
+                document.documentElement.dir = 'ltr';
+                document.querySelector('.lang-btn').innerHTML = '<i class="fas fa-globe"></i> AR';
+                
+                // Switch all text to English
+                document.querySelectorAll('[data-en]').forEach(element => {
+                    const englishText = element.getAttribute('data-en');
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = englishText;
+                    } else {
+                        element.textContent = englishText;
+                    }
+                });
+                
+                document.querySelector('h1').innerHTML = '<i class="fas fa-moon"></i> Healthy Sleep';
+            } else {
+                document.documentElement.lang = 'ar';
+                document.documentElement.dir = 'rtl';
+                document.querySelector('.lang-btn').innerHTML = '<i class="fas fa-globe"></i> EN';
+                
+                // Restore Arabic text (reload page for simplicity)
+                location.reload();
+            }
+        }
+        
+        function loadProblemDetails(problemType) {
+            const problemData = {
+                'insomnia': {
+                    title: 'الأرق',
+                    titleEn: 'Insomnia',
+                    description: 'الأرق هو اضطراب في النوم يتميز بصعوبة في النوم أو البقاء نائماً أو الاستيقاظ المبكر مع عدم القدرة على العودة للنوم.',
+                    descriptionEn: 'Insomnia is a sleep disorder characterized by difficulty falling asleep, staying asleep, or waking up too early and not being able to get back to sleep.',
+                    symptoms: ['صعوبة في النوم', 'الاستيقاظ المتكرر', 'الاستيقاظ المبكر', 'التعب أثناء النهار'],
+                    symptomsEn: ['Difficulty falling asleep', 'Frequent awakening', 'Early morning awakening', 'Daytime fatigue'],
+                    solutions: ['تحسين نظافة النوم', 'تجنب الكافيين', 'ممارسة الرياضة بانتظام', 'تقنيات الاسترخاء'],
+                    solutionsEn: ['Improve sleep hygiene', 'Avoid caffeine', 'Regular exercise', 'Relaxation techniques']
+                },
+                'sleep-apnea': {
+                    title: 'انقطاع النفس النومي',
+                    titleEn: 'Sleep Apnea',
+                    description: 'انقطاع النفس النومي هو اضطراب خطير في النوم حيث يتوقف التنفس بشكل متكرر أثناء النوم.',
+                    descriptionEn: 'Sleep apnea is a serious sleep disorder where breathing repeatedly stops during sleep.',
+                    symptoms: ['الشخير العالي', 'توقف التنفس', 'النعاس أثناء النهار', 'صعوبة التركيز'],
+                    symptomsEn: ['Loud snoring', 'Breathing cessation', 'Daytime sleepiness', 'Difficulty concentrating'],
+                    solutions: ['فقدان الوزن', 'تجنب الكحول', 'النوم على الجانب', 'استشارة طبية'],
+                    solutionsEn: ['Weight loss', 'Avoid alcohol', 'Sleep on side', 'Medical consultation']
+                },
+                'restless-legs': {
+                    title: 'متلازمة تململ الساقين',
+                    titleEn: 'Restless Leg Syndrome',
+                    description: 'متلازمة تململ الساقين تسبب أحاسيس غير مريحة في الساقين ورغبة قوية في تحريكهما.',
+                    descriptionEn: 'Restless leg syndrome causes uncomfortable sensations in the legs and a strong urge to move them.',
+                    symptoms: ['أحاسيس غير مريحة في الساقين', 'رغبة في تحريك الساقين', 'تفاقم الأعراض في المساء', 'صعوبة في النوم'],
+                    symptomsEn: ['Uncomfortable leg sensations', 'Urge to move legs', 'Symptoms worsen in evening', 'Difficulty sleeping'],
+                    solutions: ['مكملات المغنيسيوم', 'تجنب الكافيين', 'ممارسة الرياضة', 'تدليك الساقين'],
+                    solutionsEn: ['Magnesium supplements', 'Avoid caffeine', 'Exercise', 'Leg massage']
+                },
+                'circadian-rhythm': {
+                    title: 'اضطرابات الإيقاع اليومي',
+                    titleEn: 'Circadian Rhythm Disorders',
+                    description: 'اضطرابات الإيقاع اليومي تحدث عندما تكون الساعة البيولوجية الداخلية غير متزامنة مع البيئة الخارجية.',
+                    descriptionEn: 'Circadian rhythm disorders occur when the internal biological clock is out of sync with the external environment.',
+                    symptoms: ['صعوبة النوم في الوقت المرغوب', 'النعاس في أوقات غير مناسبة', 'التعب المستمر', 'صعوبة التركيز'],
+                    symptomsEn: ['Difficulty sleeping at desired time', 'Sleepiness at inappropriate times', 'Persistent fatigue', 'Difficulty concentrating'],
+                    solutions: ['العلاج بالضوء', 'تنظيم أوقات النوم', 'تجنب الضوء الأزرق', 'مكملات الميلاتونين'],
+                    solutionsEn: ['Light therapy', 'Regulate sleep times', 'Avoid blue light', 'Melatonin supplements']
+                }
+            };
+            
+            const problem = problemData[problemType];
+            if (problem) {
+                const modalContent = `
+                    <h2>${currentLanguage === 'ar' ? problem.title : problem.titleEn}</h2>
+                    <p><strong>${currentLanguage === 'ar' ? 'الوصف:' : 'Description:'}</strong> ${currentLanguage === 'ar' ? problem.description : problem.descriptionEn}</p>
+                    <h3>${currentLanguage === 'ar' ? 'الأعراض:' : 'Symptoms:'}</h3>
+                    <ul>
+                        ${(currentLanguage === 'ar' ? problem.symptoms : problem.symptomsEn).map(symptom => `<li>${symptom}</li>`).join('')}
+                    </ul>
+                    <h3>${currentLanguage === 'ar' ? 'الحلول المقترحة:' : 'Suggested Solutions:'}</h3>
+                    <ul>
+                        ${(currentLanguage === 'ar' ? problem.solutions : problem.solutionsEn).map(solution => `<li>${solution}</li>`).join('')}
+                    </ul>
+                `;
+                
+                document.getElementById('problemDetails').innerHTML = modalContent;
+                document.getElementById('problemModal').style.display = 'block';
+            }
+        }
+        
+        function closeProblemModal() {
+            document.getElementById('problemModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('problemModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sleep main page loaded');
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

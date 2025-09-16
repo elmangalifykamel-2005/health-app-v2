@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تطبيق التغذية الصحية - دليل شامل للأطعمة والوصفات الصحية وخطط التغذية">
+    <meta name="keywords" content="تغذية، صحة، أطعمة، وصفات، سعرات حرارية، فيتامينات">
+    <meta name="author" content="Healthy Life App">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="تطبيق التغذية الصحية">
+    <meta property="og:description" content="دليل شامل للأطعمة والوصفات الصحية وخطط التغذية">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://healthy-life-app.com/nutrition">
+    <meta property="og:image" content="../../../assets/images/nutrition-og.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="تطبيق التغذية الصحية">
+    <meta name="twitter:description" content="دليل شامل للأطعمة والوصفات الصحية وخطط التغذية">
+    <meta name="twitter:image" content="../../../assets/images/nutrition-twitter.jpg">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="التغذية الصحية">
+    <link rel="apple-touch-icon" href="../../../assets/icons/nutrition-icon-192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../../assets/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/icons/favicon-16x16.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="../../../manifest.json">
+    
+    <title>تطبيق التغذية الصحية | Healthy Life App</title>
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="styles/nutrition.css" as="style">
+    <link rel="preload" href="../../shared/styles/globals.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../shared/styles/globals.css">
+    <link rel="stylesheet" href="styles/nutrition.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Preload JavaScript Modules -->
+    <link rel="modulepreload" href="NutritionApp.js">
+    <link rel="modulepreload" href="data/nutrition-data.js">
+    <link rel="modulepreload" href="utils/nutrition-utils.js">
+    <link rel="modulepreload" href="../../config/firebase.js">
+    <link rel="modulepreload" href="../../core/i18n/language-manager.js">
+    
+    <!-- Navigation Fixes -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+    
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js" defer></script>
+    
+    <!-- Performance Optimization -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Initial Loader -->
+    <div id="app-loader" class="loader-container">
+        <div class="loader">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">
+                <h3>تطبيق التغذية الصحية</h3>
+                <p>جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- No JavaScript Message -->
+    <noscript>
+        <div class="noscript-message">
+            <div class="noscript-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>JavaScript مطلوب</h2>
+                <p>يرجى تفعيل JavaScript في متصفحك لاستخدام تطبيق التغذية الصحية.</p>
+                <p>Please enable JavaScript in your browser to use the Nutrition App.</p>
+            </div>
+        </div>
+    </noscript>
+    
+    <!-- Offline Notification -->
+    <div id="offline-notification" class="offline-notification hidden">
+        <div class="offline-content">
+            <i class="fas fa-wifi"></i>
+            <span>أنت غير متصل بالإنترنت. بعض الميزات قد لا تعمل بشكل صحيح.</span>
+            <button id="dismiss-offline" class="btn-dismiss">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main App Container -->
+    <div id="nutrition-app" class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="menu-toggle" class="menu-toggle" aria-label="فتح القائمة">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="app-logo">
+                        <i class="fas fa-leaf"></i>
+                        <h1>التغذية الصحية</h1>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="language-selector">
+                        <button id="language-toggle" class="language-btn" aria-label="تغيير اللغة">
+                            <i class="fas fa-globe"></i>
+                            <span id="current-language">العربية</span>
+                        </button>
+                        <div id="language-dropdown" class="language-dropdown hidden">
+                            <button data-lang="ar" class="language-option active">
+                                <span class="flag">🇸🇦</span>
+                                العربية
+                            </button>
+                            <button data-lang="en" class="language-option">
+                                <span class="flag">🇺🇸</span>
+                                English
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="theme-toggle" class="theme-toggle" aria-label="تغيير المظهر">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <button id="notifications-toggle" class="notifications-toggle" aria-label="الإشعارات">
+                        <i class="fas fa-bell"></i>
+                        <span id="notifications-count" class="notifications-count hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Navigation Sidebar -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3 id="user-name">مستخدم ضيف</h3>
+                            <p id="user-status">مرحباً بك</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li>
+                        <button class="nav-item active" data-view="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>لوحة التحكم</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="foods">
+                            <i class="fas fa-apple-alt"></i>
+                            <span>دليل الأطعمة</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="recipes">
+                            <i class="fas fa-utensils"></i>
+                            <span>الوصفات الصحية</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="meal-plan">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>خطة الوجبات</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="favorites">
+                            <i class="fas fa-heart"></i>
+                            <span>المفضلة</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="statistics">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>الإحصائيات</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="calculator">
+                            <i class="fas fa-calculator"></i>
+                            <span>حاسبة التغذية</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" data-view="tips">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>نصائح التغذية</span>
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="sidebar-footer">
+                    <button id="back-to-main" class="back-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>العودة للرئيسية</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <main id="main-content" class="main-content">
+            <!-- Content will be dynamically loaded here -->
+        </main>
+        
+        <!-- Modals Container -->
+        <div id="modals-container" class="modals-container">
+            <!-- Food Details Modal -->
+            <div id="food-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="food-modal-title">تفاصيل الطعام</h3>
+                        <button class="modal-close" data-modal="food-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="food-modal-body" class="modal-body">
+                        <!-- Food details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recipe Details Modal -->
+            <div id="recipe-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="recipe-modal-title">تفاصيل الوصفة</h3>
+                        <button class="modal-close" data-modal="recipe-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="recipe-modal-body" class="modal-body">
+                        <!-- Recipe details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add to Meal Plan Modal -->
+            <div id="meal-plan-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>إضافة إلى خطة الوجبات</h3>
+                        <button class="modal-close" data-modal="meal-plan-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="meal-plan-modal-body" class="modal-body">
+                        <!-- Meal plan form will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Modal -->
+            <div id="settings-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>الإعدادات</h3>
+                        <button class="modal-close" data-modal="settings-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="settings-modal-body" class="modal-body">
+                        <!-- Settings form will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <div class="disclaimer-content">
+            <p>
+                <i class="fas fa-info-circle"></i>
+                <strong>تنبيه:</strong> المعلومات المقدمة في هذا التطبيق هي لأغراض تعليمية فقط ولا تغني عن استشارة أخصائي التغذية أو الطبيب المختص.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>تطبيق التغذية الصحية</h4>
+                <p>دليلك الشامل للتغذية الصحية والحياة الأفضل</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>روابط مفيدة</h4>
+                <ul>
+                    <li><a href="#privacy">سياسة الخصوصية</a></li>
+                    <li><a href="#terms">شروط الاستخدام</a></li>
+                    <li><a href="#contact">اتصل بنا</a></li>
+                    <li><a href="#help">المساعدة</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>تابعنا</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="يوتيوب"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Healthy Life App. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript Modules -->
+    <script type="module">
+        // Import and initialize the Nutrition App
+        import { NutritionApp } from './NutritionApp.js';
+        import { LanguageManager } from '../../core/i18n/language-manager.js';
+        
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            // إصلاح زر العودة
+            if (window.navigationFixes && typeof navigationFixes.fixNutritionIndexPage === 'function') {
+                navigationFixes.fixNutritionIndexPage();
+            }
+            try {
+                // Hide loader
+                const loader = document.getElementById('app-loader');
+                if (loader) {
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 300);
+                    }, 1000);
+                }
+                
+                // Initialize Language Manager
+                const languageManager = new LanguageManager();
+                await languageManager.init();
+                
+                // Initialize Nutrition App
+                const nutritionApp = new NutritionApp();
+                await nutritionApp.init();
+                
+                // Set up global error handling
+                window.addEventListener('error', (event) => {
+                    console.error('Global error:', event.error);
+                    nutritionApp.showToast('حدث خطأ غير متوقع', 'error');
+                });
+                
+                // Set up offline/online detection
+                window.addEventListener('online', () => {
+                    const offlineNotification = document.getElementById('offline-notification');
+                    if (offlineNotification) {
+                        offlineNotification.classList.add('hidden');
+                    }
+                    nutritionApp.showToast('تم استعادة الاتصال بالإنترنت', 'success');
+                });
+                
+                window.addEventListener('offline', () => {
+                    const offlineNotification = document.getElementById('offline-notification');
+                    if (offlineNotification) {
+                        offlineNotification.classList.remove('hidden');
+                    }
+                });
+                
+                // Set up offline notification dismiss
+                const dismissOffline = document.getElementById('dismiss-offline');
+                if (dismissOffline) {
+                    dismissOffline.addEventListener('click', () => {
+                        const offlineNotification = document.getElementById('offline-notification');
+                        if (offlineNotification) {
+                            offlineNotification.classList.add('hidden');
+                        }
+                    });
+                }
+                
+                console.log('Nutrition App initialized successfully');
+                
+            } catch (error) {
+                console.error('Failed to initialize Nutrition App:', error);
+                
+                // Show error message to user
+                const loader = document.getElementById('app-loader');
+                if (loader) {
+                    loader.innerHTML = `
+                        <div class="loader">
+                            <div class="error-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="loader-text">
+                                <h3>خطأ في التحميل</h3>
+                                <p>فشل في تحميل التطبيق. يرجى إعادة تحميل الصفحة.</p>
+                                <button onclick="location.reload()" class="retry-btn">
+                                    <i class="fas fa-redo"></i>
+                                    إعادة المحاولة
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        });
+        
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../../../sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Analytics (Optional) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
+</body>
+</html>

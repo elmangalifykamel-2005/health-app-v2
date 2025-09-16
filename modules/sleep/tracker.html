@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title-ar">تتبع النوم - تطبيق الحياة الصحية</title>
+    <title id="title-en" style="display:none;">Sleep Tracker - Healthy Life App</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../theme.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="sleep-tracker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <button onclick="window.history.back()" id="backBtn">
+        <span id="back-ar" style="display:block;"><i class="fas fa-arrow-right"></i> رجوع</span>
+        <span id="back-en" style="display:none;"><i class="fas fa-arrow-left"></i> Back</span>
+    </button>
+    
+    <div class="container">
+        <div id="lang-switch">
+            <button class="lang-btn" id="lang-ar" style="font-weight:bold;">العربية</button>
+            <button class="lang-btn" id="lang-en">English</button>
+        </div>
+        
+        <h1 id="page-title-ar" style="display:block;">📊 تتبع النوم اليومي</h1>
+        <h1 id="page-title-en" style="display:none;">📊 Daily Sleep Tracker</h1>
+        
+        <!-- إدخال بيانات النوم -->
+        <div class="card">
+            <h2 id="input-title-ar" style="display:block;">🌙 سجل نومك اليوم</h2>
+            <h2 id="input-title-en" style="display:none;">🌙 Log Today's Sleep</h2>
+            
+            <form id="sleep-log-form">
+                <div class="cards">
+                    <div class="form-row">
+                        <label id="bedtime-label-ar" style="display:block;">وقت النوم:</label>
+                        <label id="bedtime-label-en" style="display:none;">Bedtime:</label>
+                        <input type="time" id="bedtime" name="bedtime" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label id="wakeup-label-ar" style="display:block;">وقت الاستيقاظ:</label>
+                        <label id="wakeup-label-en" style="display:none;">Wake up time:</label>
+                        <input type="time" id="wakeup" name="wakeup" required>
+                    </div>
+                </div>
+                
+                <div class="cards">
+                    <div class="form-row">
+                        <label id="quality-label-ar" style="display:block;">جودة النوم (1-10):</label>
+                        <label id="quality-label-en" style="display:none;">Sleep quality (1-10):</label>
+                        <input type="range" id="quality" name="quality" min="1" max="10" value="7">
+                        <span id="quality-value">7</span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label id="interruptions-label-ar" style="display:block;">عدد مرات الاستيقاظ:</label>
+                        <label id="interruptions-label-en" style="display:none;">Number of awakenings:</label>
+                        <input type="number" id="interruptions" name="interruptions" min="0" max="20" value="0">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <label id="notes-label-ar" style="display:block;">ملاحظات (اختياري):</label>
+                    <label id="notes-label-en" style="display:none;">Notes (optional):</label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="أي ملاحظات عن نومك..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <span id="save-btn-ar" style="display:block;">حفظ بيانات النوم</span>
+                    <span id="save-btn-en" style="display:none;">Save Sleep Data</span>
+                </button>
+            </form>
+        </div>
+        
+        <!-- إحصائيات سريعة -->
+        <div class="cards">
+            <div class="card">
+                <div class="card-title" id="avg-title-ar" style="display:block;">متوسط ساعات النوم</div>
+                <div class="card-title" id="avg-title-en" style="display:none;">Average Sleep Hours</div>
+                <div class="card-value" id="avg-hours">7.5h</div>
+                <div class="card-note good" id="avg-note-ar" style="display:block;">ضمن المعدل الطبيعي</div>
+                <div class="card-note good" id="avg-note-en" style="display:none;">Within normal range</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title" id="quality-avg-title-ar" style="display:block;">متوسط جودة النوم</div>
+                <div class="card-title" id="quality-avg-title-en" style="display:none;">Average Sleep Quality</div>
+                <div class="card-value" id="avg-quality">8.2/10</div>
+                <div class="card-note good" id="quality-note-ar" style="display:block;">جودة ممتازة</div>
+                <div class="card-note good" id="quality-note-en" style="display:none;">Excellent quality</div>
+            </div>
+        </div>
+        
+        <!-- الرسم البياني -->
+        <div class="card">
+            <h2 id="chart-title-ar" style="display:block;">📈 تتبع النوم - آخر 7 أيام</h2>
+            <h2 id="chart-title-en" style="display:none;">📈 Sleep Tracking - Last 7 Days</h2>
+            <canvas id="sleepChart" width="400" height="200"></canvas>
+        </div>
+        
+        <!-- سجل النوم -->
+        <div class="card">
+            <h2 id="log-title-ar" style="display:block;">📋 سجل النوم الأخير</h2>
+            <h2 id="log-title-en" style="display:none;">📋 Recent Sleep Log</h2>
+            <div id="sleep-log"></div>
+        </div>
+    </div>
+    
+    <script src="sleep-utils.js"></script>
+    <script>
+        // تحديث قيمة جودة النوم
+        document.getElementById('quality').addEventListener('input', function() {
+            document.getElementById('quality-value').textContent = this.value;
+        });
+        
+        // حفظ بيانات النوم
+        document.getElementById('sleep-log-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const bedtime = formData.get('bedtime');
+            const wakeup = formData.get('wakeup');
+            const quality = formData.get('quality');
+            const interruptions = formData.get('interruptions');
+            const notes = formData.get('notes');
+            
+            // حساب ساعات النوم
+            const bedtimeDate = new Date(`2000-01-01 ${bedtime}`);
+            const wakeupDate = new Date(`2000-01-02 ${wakeup}`);
+            const sleepHours = (wakeupDate - bedtimeDate) / (1000 * 60 * 60);
+            
+            const sleepData = {
+                date: new Date().toDateString(),
+                bedtime: bedtime,
+                wakeup: wakeup,
+                duration: sleepHours.toFixed(1),
+                quality: parseInt(quality),
+                interruptions: parseInt(interruptions),
+                notes: notes
+            };
+            
+            // حفظ البيانات
+            saveSleepData(sleepData);
+            
+            // تحديث العرض
+            updateStats();
+            updateChart();
+            updateLog();
+            
+            // إعادة تعيين النموذج
+            this.reset();
+            document.getElementById('quality-value').textContent = '7';
+            
+            alert(lang === 'ar' ? 'تم حفظ بيانات النوم بنجاح!' : 'Sleep data saved successfully!');
+        });
+        
+        function updateStats() {
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const entries = Object.values(sleepData);
+            
+            if (entries.length > 0) {
+                const avgHours = entries.reduce((sum, entry) => sum + parseFloat(entry.duration || 0), 0) / entries.length;
+                const avgQuality = entries.reduce((sum, entry) => sum + (entry.quality || 0), 0) / entries.length;
+                
+                document.getElementById('avg-hours').textContent = avgHours.toFixed(1) + 'h';
+                document.getElementById('avg-quality').textContent = avgQuality.toFixed(1) + '/10';
+            }
+        }
+        
+        function updateChart() {
+            const ctx = document.getElementById('sleepChart').getContext('2d');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            
+            // الحصول على آخر 7 أيام
+            const last7Days = [];
+            const sleepHours = [];
+            const qualities = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                
+                last7Days.push(date.toLocaleDateString('ar-SA', { weekday: 'short' }));
+                
+                if (sleepData[dateStr]) {
+                    sleepHours.push(parseFloat(sleepData[dateStr].duration || 0));
+                    qualities.push(sleepData[dateStr].quality || 0);
+                } else {
+                    sleepHours.push(0);
+                    qualities.push(0);
+                }
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last7Days,
+                    datasets: [{
+                        label: lang === 'ar' ? 'ساعات النوم' : 'Sleep Hours',
+                        data: sleepHours,
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: lang === 'ar' ? 'جودة النوم' : 'Sleep Quality',
+                        data: qualities,
+                        borderColor: '#2196F3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 12,
+                            title: {
+                                display: true,
+                                text: lang === 'ar' ? 'ساعات' : 'Hours'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            min: 0,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: lang === 'ar' ? 'الجودة' : 'Quality'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateLog() {
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const logContainer = document.getElementById('sleep-log');
+            
+            const entries = Object.entries(sleepData)
+                .sort(([a], [b]) => new Date(b) - new Date(a))
+                .slice(0, 5);
+            
+            if (entries.length === 0) {
+                logContainer.innerHTML = `<p style="text-align: center; color: #666;">${lang === 'ar' ? 'لا توجد بيانات نوم مسجلة' : 'No sleep data recorded'}</p>`;
+                return;
+            }
+            
+            logContainer.innerHTML = entries.map(([date, data]) => `
+                <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${new Date(date).toLocaleDateString('ar-SA')}</strong><br>
+                            <small>${data.bedtime} - ${data.wakeup} (${data.duration}h)</small>
+                        </div>
+                        <div style="text-align: left;">
+                            <div style="color: #4CAF50; font-weight: bold;">${lang === 'ar' ? 'الجودة' : 'Quality'}: ${data.quality}/10</div>
+                            <div style="color: #666; font-size: 0.9em;">${lang === 'ar' ? 'استيقاظ' : 'Awakenings'}: ${data.interruptions}</div>
+                        </div>
+                    </div>
+                    ${data.notes ? `<div style="margin-top: 8px; color: #666; font-style: italic;">${data.notes}</div>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            updateChart();
+            updateLog();
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

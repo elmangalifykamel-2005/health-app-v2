@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملفي الطبي - صحتك بالدنيا</title>
+    
+    <!-- الأنماط الموحدة -->
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="medical-profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-helpers.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- ترويسة الصفحة -->
+        <div class="header">
+            <h1>ملفي الطبي</h1>
+            <p>سجل المعلومات الصحية الخاصة بك</p>
+        </div>
+        
+        <!-- أقسام الملف الطبي -->
+        <div class="profile-sections">
+            <!-- كارت صحتك بالدنيا -->
+            <div class="profile-card" style="background:#e8f5e8;border:2px solid #388e3c;box-shadow:0 2px 8px #388e3c22;cursor:pointer;transition:0.2s;" onclick="window.location.href='../../your-health.html'">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-heartbeat" style="font-size:2em;color:#388e3c;"></i>
+                    <h3 style="margin:0;">صحتك بالدنيا</h3>
+                </div>
+                <div class="info-list" style="padding:10px 0;">
+                    <div><b>الأمراض المزمنة:</b> <span id="card-diseases">—</span></div>
+                    <div><b>المخاطر الصحية:</b> <span id="card-risks">—</span></div>
+                    <div><b>الفيتامينات الناقصة:</b> <span id="card-vitamins">—</span></div>
+                    <div><b>جودة النوم:</b> <span id="card-sleep">—</span></div>
+                </div>
+                <div class="card-actions" style="text-align:left;">
+                    <span style="color:#388e3c;font-weight:bold;">اضغط لعرض التحليل الشامل</span>
+                </div>
+            </div>
+            <!-- 1. المعلومات الأساسية -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-user-md"></i>
+                    <h3>المعلومات الأساسية</h3>
+                </div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <div class="info-label">الاسم الكامل:</div>
+                        <div class="info-value" id="fullName">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">تاريخ الميلاد:</div>
+                        <div class="info-value" id="dateOfBirth">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">الجنس:</div>
+                        <div class="info-value" id="gender">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">فصيلة الدم:</div>
+                        <div class="info-value" id="bloodType">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">الطول:</div>
+                        <div class="info-value" id="height">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">الوزن:</div>
+                        <div class="info-value" id="weight">-</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-edit-basic-info">
+                        <i class="fas fa-edit"></i>
+                        تعديل المعلومات
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. الحساسية -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-allergies"></i>
+                    <h3>الحساسية</h3>
+                </div>
+                <div class="info-list" id="allergiesList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي حساسية بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-allergy">
+                        <i class="fas fa-plus"></i>
+                        إضافة حساسية
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. الأدوية الحالية -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-pills"></i>
+                    <h3>الأدوية الحالية</h3>
+                </div>
+                <div class="info-list" id="medicationsList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي أدوية بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-medication">
+                        <i class="fas fa-plus"></i>
+                        إضافة دواء
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. الأمراض المزمنة -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>الأمراض المزمنة</h3>
+                </div>
+                <div class="info-list" id="conditionsList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي أمراض بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-condition">
+                        <i class="fas fa-plus"></i>
+                        إضافة مرض
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5. العمليات الجراحية -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-procedures"></i>
+                    <h3>العمليات الجراحية</h3>
+                </div>
+                <div class="info-list" id="surgeriesList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي عمليات جراحية بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-surgery">
+                        <i class="fas fa-plus"></i>
+                        إضافة عملية
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. التطعيمات -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-syringe"></i>
+                    <h3>التطعيمات</h3>
+                </div>
+                <div class="info-list" id="vaccinationsList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي تطعيمات بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-vaccination">
+                        <i class="fas fa-plus"></i>
+                        إضافة تطعيم
+                    </button>
+                </div>
+            </div>
+
+            <!-- 7. التاريخ العائلي -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-users"></i>
+                    <h3>التاريخ العائلي</h3>
+                </div>
+                <div class="info-list" id="familyHistoryList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي تاريخ عائلي بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-family-history">
+                        <i class="fas fa-plus"></i>
+                        إضافة تاريخ عائلي
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8. التحاليل الطبية -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-flask"></i>
+                    <h3>التحاليل الطبية</h3>
+                </div>
+                <div class="info-list" id="medicalTestsList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة أي تحاليل طبية بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-medical-test">
+                        <i class="fas fa-plus"></i>
+                        إضافة تحليل طبي
+                    </button>
+                </div>
+            </div>
+
+            <!-- 9. نمط الحياة -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-walking"></i>
+                    <h3>نمط الحياة</h3>
+                </div>
+                <div class="info-list" id="lifestyleList">
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>لم يتم إضافة معلومات نمط الحياة بعد</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-button" id="btn-add-lifestyle">
+                        <i class="fas fa-plus"></i>
+                        إضافة معلومات نمط الحياة
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار التنقل -->
+        <div class="navigation-buttons">
+            <a href="medical-tests.html" class="primary-button">
+                <i class="fas fa-flask"></i>
+                عرض نتائج الفحوصات الطبية
+            </a>
+            <a href="../health-state/healthstate.html" class="secondary-button">
+                <i class="fas fa-chart-line"></i>
+                متابعة مؤشراتك الصحية
+            </a>
+            <a href="../../main.html" class="back-button">
+                <i class="fas fa-arrow-right"></i>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <!-- ==================== النوافذ المنبثقة (Modals) ==================== -->
+    
+    <!-- 1. نافذة المعلومات الأساسية -->
+    <div id="basicInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل المعلومات الأساسية</h3>
+                <span class="close-button" id="btn-close-basic-info-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="basicInfoForm" class="modal-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="inputFullName">الاسم الكامل</label>
+                            <input type="text" id="inputFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDateOfBirth">تاريخ الميلاد</label>
+                            <input type="date" id="inputDateOfBirth" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputGender">الجنس</label>
+                            <select id="inputGender" required>
+                                <option value="">-- اختر --</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputBloodType">فصيلة الدم</label>
+                            <select id="inputBloodType">
+                                <option value="">-- اختر --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputHeight">الطول (سم)</label>
+                            <input type="number" id="inputHeight" min="0" max="300">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputWeight">الوزن (كجم)</label>
+                            <input type="number" id="inputWeight" min="0" max="500">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-basic-info">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ المعلومات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. نافذة الحساسية -->
+    <div id="allergiesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة حساسية جديدة</h3>
+                <span class="close-button" id="btn-close-allergies-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="allergyForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="allergyName">اسم المسبب للحساسية</label>
+                        <input type="text" id="allergyName" placeholder="مثال: حساسية الغبار" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="allergySymptoms">الأعراض</label>
+                        <textarea id="allergySymptoms" rows="3" placeholder="وصف أعراض الحساسية"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>شدة الحساسية</label>
+                        <div class="severity-select">
+                            <div class="severity-option" data-value="منخفضة">منخفضة</div>
+                            <div class="severity-option" data-value="متوسطة">متوسطة</div>
+                            <div class="severity-option" data-value="عالية">عالية</div>
+                        </div>
+                        <input type="hidden" id="allergySeverity" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="allergyDiagnosisDate">تاريخ التشخيص</label>
+                        <input type="date" id="allergyDiagnosisDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="allergyNotes">ملاحظات إضافية</label>
+                        <textarea id="allergyNotes" rows="3" placeholder="أي معلومات إضافية حول الحساسية"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-allergy">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. نافذة الأدوية -->
+    <div id="medicationsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة دواء جديد</h3>
+                <span class="close-button" id="btn-close-medications-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="medicationForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="medicationName">اسم الدواء</label>
+                        <input type="text" id="medicationName" placeholder="اسم الدواء" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationDosage">الجرعة</label>
+                        <input type="text" id="medicationDosage" placeholder="مثال: 500 ملغ">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationFrequency">التكرار</label>
+                        <input type="text" id="medicationFrequency" placeholder="مثال: مرتين يوميًا">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationStartDate">تاريخ البدء</label>
+                        <input type="date" id="medicationStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationEndDate">تاريخ الانتهاء</label>
+                        <input type="date" id="medicationEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationPurpose">سبب الاستخدام</label>
+                        <input type="text" id="medicationPurpose" placeholder="سبب استخدام الدواء">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationPrescribedBy">اسم الطبيب</label>
+                        <input type="text" id="medicationPrescribedBy" placeholder="اسم الطبيب الذي وصف الدواء">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicationNotes">ملاحظات إضافية</label>
+                        <textarea id="medicationNotes" rows="3" placeholder="أي معلومات إضافية حول الدواء"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-medication">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. نافذة الأمراض المزمنة -->
+    <div id="conditionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة مرض جديد</h3>
+                <span class="close-button" id="btn-close-conditions-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="conditionForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="conditionName">اسم المرض أو الحالة</label>
+                        <input type="text" id="conditionName" placeholder="اسم المرض أو الحالة" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="conditionDiagnosisDate">تاريخ التشخيص</label>
+                        <input type="date" id="conditionDiagnosisDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="conditionStatus">الحالة الحالية</label>
+                        <select id="conditionStatus">
+                            <option value="">-- اختر --</option>
+                            <option value="نشط">نشط</option>
+                            <option value="متعافي">متعافي</option>
+                            <option value="مزمن">مزمن</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>شدة المرض</label>
+                        <div class="severity-select">
+                            <div class="severity-option" data-value="منخفضة">منخفضة</div>
+                            <div class="severity-option" data-value="متوسطة">متوسطة</div>
+                            <div class="severity-option" data-value="عالية">عالية</div>
+                        </div>
+                        <input type="hidden" id="conditionSeverity" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="conditionTreatment">العلاج الحالي</label>
+                        <input type="text" id="conditionTreatment" placeholder="العلاج الحالي للمرض">
+                    </div>
+                    <div class="form-group">
+                        <label for="conditionSpecialist">الطبيب المختص</label>
+                        <input type="text" id="conditionSpecialist" placeholder="اسم الطبيب المختص">
+                    </div>
+                    <div class="form-group">
+                        <label for="conditionNotes">ملاحظات إضافية</label>
+                        <textarea id="conditionNotes" rows="3" placeholder="أي معلومات إضافية حول المرض"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-condition">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. نافذة العمليات الجراحية -->
+    <div id="surgeriesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة عملية جراحية جديدة</h3>
+                <span class="close-button" id="btn-close-surgeries-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="surgeryForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="surgeryName">اسم العملية</label>
+                        <input type="text" id="surgeryName" placeholder="اسم العملية الجراحية" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surgeryDate">تاريخ العملية</label>
+                        <input type="date" id="surgeryDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="surgeryHospital">المستشفى</label>
+                        <input type="text" id="surgeryHospital" placeholder="اسم المستشفى">
+                    </div>
+                    <div class="form-group">
+                        <label for="surgerySurgeon">اسم الجراح</label>
+                        <input type="text" id="surgerySurgeon" placeholder="اسم الطبيب الجراح">
+                    </div>
+                    <div class="form-group">
+                        <label for="surgeryReason">سبب العملية</label>
+                        <input type="text" id="surgeryReason" placeholder="سبب إجراء العملية">
+                    </div>
+                    <div class="form-group">
+                        <label for="surgeryResults">نتائج العملية</label>
+                        <textarea id="surgeryResults" rows="3" placeholder="نتائج العملية"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="surgeryNotes">ملاحظات إضافية</label>
+                        <textarea id="surgeryNotes" rows="3" placeholder="أي معلومات إضافية حول العملية"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-surgery">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. نافذة التطعيمات -->
+    <div id="vaccinationsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة تطعيم جديد</h3>
+                <span class="close-button" id="btn-close-vaccinations-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="vaccinationForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="vaccinationName">اسم التطعيم</label>
+                        <input type="text" id="vaccinationName" placeholder="اسم التطعيم" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationDate">تاريخ التطعيم</label>
+                        <input type="date" id="vaccinationDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationExpiryDate">تاريخ انتهاء الصلاحية</label>
+                        <input type="date" id="vaccinationExpiryDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationDose">رقم الجرعة</label>
+                        <input type="number" id="vaccinationDose" placeholder="رقم الجرعة" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationLocation">مكان التطعيم</label>
+                        <input type="text" id="vaccinationLocation" placeholder="المركز الصحي أو المستشفى">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationBatch">رقم التشغيلة</label>
+                        <input type="text" id="vaccinationBatch" placeholder="رقم تشغيلة التطعيم">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccinationNotes">ملاحظات إضافية</label>
+                        <textarea id="vaccinationNotes" rows="3" placeholder="أي معلومات إضافية حول التطعيم"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-vaccination">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. نافذة التاريخ العائلي -->
+    <div id="familyHistoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة تاريخ عائلي جديد</h3>
+                <span class="close-button" id="btn-close-family-history-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="familyHistoryForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="familyHistoryCondition">الحالة أو المرض</label>
+                        <input type="text" id="familyHistoryCondition" placeholder="اسم المرض أو الحالة" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyHistoryRelationship">صلة القرابة</label>
+                        <select id="familyHistoryRelationship" required>
+                            <option value="">-- اختر --</option>
+                            <option value="الأب">الأب</option>
+                            <option value="الأم">الأم</option>
+                            <option value="الجد">الجد</option>
+                            <option value="الجدة">الجدة</option>
+                            <option value="الأخ">الأخ</option>
+                            <option value="الأخت">الأخت</option>
+                            <option value="العم">العم</option>
+                            <option value="العمة">العمة</option>
+                            <option value="الخال">الخال</option>
+                            <option value="الخالة">الخالة</option>
+                            <option value="آخر">آخر</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="otherRelationshipGroup" style="display:none;">
+                        <label for="familyHistoryOtherRelationship">حدد صلة القرابة الأخرى</label>
+                        <input type="text" id="familyHistoryOtherRelationship" placeholder="صلة القرابة">
+                    </div>
+                    <div class="form-group">
+                        <label for="familyHistoryDiagnosisAge">عمر التشخيص (تقريبي)</label>
+                        <input type="number" id="familyHistoryDiagnosisAge" placeholder="العمر عند التشخيص" min="0" max="150">
+                    </div>
+                    <div class="form-group">
+                        <label for="familyHistoryNotes">ملاحظات إضافية</label>
+                        <textarea id="familyHistoryNotes" rows="3" placeholder="أي معلومات إضافية حول التاريخ العائلي"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-family-history">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. نافذة نمط الحياة -->
+    <div id="lifestyleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة معلومات نمط الحياة</h3>
+                <span class="close-button" id="btn-close-lifestyle-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="lifestyleForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="lifestyleDiet">النظام الغذائي</label>
+                        <select id="lifestyleDiet">
+                            <option value="">-- اختر --</option>
+                            <option value="متوازن">متوازن</option>
+                            <option value="نباتي">نباتي</option>
+                            <option value="نباتي صرف">نباتي صرف (فيجن)</option>
+                            <option value="قليل الكربوهيدرات">قليل الكربوهيدرات</option>
+                            <option value="كيتو">كيتو</option>
+                            <option value="صيام متقطع">صيام متقطع</option>
+                            <option value="غير منتظم">غير منتظم</option>
+                            <option value="آخر">آخر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleExercise">النشاط البدني</label>
+                        <select id="lifestyleExercise">
+                            <option value="">-- اختر --</option>
+                            <option value="خامل">خامل (قليل الحركة)</option>
+                            <option value="نشاط خفيف">نشاط خفيف (مشي متقطع)</option>
+                            <option value="نشاط معتدل">نشاط معتدل (تمارين 1-3 مرات أسبوعيًا)</option>
+                            <option value="نشاط عالي">نشاط عالي (تمارين 3-5 مرات أسبوعيًا)</option>
+                            <option value="نشاط مكثف">نشاط مكثف (تمارين يومية)</option>
+                            <option value="رياضي">رياضي محترف</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleSmoking">التدخين</label>
+                        <select id="lifestyleSmoking">
+                            <option value="">-- اختر --</option>
+                            <option value="لا أدخن">لا أدخن</option>
+                            <option value="مدخن سابق">مدخن سابق</option>
+                            <option value="مدخن خفيف">مدخن خفيف (أقل من 5 سجائر يوميًا)</option>
+                            <option value="مدخن معتدل">مدخن معتدل (5-15 سيجارة يوميًا)</option>
+                            <option value="مدخن ثقيل">مدخن ثقيل (أكثر من 15 سيجارة يوميًا)</option>
+                            <option value="سجائر إلكترونية">سجائر إلكترونية</option>
+                            <option value="آخر">آخر</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleAlcohol">الكحول</label>
+                        <select id="lifestyleAlcohol">
+                            <option value="">-- اختر --</option>
+                            <option value="لا أشرب">لا أشرب</option>
+                            <option value="نادرًا">نادرًا (في المناسبات)</option>
+                            <option value="أسبوعيًا">أسبوعيًا (1-2 مرة)</option>
+                            <option value="عدة مرات أسبوعيًا">عدة مرات أسبوعيًا</option>
+                            <option value="يوميًا">يوميًا</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleSleep">متوسط ساعات النوم</label>
+                        <select id="lifestyleSleep">
+                            <option value="">-- اختر --</option>
+                            <option value="أقل من 6 ساعات">أقل من 6 ساعات</option>
+                            <option value="6-7 ساعات">6-7 ساعات</option>
+                            <option value="7-8 ساعات">7-8 ساعات</option>
+                            <option value="8-9 ساعات">8-9 ساعات</option>
+                            <option value="أكثر من 9 ساعات">أكثر من 9 ساعات</option>
+                            <option value="غير منتظم">غير منتظم</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleStress">مستوى التوتر والإجهاد</label>
+                        <select id="lifestyleStress">
+                            <option value="">-- اختر --</option>
+                            <option value="منخفض">منخفض</option>
+                            <option value="متوسط">متوسط</option>
+                            <option value="عالي">عالي</option>
+                            <option value="متغير">متغير</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lifestyleNotes">ملاحظات إضافية</label>
+                        <textarea id="lifestyleNotes" rows="3" placeholder="أي معلومات إضافية حول نمط الحياة"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-lifestyle">إلغاء</button>
+                        <button type="submit" class="btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== البرمجيات ==================== -->
+    <script>
+        // التحقق من حالة تسجيل الدخول
+        document.addEventListener('DOMContentLoaded', function() {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // المستخدم مسجل دخوله
+                    const userID = user.uid;
+                    loadUserMedicalProfile(userID);
+                    // تحميل ملخص صحتك بالدنيا للكارت
+                    loadYourHealthCard(userID);
+                } else {
+                    // المستخدم غير مسجل دخوله، تحويله إلى صفحة تسجيل الدخول
+                    window.location.href = '../../login.html';
+                }
+            });
+
+            // تطبيق إصلاحات التنقل
+            if (window.navigationFixes && typeof navigationFixes.fixMedicalFilePage === 'function') {
+                navigationFixes.fixMedicalFilePage();
+            }
+
+            // إعداد مستمعي أحداث النوافذ المنبثقة
+            setupModalEventListeners();
+            
+            // إعداد مستمعي أحداث النماذج
+            setupFormEventListeners();
+        });
+
+        // دالة ملء كارت صحتك بالدنيا
+        function loadYourHealthCard(userID) {
+            const db = firebase.firestore();
+            db.collection('users').doc(userID).get().then(doc => {
+                if (!doc.exists) return;
+                const data = doc.data();
+                // الأمراض المزمنة
+                const conditions = (data.conditions || []).map(c => c.name).filter(Boolean);
+                document.getElementById('card-diseases').textContent = conditions.length ? conditions.join('، ') : 'لا توجد';
+                // المخاطر الصحية
+                let risks = [];
+                const lifestyle = data.lifestyle || {};
+                const basic = data.basicInfo || {};
+                if (lifestyle.smoking === 'نعم') risks.push('التدخين');
+                if (lifestyle.alcohol === 'نعم') risks.push('الكحول');
+                if (basic.height && basic.weight) {
+                    let bmi = parseFloat(basic.weight) / Math.pow(parseFloat(basic.height)/100,2);
+                    if (bmi > 30) risks.push('سمنة');
+                }
+                risks = risks.concat((data.conditions || []).filter(c => c.notes && c.notes.includes('خطر')).map(c => c.name));
+                document.getElementById('card-risks').textContent = risks.length ? risks.join('، ') : 'لا توجد';
+                // الفيتامينات الناقصة
+                const tests = data.medicalTests || [];
+                let vitamins = tests.filter(t => /فيتامين|Vitamin/i.test(t.name));
+                let vitDef = vitamins.filter(v => {
+                    if (!v.referenceRange || !v.result) return false;
+                    let res = parseFloat(v.result);
+                    let ref = v.referenceRange.split('-').map(x=>parseFloat(x));
+                    return ref.length === 2 && res < ref[0];
+                });
+                document.getElementById('card-vitamins').textContent = vitDef.length ? vitDef.map(v=>v.name).join('، ') : 'لا توجد';
+                // جودة النوم
+                let sleepTxt = (lifestyle.sleepStart && lifestyle.sleepEnd) ? `${lifestyle.sleepStart} - ${lifestyle.sleepEnd}` : 'غير محدد';
+                document.getElementById('card-sleep').textContent = sleepTxt;
+            });
+        }
+
+        // تحميل البيانات الطبية للمستخدم
+        function loadUserMedicalProfile(userID) {
+            const db = firebase.firestore();
+            
+            // تحميل المعلومات الأساسية
+            loadBasicInfo();
+            
+            // تحميل الحساسية
+            loadAllergies();
+            
+            // تحميل الأدوية
+            loadMedications();
+            
+            // تحميل الأمراض المزمنة
+            loadConditions();
+            
+            // تحميل العمليات الجراحية
+            loadSurgeries();
+            
+            // تحميل التطعيمات
+            loadVaccinations();
+            
+            // تحميل التاريخ العائلي
+            loadFamilyHistory();
+            
+            // تحميل نمط الحياة
+            loadLifestyle();
+            
+            // تحميل التحاليل الطبية
+            loadMedicalTests();
+
+            // ======= وظائف تحميل البيانات =======
+
+            // تحميل المعلومات الأساسية
+            function loadBasicInfo() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            // نتحقق من وجود البيانات في أي من المسارات المحتملة
+                            let basicInfo;
+                            
+                            // المسار الجديد من basic-info-modal.html
+                            if (doc.data().basicInfo) {
+                                basicInfo = doc.data().basicInfo;
+                                console.log("تم العثور على البيانات الأساسية في basicInfo:", basicInfo);
+                            } 
+                            // المسار القديم من saveBasicInfo
+                            else if (doc.data().profile && doc.data().profile.basicInfo) {
+                                basicInfo = doc.data().profile.basicInfo;
+                                console.log("تم العثور على البيانات الأساسية في profile.basicInfo:", basicInfo);
+                            }
+                            
+                            if (basicInfo) {
+                                // عرض المعلومات في الواجهة
+                                document.getElementById("fullName").textContent = basicInfo.fullName || "-";
+                                // تحقق من وجود تاريخ الميلاد في أي من الحقلين المحتملين (birthDate أو dateOfBirth)
+                                const birthDate = basicInfo.birthDate || basicInfo.dateOfBirth;
+                                document.getElementById("dateOfBirth").textContent = birthDate ? formatDate(birthDate) : "-";
+                                document.getElementById("gender").textContent = basicInfo.gender || "-";
+                                document.getElementById("bloodType").textContent = basicInfo.bloodType || "-";
+                                document.getElementById("height").textContent = basicInfo.height ? basicInfo.height + " سم" : "-";
+                                document.getElementById("weight").textContent = basicInfo.weight ? basicInfo.weight + " كجم" : "-";
+                                
+                                // تعبئة النموذج للتعديل (إذا كان موجوداً)
+                                if (document.getElementById("inputFullName")) {
+                                    document.getElementById("inputFullName").value = basicInfo.fullName || "";
+                                    // تحقق من وجود تاريخ الميلاد في أي من الحقلين المحتملين
+                                    const birthDate = basicInfo.birthDate || basicInfo.dateOfBirth;
+                                    document.getElementById("inputDateOfBirth").value = birthDate || "";
+                                    document.getElementById("inputGender").value = basicInfo.gender || "";
+                                    document.getElementById("inputBloodType").value = basicInfo.bloodType || "";
+                                    document.getElementById("inputHeight").value = basicInfo.height || "";
+                                    document.getElementById("inputWeight").value = basicInfo.weight || "";
+                                }
+                            } else {
+                                console.log("لم يتم العثور على البيانات الأساسية");
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل المعلومات الأساسية:", error);
+                    });
+            }
+
+            // تحميل الحساسية
+            function loadAllergies() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().allergies) {
+                            const allergies = doc.data().allergies;
+                            const allergiesList = document.getElementById("allergiesList");
+                            
+                            if (allergies.length > 0) {
+                                allergiesList.innerHTML = '';
+                                
+                                allergies.forEach(allergy => {
+                                    const allergyItem = document.createElement("div");
+                                    allergyItem.className = "medical-item";
+                                    allergyItem.dataset.id = allergy.id;
+                                    
+                                    let severityClass = '';
+                                    if (allergy.severity === 'عالية') {
+                                        severityClass = 'severity-high';
+                                    } else if (allergy.severity === 'متوسطة') {
+                                        severityClass = 'severity-medium';
+                                    } else if (allergy.severity === 'منخفضة') {
+                                        severityClass = 'severity-low';
+                                    }
+                                    
+                                    allergyItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${allergy.name}</h3>
+                                            <span class="medical-item-date">${allergy.diagnosisDate ? formatDate(allergy.diagnosisDate) : ''}</span>
+                                        </div>
+                                        ${allergy.symptoms ? `<div class="medical-item-body">${allergy.symptoms}</div>` : ''}
+                                        <div class="medical-item-meta">
+                                            ${allergy.severity ? `
+                                                <div class="severity-indicator ${severityClass}">
+                                                    <span class="severity-dot"></span>
+                                                    <span>الشدة: ${allergy.severity}</span>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-allergy" data-id="${allergy.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-allergy" data-id="${allergy.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    allergiesList.appendChild(allergyItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                allergiesList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي حساسية بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("allergiesList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي حساسية بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات الحساسية:", error);
+                    });
+            }
+
+            // وظيفة تحميل الأدوية
+            function loadMedications() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().medications) {
+                            const medications = doc.data().medications;
+                            const medicationsList = document.getElementById("medicationsList");
+                            
+                            if (medications.length > 0) {
+                                medicationsList.innerHTML = '';
+                                
+                                medications.forEach(medication => {
+                                    const medicationItem = document.createElement("div");
+                                    medicationItem.className = "medical-item";
+                                    medicationItem.dataset.id = medication.id;
+                                    
+                                    medicationItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${medication.name}</h3>
+                                            <span class="medical-item-date">${medication.startDate ? formatDate(medication.startDate) : ''}</span>
+                                        </div>
+                                        <div class="medical-item-body">
+                                            ${medication.dose ? `<p><strong>الجرعة:</strong> ${medication.dose}</p>` : ''}
+                                            ${medication.frequency ? `<p><strong>التكرار:</strong> ${medication.frequency}</p>` : ''}
+                                            ${medication.reason ? `<p><strong>سبب الاستخدام:</strong> ${medication.reason}</p>` : ''}
+                                            ${medication.doctor ? `<p><strong>الطبيب:</strong> ${medication.doctor}</p>` : ''}
+                                        </div>
+                                        ${medication.notes ? `<div class="medical-item-notes">${medication.notes}</div>` : ''}
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-medication" data-id="${medication.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-medication" data-id="${medication.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    medicationsList.appendChild(medicationItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                medicationsList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي أدوية بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("medicationsList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي أدوية بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات الأدوية:", error);
+                    });
+            }
+
+            // وظيفة تحميل الحالات الطبية
+            function loadConditions() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().conditions) {
+                            const conditions = doc.data().conditions;
+                            const conditionsList = document.getElementById("conditionsList");
+                            
+                            if (conditions.length > 0) {
+                                conditionsList.innerHTML = '';
+                                
+                                conditions.forEach(condition => {
+                                    const conditionItem = document.createElement("div");
+                                    conditionItem.className = "medical-item";
+                                    conditionItem.dataset.id = condition.id;
+                                    
+                                    conditionItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${condition.name}</h3>
+                                            <span class="medical-item-date">${condition.diagnosisDate ? formatDate(condition.diagnosisDate) : ''}</span>
+                                        </div>
+                                        <div class="medical-item-body">
+                                            ${condition.doctor ? `<p><strong>الطبيب:</strong> ${condition.doctor}</p>` : ''}
+                                            ${condition.treatment ? `<p><strong>العلاج:</strong> ${condition.treatment}</p>` : ''}
+                                        </div>
+                                        ${condition.notes ? `<div class="medical-item-notes">${condition.notes}</div>` : ''}
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-condition" data-id="${condition.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-condition" data-id="${condition.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    conditionsList.appendChild(conditionItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                conditionsList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي حالات طبية بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("conditionsList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي حالات طبية بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات الحالات الطبية:", error);
+                    });
+            }
+
+            // وظيفة تحميل العمليات الجراحية
+            function loadSurgeries() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().surgeries) {
+                            const surgeries = doc.data().surgeries;
+                            const surgeriesList = document.getElementById("surgeriesList");
+                            
+                            if (surgeries.length > 0) {
+                                surgeriesList.innerHTML = '';
+                                
+                                surgeries.forEach(surgery => {
+                                    const surgeryItem = document.createElement("div");
+                                    surgeryItem.className = "medical-item";
+                                    surgeryItem.dataset.id = surgery.id;
+                                    
+                                    surgeryItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${surgery.name}</h3>
+                                            <span class="medical-item-date">${surgery.date ? formatDate(surgery.date) : ''}</span>
+                                        </div>
+                                        <div class="medical-item-body">
+                                            ${surgery.hospital ? `<p><strong>المستشفى:</strong> ${surgery.hospital}</p>` : ''}
+                                            ${surgery.doctor ? `<p><strong>الطبيب:</strong> ${surgery.doctor}</p>` : ''}
+                                            ${surgery.results ? `<p><strong>النتائج:</strong> ${surgery.results}</p>` : ''}
+                                        </div>
+                                        ${surgery.notes ? `<div class="medical-item-notes">${surgery.notes}</div>` : ''}
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-surgery" data-id="${surgery.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-surgery" data-id="${surgery.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    surgeriesList.appendChild(surgeryItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                surgeriesList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي عمليات جراحية بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("surgeriesList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي عمليات جراحية بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات العمليات الجراحية:", error);
+                    });
+            }
+            
+            // وظيفة تحميل التطعيمات
+            function loadVaccinations() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().vaccinations) {
+                            const vaccinations = doc.data().vaccinations;
+                            const vaccinationsList = document.getElementById("vaccinationsList");
+                            
+                            if (vaccinations.length > 0) {
+                                vaccinationsList.innerHTML = '';
+                                
+                                vaccinations.forEach(vaccination => {
+                                    const vaccinationItem = document.createElement("div");
+                                    vaccinationItem.className = "medical-item";
+                                    vaccinationItem.dataset.id = vaccination.id;
+                                    
+                                    vaccinationItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${vaccination.name}</h3>
+                                            <span class="medical-item-date">${vaccination.date ? formatDate(vaccination.date) : ''}</span>
+                                        </div>
+                                        <div class="medical-item-body">
+                                            ${vaccination.dose ? `<p><strong>الجرعة:</strong> ${vaccination.dose}</p>` : ''}
+                                        </div>
+                                        ${vaccination.notes ? `<div class="medical-item-notes">${vaccination.notes}</div>` : ''}
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-vaccination" data-id="${vaccination.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-vaccination" data-id="${vaccination.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    vaccinationsList.appendChild(vaccinationItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                vaccinationsList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي تطعيمات بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("vaccinationsList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي تطعيمات بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات التطعيمات:", error);
+                    });
+            }
+            
+            // وظيفة تحميل التاريخ العائلي
+            function loadFamilyHistory() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().familyHistory) {
+                            const familyHistory = doc.data().familyHistory;
+                            const familyHistoryList = document.getElementById("familyHistoryList");
+                            
+                            if (familyHistory.length > 0) {
+                                familyHistoryList.innerHTML = '';
+                                
+                                familyHistory.forEach(history => {
+                                    const historyItem = document.createElement("div");
+                                    historyItem.className = "medical-item";
+                                    historyItem.dataset.id = history.id;
+                                    
+                                    historyItem.innerHTML = `
+                                        <div class="medical-item-header">
+                                            <h3 class="medical-item-title">${history.condition}</h3>
+                                        </div>
+                                        <div class="medical-item-body">
+                                            <p><strong>صلة القرابة:</strong> ${history.relation}</p>
+                                        </div>
+                                        ${history.notes ? `<div class="medical-item-notes">${history.notes}</div>` : ''}
+                                        <div class="medical-item-actions">
+                                            <button class="medical-item-action-btn edit-family-history" data-id="${history.id}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="medical-item-action-btn delete-family-history" data-id="${history.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    familyHistoryList.appendChild(historyItem);
+                                });
+                                
+                                // إضافة مستمعي أحداث للأزرار
+                                setupMedicalItemActions();
+                            } else {
+                                familyHistoryList.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة أي تاريخ عائلي بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("familyHistoryList").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة أي تاريخ عائلي بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات التاريخ العائلي:", error);
+                    });
+            }
+            
+            // وظيفة تحميل نمط الحياة
+            function loadLifestyle() {
+                db.collection("users").doc(userID).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            // التحقق من وجود البيانات في الموقع الصحيح
+                            let lifestyle;
+                            
+                            // البيانات قد تكون عنصر واحد أو مصفوفة
+                            if (doc.data().lifestyle) {
+                                // إذا كانت البيانات مصفوفة، نأخذ آخر عنصر (الأحدث)
+                                if (Array.isArray(doc.data().lifestyle) && doc.data().lifestyle.length > 0) {
+                                    lifestyle = doc.data().lifestyle[doc.data().lifestyle.length - 1];
+                                    console.log("تم العثور على بيانات نمط الحياة كمصفوفة:", lifestyle);
+                                } 
+                                // إذا كانت البيانات كائن واحد، نستخدمه مباشرة
+                                else if (typeof doc.data().lifestyle === 'object') {
+                                    lifestyle = doc.data().lifestyle;
+                                    console.log("تم العثور على بيانات نمط الحياة ككائن:", lifestyle);
+                                }
+                            }
+                            
+                            const lifestyleInfo = document.getElementById("lifestyleInfo");
+                            
+                            if (lifestyle) {
+                                let lifestyleHTML = '';
+                                
+                                lifestyleHTML += `
+                                    <div class="info-item lifestyle-item">
+                                        <div class="lifestyle-section">
+                                            <h4>معلومات عامة</h4>
+                                            <div class="lifestyle-details">
+                                                ${lifestyle.smoking ? `<p><strong>التدخين:</strong> ${lifestyle.smoking}</p>` : ''}
+                                                ${lifestyle.alcohol ? `<p><strong>الكحول:</strong> ${lifestyle.alcohol}</p>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="lifestyle-section">
+                                            <h4>النشاط البدني والتغذية</h4>
+                                            <div class="lifestyle-details">
+                                                ${lifestyle.activity ? `<p><strong>النشاط البدني:</strong> ${lifestyle.activity}</p>` : ''}
+                                                ${lifestyle.diet ? `<p><strong>النظام الغذائي:</strong> ${lifestyle.diet}</p>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="lifestyle-section">
+                                            <h4>النوم</h4>
+                                            <div class="lifestyle-details">
+                                                ${lifestyle.sleepStart ? `<p><strong>موعد النوم:</strong> ${lifestyle.sleepStart}</p>` : ''}
+                                                ${lifestyle.sleepEnd ? `<p><strong>موعد الاستيقاظ:</strong> ${lifestyle.sleepEnd}</p>` : ''}
+                                            </div>
+                                        </div>
+                                        ${lifestyle.notes ? `<div class="lifestyle-notes"><strong>ملاحظات:</strong> ${lifestyle.notes}</div>` : ''}
+                                    </div>
+                                `;
+                                
+                                lifestyleInfo.innerHTML = lifestyleHTML;
+                            } else {
+                                lifestyleInfo.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <p>لم يتم إضافة معلومات نمط الحياة بعد</p>
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            document.getElementById("lifestyleInfo").innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>لم يتم إضافة معلومات نمط الحياة بعد</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ في تحميل بيانات نمط الحياة:", error);
+                    });
+            }
+        }
+
+        // إعداد مستمعي أحداث النوافذ المنبثقة
+        function setupModalEventListeners() {
+            // الحصول على كل النوافذ المنبثقة
+            const modals = document.querySelectorAll('.modal');
+            
+            // إضافة مستمعي أحداث للنقر خارج النافذة لإغلاقها
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+            
+            // إعداد مستمعي أحداث لأزرار فتح النوافذ المنبثقة
+            const modalButtons = [
+                { btnId: 'btn-edit-basic-info', modalId: 'basicInfoModal' },
+                { btnId: 'btn-add-allergy', modalId: 'allergiesModal' },
+                { btnId: 'btn-add-medication', modalId: 'medicationsModal' },
+                { btnId: 'btn-add-condition', modalId: 'conditionsModal' },
+                { btnId: 'btn-add-surgery', modalId: 'surgeriesModal' },
+                { btnId: 'btn-add-vaccination', modalId: 'vaccinationsModal' },
+                { btnId: 'btn-add-family-history', modalId: 'familyHistoryModal' },
+                { btnId: 'btn-add-lifestyle', modalId: 'lifestyleModal' },
+                { btnId: 'btn-add-medical-test', modalId: 'medicalTestsModal' }
+            ];
+            
+            modalButtons.forEach(item => {
+                const button = document.getElementById(item.btnId);
+                const modal = document.getElementById(item.modalId);
+                
+                if (button) {
+                    button.addEventListener('click', function() {
+                        // تحويل الصفحة بناءً على معرف الزر
+                        const pageMapping = {
+                            'btn-edit-basic-info': 'basic-info-modal.html',
+                            'btn-add-allergy': 'allergies-modal.html',
+                            'btn-add-medication': 'medications-modal.html',
+                            'btn-add-condition': 'conditions-modal.html',
+                            'btn-add-surgery': 'surgeries-modal.html',
+                            'btn-add-vaccination': 'vaccinations-modal.html',
+                            'btn-add-family-history': 'family-history-modal.html',
+                            'btn-add-lifestyle': 'lifestyle-modal.html',
+                            'btn-add-medical-test': 'medical-tests-modal.html'
+                        };
+                        
+                        const targetPage = pageMapping[item.btnId];
+                        if (targetPage) {
+                            window.location.href = targetPage;
+                        } else if (modal) {
+                            // إذا لم يتم العثور على صفحة، استخدم النافذة المنبثقة كاحتياطي
+                            modal.style.display = 'block';
+                        }
+                    });
+                }
+            });
+            
+            // إعداد مستمعي أحداث لأزرار الإغلاق
+            const closeButtons = document.querySelectorAll('.close-button, [id^="btn-cancel-"]');
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // إعداد مستمعي أحداث النماذج
+        function setupFormEventListeners() {
+            // نموذج المعلومات الأساسية
+            const basicInfoForm = document.getElementById('basicInfoForm');
+            if (basicInfoForm) {
+                basicInfoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveBasicInfo();
+                });
+            }
+            
+            // نموذج الحساسية
+            const allergyForm = document.getElementById('allergyForm');
+            if (allergyForm) {
+                allergyForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveAllergy();
+                });
+                
+                // إعداد أزرار شدة الحساسية
+                setupSeverityButtons('allergyForm');
+            }
+            
+            // نموذج الأدوية
+            const medicationForm = document.getElementById('medicationForm');
+            if (medicationForm) {
+                medicationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveMedication();
+                });
+            }
+            
+            // نموذج الأمراض المزمنة
+            const conditionForm = document.getElementById('conditionForm');
+            if (conditionForm) {
+                conditionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveCondition();
+                });
+                
+                // إعداد أزرار شدة المرض
+                setupSeverityButtons('conditionForm');
+            }
+            
+            // نموذج العمليات الجراحية
+            const surgeryForm = document.getElementById('surgeryForm');
+            if (surgeryForm) {
+                surgeryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveSurgery();
+                });
+            }
+            
+            // نموذج التطعيمات
+            const vaccinationForm = document.getElementById('vaccinationForm');
+            if (vaccinationForm) {
+                vaccinationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveVaccination();
+                });
+            }
+            
+            // نموذج التاريخ العائلي
+            const familyHistoryForm = document.getElementById('familyHistoryForm');
+            if (familyHistoryForm) {
+                familyHistoryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveFamilyHistory();
+                });
+                
+                // إظهار حقل صلة القرابة الأخرى عند اختيار "آخر"
+                const relationshipSelect = document.getElementById('familyHistoryRelationship');
+                if (relationshipSelect) {
+                    relationshipSelect.addEventListener('change', function() {
+                        const otherGroup = document.getElementById('otherRelationshipGroup');
+                        if (this.value === 'آخر') {
+                            otherGroup.style.display = 'block';
+                        } else {
+                            otherGroup.style.display = 'none';
+                        }
+                    });
+                }
+            }
+            
+            // نموذج نمط الحياة
+            const lifestyleForm = document.getElementById('lifestyleForm');
+            if (lifestyleForm) {
+                lifestyleForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveLifestyle();
+                });
+            }
+        }
+
+        // إعداد أزرار اختيار شدة المرض/الحساسية
+        function setupSeverityButtons(formId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            
+            const severityOptions = form.querySelectorAll('.severity-option');
+            const hiddenInput = form.querySelector('input[type="hidden"]');
+            
+            severityOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // إزالة الفئة النشطة من جميع الخيارات
+                    severityOptions.forEach(o => o.classList.remove('selected'));
+                    
+                    // إضافة الفئة النشطة إلى الخيار المحدد
+                    this.classList.add('selected');
+                    
+                    // تحديث قيمة الحقل المخفي
+                    hiddenInput.value = this.dataset.value;
+                });
+            });
+        }
+
+        // وظائف حفظ البيانات
+        function saveBasicInfo() {
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يجب تسجيل الدخول لحفظ المعلومات');
+                return;
+            }
+            
+            const basicInfo = {
+                fullName: document.getElementById('inputFullName').value,
+                birthDate: document.getElementById('inputDateOfBirth').value,  // تغيير dateOfBirth إلى birthDate لتوحيد الأسماء مع النموذج الأصلي
+                gender: document.getElementById('inputGender').value,
+                bloodType: document.getElementById('inputBloodType').value,
+                height: document.getElementById('inputHeight').value,
+                weight: document.getElementById('inputWeight').value,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            firebase.firestore().collection('users').doc(user.uid).set({
+                profile: {
+                    basicInfo: basicInfo
+                }
+            }, { merge: true })
+            .then(() => {
+                // تحديث العرض
+                document.getElementById("fullName").textContent = basicInfo.fullName || "-";
+                document.getElementById("dateOfBirth").textContent = basicInfo.birthDate ? formatDate(basicInfo.birthDate) : "-";
+                document.getElementById("gender").textContent = basicInfo.gender || "-";
+                document.getElementById("bloodType").textContent = basicInfo.bloodType || "-";
+                document.getElementById("height").textContent = basicInfo.height ? basicInfo.height + " سم" : "-";
+                document.getElementById("weight").textContent = basicInfo.weight ? basicInfo.weight + " كجم" : "-";
+                
+                // إغلاق النافذة المنبثقة
+                document.getElementById('basicInfoModal').style.display = 'none';
+                
+                // عرض رسالة نجاح
+                showToast('تم حفظ المعلومات الأساسية بنجاح');
+            })
+            .catch(error => {
+                console.error('خطأ في حفظ المعلومات الأساسية:', error);
+                alert('حدث خطأ أثناء حفظ المعلومات');
+            });
+        }
+
+        function saveAllergy() {
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يجب تسجيل الدخول لحفظ المعلومات');
+                return;
+            }
+            
+            const allergyData = {
+                id: generateUniqueId(),
+                name: document.getElementById('allergyName').value,
+                symptoms: document.getElementById('allergySymptoms').value,
+                severity: document.getElementById('allergySeverity').value,
+                diagnosisDate: document.getElementById('allergyDiagnosisDate').value,
+                notes: document.getElementById('allergyNotes').value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // الحصول على البيانات الحالية أولاً
+            firebase.firestore().collection('users').doc(user.uid).get()
+                .then(doc => {
+                    let allergies = [];
+                    if (doc.exists && doc.data().allergies) {
+                        allergies = doc.data().allergies;
+                    }
+                    
+                    // إضافة الحساسية الجديدة
+                    allergies.push(allergyData);
+                    
+                    // حفظ البيانات
+                    return firebase.firestore().collection('users').doc(user.uid).set({
+                        allergies: allergies
+                    }, { merge: true });
+                })
+                .then(() => {
+                    // إعادة تحميل البيانات
+                    loadAllergies();
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('allergyForm').reset();
+                    document.querySelectorAll('#allergyForm .severity-option').forEach(o => o.classList.remove('selected'));
+                    document.getElementById('allergySeverity').value = '';
+                    
+                    // إغلاق النافذة المنبثقة
+                    document.getElementById('allergiesModal').style.display = 'none';
+                    
+                    // عرض رسالة نجاح
+                    showToast('تم إضافة الحساسية بنجاح');
+                })
+                .catch(error => {
+                    console.error('خطأ في حفظ بيانات الحساسية:', error);
+                    alert('حدث خطأ أثناء حفظ المعلومات');
+                });
+        }
+
+        // وظائف مساعدة
+
+        // إنشاء معرف فريد
+        function generateUniqueId() {
+            return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // تنسيق التواريخ
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG');
+        }
+
+        // عرض رسالة نجاح
+        function showToast(message) {
+            // يمكن تنفيذ هذه الوظيفة لعرض رسائل النجاح
+            // سيتم تنفيذها في التحسينات المستقبلية
+            alert(message);
+        }
+        
+        // إضافة مستمعي أحداث للأزرار في عناصر البيانات الطبية
+        function setupMedicalItemActions() {
+            // أزرار تعديل الحساسية
+            const editAllergyButtons = document.querySelectorAll('.edit-allergy');
+            editAllergyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const allergyId = this.getAttribute('data-id');
+                    // يمكن تنفيذ وظيفة تعديل الحساسية هنا
+                    alert('تعديل الحساسية: ' + allergyId);
+                });
+            });
+            
+            // أزرار حذف الحساسية
+            const deleteAllergyButtons = document.querySelectorAll('.delete-allergy');
+            deleteAllergyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const allergyId = this.getAttribute('data-id');
+                    if (confirm('هل أنت متأكد من حذف هذه الحساسية؟')) {
+                        deleteAllergy(allergyId);
+                    }
+                });
+            });
+            
+            // أزرار تعديل الأدوية
+            const editMedicationButtons = document.querySelectorAll('.edit-medication');
+            editMedicationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const medicationId = this.getAttribute('data-id');
+                    // يمكن تنفيذ وظيفة تعديل الدواء هنا
+                    alert('تعديل الدواء: ' + medicationId);
+                });
+            });
+            
+            // أزرار حذف الأدوية
+            const deleteMedicationButtons = document.querySelectorAll('.delete-medication');
+            deleteMedicationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const medicationId = this.getAttribute('data-id');
+                    if (confirm('هل أنت متأكد من حذف هذا الدواء؟')) {
+                        deleteMedication(medicationId);
+                    }
+                });
+            });
+            
+            // وهكذا لباقي الأنواع (الأمراض المزمنة، العمليات الجراحية، إلخ)
+            // يمكن تنفيذ نفس النمط لكل نوع من البيانات
+            
+            // أزرار تعديل وحذف الأمراض المزمنة
+            setupItemActionButtons('.edit-condition', '.delete-condition', 'condition', deleteCondition);
+            
+            // أزرار تعديل وحذف العمليات الجراحية
+            setupItemActionButtons('.edit-surgery', '.delete-surgery', 'surgery', deleteSurgery);
+            
+            // أزرار تعديل وحذف التطعيمات
+            setupItemActionButtons('.edit-vaccination', '.delete-vaccination', 'vaccination', deleteVaccination);
+            
+            // أزرار تعديل وحذف التاريخ العائلي
+            setupItemActionButtons('.edit-family-history', '.delete-family-history', 'family history', deleteFamilyHistory);
+        }
+        
+        // وظيفة مساعدة لإعداد أزرار التعديل والحذف
+        function setupItemActionButtons(editSelector, deleteSelector, itemType, deleteFunction) {
+            // أزرار التعديل
+            const editButtons = document.querySelectorAll(editSelector);
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    alert('تعديل ' + itemType + ': ' + itemId);
+                });
+            });
+            
+            // أزرار الحذف
+            const deleteButtons = document.querySelectorAll(deleteSelector);
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                        deleteFunction(itemId);
+                    }
+                });
+            });
+        }
+
+        // إضافة مستمع لحدث تقديم نموذج التحاليل الطبية
+        if (document.getElementById('medicalTestForm')) {
+            document.getElementById('btn-save-medical-test').addEventListener('click', function() {
+                saveMedicalTest();
+            });
+
+            document.getElementById('btn-cancel-medical-test').addEventListener('click', function() {
+                document.getElementById('medicalTestsModal').style.display = 'none';
+            });
+        }
+
+        // وظيفة حفظ التحليل الطبي
+        function saveMedicalTest() {
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يرجى تسجيل الدخول أولاً');
+                return;
+            }
+
+            const testData = {
+                id: generateUniqueId(),
+                name: document.getElementById('testName').value,
+                date: document.getElementById('testDate').value,
+                result: document.getElementById('testResult').value,
+                unit: document.getElementById('testUnit').value || '',
+                referenceRange: document.getElementById('referenceRange').value || '',
+                notes: document.getElementById('testNotes').value || '',
+                timestamp: new Date().toISOString()
+            };
+
+            // الحصول على القائمة الحالية من التحاليل
+            firebase.firestore().collection('users').doc(user.uid).get()
+                .then(doc => {
+                    let medicalTests = [];
+                    if (doc.exists && doc.data().medicalTests) {
+                        medicalTests = doc.data().medicalTests;
+                    }
+                    
+                    // إضافة التحليل الجديد
+                    medicalTests.push(testData);
+                    
+                    // حفظ البيانات
+                    return firebase.firestore().collection('users').doc(user.uid).set({
+                        medicalTests: medicalTests
+                    }, { merge: true });
+                })
+                .then(() => {
+                    // إعادة تحميل البيانات
+                    loadMedicalTests();
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('medicalTestForm').reset();
+                    
+                    // إغلاق النافذة المنبثقة
+                    document.getElementById('medicalTestsModal').style.display = 'none';
+                    
+                    // عرض رسالة نجاح
+                    showToast('تم إضافة التحليل الطبي بنجاح');
+                })
+                .catch(error => {
+                    console.error('خطأ في حفظ التحليل الطبي:', error);
+                    alert('حدث خطأ أثناء حفظ المعلومات');
+                });
+        }
+
+        // وظيفة تحميل التحاليل الطبية
+        function loadMedicalTests() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            firebase.firestore().collection('users').doc(user.uid).get()
+                .then(doc => {
+                    const medicalTestsList = document.getElementById('medicalTestsList');
+                    
+                    if (doc.exists && doc.data().medicalTests && doc.data().medicalTests.length > 0) {
+                        const tests = doc.data().medicalTests;
+                        let testsHTML = '';
+                        
+                        tests.forEach(test => {
+                            testsHTML += `
+                                <div class="info-item test-item" id="${test.id}">
+                                    <div class="test-header">
+                                        <div class="test-name">${test.name}</div>
+                                        <div class="test-date">${formatDate(test.date)}</div>
+                                    </div>
+                                    <div class="test-details">
+                                        <div class="test-result">
+                                            <span class="result-value">${test.result}</span>
+                                            ${test.unit ? `<span class="result-unit">${test.unit}</span>` : ''}
+                                        </div>
+                                        ${test.referenceRange ? `<div class="reference-range">النطاق المرجعي: ${test.referenceRange}</div>` : ''}
+                                    </div>
+                                    ${test.notes ? `<div class="test-notes">${test.notes}</div>` : ''}
+                                    <button class="delete-btn" data-id="${test.id}" onclick="deleteMedicalTest('${test.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        });
+                        
+                        medicalTestsList.innerHTML = testsHTML;
+                    } else {
+                        medicalTestsList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <p>لم يتم إضافة أي تحاليل طبية بعد</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('خطأ في تحميل التحاليل الطبية:', error);
+                });
+        }
+
+        // وظيفة حذف تحليل طبي
+        function deleteMedicalTest(testId) {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+            
+            if (confirm('هل أنت متأكد من حذف هذا التحليل؟')) {
+                firebase.firestore().collection('users').doc(user.uid).get()
+                    .then(doc => {
+                        if (doc.exists && doc.data().medicalTests) {
+                            let medicalTests = doc.data().medicalTests;
+                            medicalTests = medicalTests.filter(test => test.id !== testId);
+                            
+                            return firebase.firestore().collection('users').doc(user.uid).update({
+                                medicalTests: medicalTests
+                            });
+                        }
+                    })
+                    .then(() => {
+                        loadMedicalTests();
+                        showToast('تم حذف التحليل بنجاح');
+                    })
+                    .catch(error => {
+                        console.error('خطأ في حذف التحليل:', error);
+                        alert('حدث خطأ أثناء حذف التحليل');
+                    });
+            }
+        }
+        
+        // وظيفة حذف حساسية
+        function deleteAllergy(allergyId) {
+            deleteItemFromCollection('allergies', allergyId, 'تم حذف الحساسية بنجاح', loadAllergies);
+        }
+        
+        // وظيفة حذف دواء
+        function deleteMedication(medicationId) {
+            deleteItemFromCollection('medications', medicationId, 'تم حذف الدواء بنجاح', loadMedications);
+        }
+        
+        // وظيفة حذف مرض مزمن
+        function deleteCondition(conditionId) {
+            deleteItemFromCollection('conditions', conditionId, 'تم حذف المرض بنجاح', loadConditions);
+        }
+        
+        // وظيفة حذف عملية جراحية
+        function deleteSurgery(surgeryId) {
+            deleteItemFromCollection('surgeries', surgeryId, 'تم حذف العملية الجراحية بنجاح', loadSurgeries);
+        }
+        
+        // وظيفة حذف تطعيم
+        function deleteVaccination(vaccinationId) {
+            deleteItemFromCollection('vaccinations', vaccinationId, 'تم حذف التطعيم بنجاح', loadVaccinations);
+        }
+        
+        // وظيفة حذف تاريخ عائلي
+        function deleteFamilyHistory(historyId) {
+            deleteItemFromCollection('familyHistory', historyId, 'تم حذف التاريخ العائلي بنجاح', loadFamilyHistory);
+        }
+        
+        // وظيفة عامة لحذف عنصر من مجموعة
+        function deleteItemFromCollection(collection, itemId, successMessage, reloadFunction) {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+            
+            firebase.firestore().collection('users').doc(user.uid).get()
+                .then(doc => {
+                    if (doc.exists && doc.data()[collection]) {
+                        let items = doc.data()[collection];
+                        items = items.filter(item => item.id !== itemId);
+                        
+                        const updateData = {};
+                        updateData[collection] = items;
+                        
+                        return firebase.firestore().collection('users').doc(user.uid).update(updateData);
+                    }
+                })
+                .then(() => {
+                    reloadFunction();
+                    showToast(successMessage);
+                })
+                .catch(error => {
+                    console.error('خطأ في حذف العنصر:', error);
+                    alert('حدث خطأ أثناء حذف العنصر');
+                });
+        }
+    </script>
+
+    <!-- نافذة منبثقة للتحاليل الطبية -->
+    <div id="medicalTestsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة تحليل طبي</h3>
+                <span class="close-button" id="btn-close-medical-tests-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="medicalTestForm" class="modal-form">
+                    <div class="form-group">
+                        <label for="testName">اسم التحليل</label>
+                        <input type="text" id="testName" placeholder="مثال: تحليل سكر الدم" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="testDate">تاريخ التحليل</label>
+                        <input type="date" id="testDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="testResult">النتيجة</label>
+                        <input type="text" id="testResult" placeholder="مثال: 110" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="testUnit">وحدة القياس</label>
+                        <input type="text" id="testUnit" placeholder="مثال: mg/dL">
+                    </div>
+                    <div class="form-group">
+                        <label for="referenceRange">النطاق المرجعي</label>
+                        <input type="text" id="referenceRange" placeholder="مثال: 70-110">
+                    </div>
+                    <div class="form-group">
+                        <label for="testNotes">ملاحظات إضافية</label>
+                        <textarea id="testNotes" rows="3" placeholder="أي معلومات إضافية عن التحليل"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-cancel-medical-test">إلغاء</button>
+                        <button type="button" class="btn-primary" id="btn-save-medical-test">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

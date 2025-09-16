@@ -1,0 +1,251 @@
+/* 
+ * ملف الأنماط الخاص بصفحة التحاليل الطبية
+ */
+
+/* الأنماط العامة للصفحة */
+body { 
+    background: #f7fafc; 
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.container { 
+    max-width: 1100px; 
+    margin: 40px auto; 
+    background: #fff; 
+    border-radius: 18px; 
+    box-shadow: 0 8px 40px rgba(76,175,80,0.10); 
+    padding: 32px 24px; 
+}
+
+.header { 
+    text-align: center; 
+    margin-bottom: 18px; 
+}
+
+.header h1 { 
+    color: #388e3c; 
+    font-size: 2.2em; 
+    margin-bottom: 10px; 
+    font-weight: bold; 
+}
+
+.header p { 
+    color: #1976d2; 
+    font-size: 1.1em; 
+    margin-bottom: 0; 
+}
+
+/* إرشادات منظمة الصحة العالمية */
+.who-guidelines {
+    background: #e3f2fd;
+    border: 2px solid #1976d2;
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    color: #1976d2;
+    font-size: 1.08em;
+}
+
+.who-guidelines h2 {
+    color: #1976d2;
+    font-size: 1.15em;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* أزرار التنقل */
+.back-btn { 
+    background: #1976d2; 
+    color: #fff; 
+    border: none; 
+    border-radius: 12px; 
+    padding: 8px 22px; 
+    font-size: 1em; 
+    font-weight: bold; 
+    cursor: pointer; 
+    margin-bottom: 18px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    transition: background 0.2s; 
+}
+
+.back-btn:hover { 
+    background: #388e3c; 
+}
+
+/* التبويبات */
+.tabs { 
+    display: flex; 
+    gap: 10px; 
+    justify-content: center; 
+    margin-bottom: 30px; 
+    flex-wrap: wrap; 
+}
+
+.tab-btn { 
+    background: #f8fff8; 
+    border: 2px solid #388e3c; 
+    color: #388e3c; 
+    padding: 13px 32px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    font-weight: bold; 
+    transition: all 0.2s; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+.tab-btn.active, .tab-btn:hover { 
+    background: #388e3c; 
+    color: #fff; 
+    box-shadow: 0 4px 16px rgba(76,175,80,0.13); 
+}
+
+.tab-content { 
+    display: none; 
+    margin-top: 20px; 
+}
+
+.tab-content.active { 
+    display: block; 
+}
+
+/* بطاقات الاختبارات */
+.test-card { 
+    background: #f8fff8; 
+    border-radius: 16px; 
+    box-shadow: 0 2px 12px #388e3c22; 
+    padding: 24px 18px; 
+    margin-bottom: 28px; 
+}
+
+.test-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 18px; 
+}
+
+.test-title { 
+    font-size: 1.3em; 
+    color: #1976d2; 
+    font-weight: bold; 
+}
+
+/* نماذج الإدخال */
+.form-row { 
+    display: flex; 
+    gap: 18px; 
+    margin-bottom: 14px; 
+}
+
+.form-group { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    margin-bottom: 10px; 
+}
+
+.form-group label { 
+    color: #388e3c; 
+    font-weight: bold; 
+    margin-bottom: 6px; 
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea { 
+    padding: 10px 12px; 
+    border: 2px solid #e8f5e8; 
+    border-radius: 8px; 
+    font-size: 1em; 
+    background: #fff; 
+    transition: border 0.2s; 
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus { 
+    border-color: #388e3c; 
+    outline: none; 
+}
+
+/* النطاق المرجعي */
+.reference-range { 
+    background: #e3f2fd; 
+    color: #1976d2; 
+    padding: 7px 10px; 
+    border-radius: 8px; 
+    font-size: 0.95em; 
+    margin-top: 4px; 
+}
+
+/* زر الحفظ */
+.save-btn { 
+    background: linear-gradient(135deg, #388e3c, #1976d2); 
+    color: #fff; 
+    border: none; 
+    padding: 13px 32px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    font-weight: bold; 
+    margin-top: 18px; 
+    transition: background 0.2s; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.save-btn:hover { 
+    background: linear-gradient(135deg, #1976d2, #388e3c); 
+}
+
+/* جدول التاريخ */
+.history-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 18px; 
+}
+
+.history-table th, 
+.history-table td { 
+    padding: 12px; 
+    text-align: right; 
+    border-bottom: 2px solid #e8f5e8; 
+}
+
+.history-table th { 
+    background: #f8fff8; 
+    color: #388e3c; 
+    font-weight: bold; 
+}
+
+/* تكيف مع الشاشات المختلفة */
+@media (max-width: 900px) { 
+    .container { 
+        padding: 12px 4vw; 
+    } 
+    .form-row { 
+        flex-direction: column; 
+        gap: 8px; 
+    } 
+}
+
+@media (max-width: 600px) { 
+    .header h1 { 
+        font-size: 2em; 
+    } 
+    .tabs { 
+        flex-direction: column; 
+        gap: 6px; 
+    } 
+    .test-card { 
+        padding: 12px 6px; 
+    } 
+}

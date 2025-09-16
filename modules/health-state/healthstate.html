@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title id="title-ar">حالتي الصحية</title>
+  <title id="title-en" style="display:none;">My Health State</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <style>
+    body {background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); min-height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif;}
+    .container {max-width: 1000px; margin: 40px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 30px rgba(76, 175, 80, 0.2); padding: 30px;}
+    h1 {color:#009688; margin-bottom:18px; text-align:right;}
+    .summary {background:#e0f2f1; border-radius:10px; padding:14px 18px; margin-bottom:22px;}
+    .summary strong {color:#1976d2;}
+    .cards {display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:22px;}
+    @media(max-width:700px){.cards{grid-template-columns:1fr;}}
+    .card {background:#f5f5f5; border-radius:12px; padding:16px 12px; box-shadow:0 2px 8px #00968822;}
+    .card-title {font-weight:bold; color:#2196F3; margin-bottom:7px;}
+    .card-value {font-size:1.5em; font-weight:bold; margin-bottom:5px;}
+    .card-note {color:#e53935; font-size:1.05em;}
+    .card-note.good {color:#388e3c;}
+    .card-note.warn {color:#fbc02d;}
+    .notes {background:#fffde7;padding:14px;border-radius:10px;margin-bottom:18px;border:1px solid #ffe082;}
+    .btn {display:inline-block;background:#2196F3;color:#fff;padding:10px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;margin-top:8px;}
+    .btn:hover {background:#1976d2;}
+    #backBtn {
+      position: fixed; top: 18px; left: 18px; z-index:99999;
+      background: #eee; color: #2196F3; border: none; border-radius: 8px;
+      padding: 8px 20px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 8px #2196F344;
+    }
+    #lang-switch {margin-bottom:18px;text-align:left;}
+    .lang-btn {border:none;background:#eee;padding:6px 19px;margin:0 3px;border-radius:10px;cursor:pointer;}
+    .lang-btn.active, .lang-btn:focus {background:#2196F3;color:#fff;}
+    #firstMeasurementModal {
+      position: fixed; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(0,0,0,0.22); z-index:99999;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #firstMeasurementModal .modal-content {
+      background: #fff; padding: 28px 16px 16px 16px;
+      border-radius: 14px; box-shadow: 0 2px 18px #00968833;
+      min-width: 340px; max-width: 98vw;
+    }
+    .form-row {display: flex; flex-direction: column; gap: 4px; margin-bottom:12px;}
+  </style>
+</head>
+<body>
+  <button onclick="window.history.back()" id="backBtn">
+    <span id="back-ar" style="display:block;">رجوع</span>
+    <span id="back-en" style="display:none;">Back</span>
+  </button>
+  <div class="container">
+    <div id="lang-switch">
+      <button class="lang-btn" id="lang-ar" style="font-weight:bold;">العربية</button>
+      <button class="lang-btn" id="lang-en">English</button>
+    </div>
+    <h1 id="header-ar" style="display:block;">حالتي الصحية</h1>
+    <h1 id="header-en" style="display:none;">My Health State</h1>
+    <div class="summary" id="lastMeasurements"></div>
+    <div class="cards" id="cards"></div>
+    <div class="notes" id="notes"></div>
+    <button class="btn" onclick="window.location.href='measurments.html'">
+      <span id="btn-update-ar" style="display:block;">تحديث القياسات</span>
+      <span id="btn-update-en" style="display:none;">Update Measurements</span>
+    </button>
+  </div>
+  <!-- نافذة لإدخال أول قياس فقط -->
+  <div id="firstMeasurementModal" style="display:none;">
+    <div class="modal-content" dir="auto">
+      <div style="text-align:left; margin-bottom:12px;">
+        <button class="lang-btn" id="modal-lang-ar" style="font-weight:bold;">العربية</button>
+        <button class="lang-btn" id="modal-lang-en">English</button>
+      </div>
+      <h2 id="modal-title-ar" style="display:block;">سجل بياناتك الصحية الأولى</h2>
+      <h2 id="modal-title-en" style="display:none;">Register your first health data</h2>
+      <form id="firstMeasurementForm">
+        <div class="form-row">
+          <label id="label-weight-ar" for="weight" style="display:block;">الوزن</label>
+          <label id="label-weight-en" for="weight" style="display:none;">Weight</label>
+          <input type="number" id="weight" required min="20" max="300" step="0.1">
+          <select id="weight-unit"><option value="kg" id="weight-unit-ar">كجم</option><option value="lb" id="weight-unit-en" style="display:none;">lb</option></select>
+        </div>
+        <div class="form-row">
+          <label id="label-height-ar" for="height" style="display:block;">الطول</label>
+          <label id="label-height-en" for="height" style="display:none;">Height</label>
+          <input type="number" id="height" required min="80" max="250" step="0.1">
+          <select id="height-unit"><option value="cm" id="height-unit-ar">سم</option><option value="in" id="height-unit-en" style="display:none;">in</option></select>
+        </div>
+        <div class="form-row">
+          <label id="label-dob-ar" for="dob" style="display:block;">تاريخ الميلاد</label>
+          <label id="label-dob-en" for="dob" style="display:none;">Date of Birth</label>
+          <input type="date" id="dob" required>
+        </div>
+        <div class="form-row">
+          <label id="label-gender-ar" style="display:block;">النوع</label>
+          <label id="label-gender-en" style="display:none;">Gender</label>
+          <div>
+            <label><input type="radio" name="gender" value="male" required>
+              <span id="gender-male-ar" style="display:block;">ذكر</span>
+              <span id="gender-male-en" style="display:none;">Male</span>
+            </label>
+            <label><input type="radio" name="gender" value="female">
+              <span id="gender-female-ar" style="display:block;">أنثى</span>
+              <span id="gender-female-en" style="display:none;">Female</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label id="label-waist-ar" for="waist" style="display:block;">محيط الخصر</label>
+          <label id="label-waist-en" for="waist" style="display:none;">Waist Circumference</label>
+          <input type="number" id="waist" required min="40" max="200" step="0.1">
+          <select id="waist-unit"><option value="cm" id="waist-unit-ar">سم</option><option value="in" id="waist-unit-en" style="display:none;">in</option></select>
+        </div>
+        <div class="form-row">
+          <label id="label-hip-ar" for="hip" style="display:block;">محيط الورك (اختياري)</label>
+          <label id="label-hip-en" for="hip" style="display:none;">Hip Circumference (optional)</label>
+          <input type="number" id="hip" min="40" max="200" step="0.1">
+          <select id="hip-unit"><option value="cm" id="hip-unit-ar">سم</option><option value="in" id="hip-unit-en" style="display:none;">in</option></select>
+        </div>
+        <div class="form-row">
+          <label id="label-activity-ar" for="activity" style="display:block;">النشاط البدني</label>
+          <label id="label-activity-en" for="activity" style="display:none;">Physical Activity Level</label>
+          <select id="activity" required>
+            <option value="" disabled selected>-- اختر --</option>
+            <option value="inactive" id="activity-inactive-ar" style="display:block;">خامل</option>
+            <option value="inactive" id="activity-inactive-en" style="display:none;">Inactive</option>
+            <option value="moderate" id="activity-moderate-ar" style="display:block;">متوسط</option>
+            <option value="moderate" id="activity-moderate-en" style="display:none;">Moderate</option>
+            <option value="active" id="activity-active-ar" style="display:block;">نشيط</option>
+            <option value="active" id="activity-active-en" style="display:none;">Active</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label id="label-bp-ar" for="bp" style="display:block;">ضغط الدم (اختياري)</label>
+          <label id="label-bp-en" for="bp" style="display:none;">Blood Pressure (optional)</label>
+          <input type="text" id="bp" placeholder="120/80">
+        </div>
+        <div class="form-row">
+          <label id="label-glucose-ar" for="glucose" style="display:block;">سكر صايم (اختياري)</label>
+          <label id="label-glucose-en" for="glucose" style="display:none;">Fasting Glucose (optional)</label>
+          <input type="number" id="glucose" min="50" max="400" step="0.1">
+        </div>
+        <div class="form-row">
+          <label id="label-note-ar" for="note" style="display:block;">ملاحظات (اختياري)</label>
+          <label id="label-note-en" for="note" style="display:none;">Notes (optional)</label>
+          <textarea id="note" rows="2"></textarea>
+        </div>
+        <div style="text-align:center;margin-top:18px;">
+          <button type="submit" id="submit-ar" style="display:block;">حفظ البيانات</button>
+          <button type="submit" id="submit-en" style="display:none;">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    // اللغة
+    let lang = localStorage.getItem('hl_language') || 'ar';
+    function setLang(newLang) {
+      lang = newLang;
+      localStorage.setItem('hl_language', lang);
+      ['ar','en'].forEach(l=>{
+        document.querySelectorAll(`[id$="-${l}"]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+        document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+      });
+      if(document.getElementById('firstMeasurementModal')) setLangModal(lang);
+    }
+    function setLangModal(newLang) {
+      ['ar','en'].forEach(l=>{
+        document.querySelectorAll(`#firstMeasurementModal [id$="-${l}"]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+        document.querySelectorAll(`#firstMeasurementModal [id^="activity-"][id$="-"+l]`).forEach(el=>el.style.display=(l===lang?'block':'none'));
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.remove('active'));
+      document.getElementById('modal-lang-' + lang).classList.add('active');
+    }
+    document.getElementById('lang-ar').onclick = ()=>setLang('ar');
+    document.getElementById('lang-en').onclick = ()=>setLang('en');
+    document.getElementById('modal-lang-ar').onclick = ()=>setLangModal('ar');
+    document.getElementById('modal-lang-en').onclick = ()=>setLangModal('en');
+
+    // ... دوال الحسابات كما هي
+
+    // ترجمة بعض النصوص
+    function txt(key) {
+      let dict = {
+        summary_loading: {ar:"جاري التحميل...",en:"Loading..."},
+        summary_no_data: {ar:"لم يتم العثور على قياسات، برجاء إدخال قياساتك أولاً.",en:"No measurements found. Please enter your first data."},
+        summary_login: {ar:"برجاء تسجيل الدخول أولاً.",en:"Please sign in first."},
+        notes_title: {ar:"ملاحظات عامة:",en:"General notes:"},
+        notes_good: {ar:"مؤشراتك الصحية جيدة، حافظ عليها!",en:"Your health indicators are good, keep it up!"},
+        btn_update: {ar:"تحديث القياسات",en:"Update Measurements"},
+        modal_title: {ar:"سجل بياناتك الصحية الأولى",en:"Register your first health data"}
+      };
+      return dict[key] ? dict[key][lang] : key;
+    }
+
+    // Firebase إعدادات
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdUHldUu83kfgc_qUn-h5rZ8xTl2rhNjA",
+      authDomain: "healthy-wealthy-app.firebaseapp.com",
+      projectId: "healthy-wealthy-app",
+      storageBucket: "healthy-wealthy-app.appspot.com",
+      messagingSenderId: "182436316225",
+      appId: "1:182436316225:web:5cfd34f879204b12ebf2c0"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ... دوال الحسابات كما هي
+
+    // تحقق من القياسات وعرض النتائج
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        db.collection('users')
+          .doc(user.uid)
+          .collection('measurements')
+          .orderBy('date','desc')
+          .get()
+          .then(snapshot=>{
+            if(snapshot.empty){
+              document.getElementById('firstMeasurementModal').style.display = "flex";
+              document.getElementById('lastMeasurements').innerHTML = txt("summary_no_data");
+              document.getElementById('cards').innerHTML = '';
+              document.getElementById('notes').innerHTML = '';
+              return;
+            }
+            // استخراج أحدث قيمة لكل قياس
+            let latest = {};
+            let fields = ['weight','height','waist','hip','age','gender','activity','bp','glucose'];
+            for(let f of fields){
+              for(let doc of snapshot.docs){
+                let val = doc.data()[f];
+                if(val!==undefined && val!==null && val!==''){
+                  latest[f] = val;
+                  break;
+                }
+              }
+            }
+            // وحدات القياس
+            let units = {
+              weightUnit: 'كجم',
+              heightUnit: 'سم',
+              waistUnit: 'سم',
+              hipUnit: 'سم'
+            };
+            for(let u in units){
+              for(let doc of snapshot.docs){
+                let val = doc.data()[u];
+                if(val){
+                  units[u] = val;
+                  break;
+                }
+              }
+            }
+            let m = {...latest, ...units};
+            // ملخص القياسات
+            let summary = (lang==='ar') ? `
+              <strong>الوزن:</strong> ${m.weight} ${m.weightUnit} &nbsp;
+              <strong>الطول:</strong> ${m.height} ${m.heightUnit} &nbsp;
+              <strong>العمر:</strong> ${m.age || '-'} &nbsp;
+              <strong>الجنس:</strong> ${m.gender==='male'?'ذكر':'أنثى'} &nbsp;
+              <strong>الخصر:</strong> ${m.waist} ${m.waistUnit} &nbsp;
+              <strong>الورك:</strong> ${m.hip||'-'} ${m.hipUnit} &nbsp;
+              <strong>النشاط:</strong> ${activityTxt(m.activity)} &nbsp;
+              <strong>ضغط الدم:</strong> ${m.bp||'-'} &nbsp;
+              <strong>سكر صايم:</strong> ${m.glucose||'-'}
+            ` : `
+              <strong>Weight:</strong> ${m.weight} ${m.weightUnit} &nbsp;
+              <strong>Height:</strong> ${m.height} ${m.heightUnit} &nbsp;
+              <strong>Age:</strong> ${m.age || '-'} &nbsp;
+              <strong>Gender:</strong> ${m.gender==='male'?'Male':'Female'} &nbsp;
+              <strong>Waist:</strong> ${m.waist} ${m.waistUnit} &nbsp;
+              <strong>Hip:</strong> ${m.hip||'-'} ${m.hipUnit} &nbsp;
+              <strong>Activity:</strong> ${activityTxt(m.activity)} &nbsp;
+              <strong>Blood Pressure:</strong> ${m.bp||'-'} &nbsp;
+              <strong>Fasting Glucose:</strong> ${m.glucose||'-'}
+            `;
+            document.getElementById('lastMeasurements').innerHTML = summary;
+
+            let weight = parseFloat(m.weight)||0;
+            let height = parseFloat(m.height)||0;
+            let age = parseFloat(m.age)||0;
+            let waist = parseFloat(m.waist)||0;
+            let hip = parseFloat(m.hip)||0;
+            let gender = m.gender||'male';
+            let activity = m.activity||'inactive';
+            let bp = m.bp||'';
+            let glucose = m.glucose||'';
+
+            let bmi = calcBMI(weight,height);
+            let bmiN = bmiNote(bmi,lang);
+            let bmr = calcBMR(weight,height,age,gender);
+            let factor = activityFactor(activity);
+            let calories = Math.round(bmr*factor);
+            let calorieN = calorieNote(calories,lang);
+            let waistHip = (waist && hip)?calcWaistHip(waist,hip):"-";
+            let waistHipN = (waistHip!=="-")?waistHipNote(waistHip,gender,lang):{txt:"غير محدد",cls:""};
+            let waistHeight = (waist && height)?calcWaistHeight(waist,height):"-";
+            let waistHeightN = (waistHeight!=="-")?waistHeightNote(waistHeight,lang):{txt:"غير محدد",cls:""};
+            let bpN = bpNote(bp,lang);
+            let glucoseN = glucoseNote(glucose,lang);
+            let bodyFat = calcBodyFat(gender,waist,weight);
+            let bodyFatN = bodyFatNote(bodyFat,gender,lang);
+
+            // البطاقات
+            let cards = (lang==='ar') ? `
+              <div class="card">
+                <div class="card-title">مؤشر الكتلة BMI</div>
+                <div class="card-value">${bmi}</div>
+                <div class="card-note ${bmiN.cls}">${bmiN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">معدل الحرق الأساسي BMR</div>
+                <div class="card-value">${bmr} سعر حراري</div>
+                <div class="card-note good">معدل طبيعي</div>
+              </div>
+              <div class="card">
+                <div class="card-title">السعرات المطلوبة يومياً</div>
+                <div class="card-value">${calories} سعر حراري</div>
+                <div class="card-note ${calorieN.cls}">${calorieN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Waist/Hip Ratio</div>
+                <div class="card-value">${waistHip}</div>
+                <div class="card-note ${waistHipN.cls}">${waistHipN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Waist/Height Ratio</div>
+                <div class="card-value">${waistHeight}</div>
+                <div class="card-note ${waistHeightN.cls}">${waistHeightN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Blood Pressure</div>
+                <div class="card-value">${bp}</div>
+                <div class="card-note ${bpN.cls}">${bpN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">سكر صايم</div>
+                <div class="card-value">${glucose}</div>
+                <div class="card-note ${glucoseN.cls}">${glucoseN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">نسبة دهون الجسم</div>
+                <div class="card-value">${bodyFat}%</div>
+                <div class="card-note ${bodyFatN.cls}">${bodyFatN.txt}</div>
+              </div>
+              ${getSleepCard()}
+            ` : `
+              <div class="card">
+                <div class="card-title">BMI Index</div>
+                <div class="card-value">${bmi}</div>
+                <div class="card-note ${bmiN.cls}">${bmiN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Basic Metabolic Rate BMR</div>
+                <div class="card-value">${bmr} kcal</div>
+                <div class="card-note good">Normal rate</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Required daily calories</div>
+                <div class="card-value">${calories} kcal</div>
+                <div class="card-note ${calorieN.cls}">${calorieN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Waist/Hip Ratio</div>
+                <div class="card-value">${waistHip}</div>
+                <div class="card-note ${waistHipN.cls}">${waistHipN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Waist/Height Ratio</div>
+                <div class="card-value">${waistHeight}</div>
+                <div class="card-note ${waistHeightN.cls}">${waistHeightN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Blood Pressure</div>
+                <div class="card-value">${bp}</div>
+                <div class="card-note ${bpN.cls}">${bpN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Fasting Glucose</div>
+                <div class="card-value">${glucose}</div>
+                <div class="card-note ${glucoseN.cls}">${glucoseN.txt}</div>
+              </div>
+              <div class="card">
+                <div class="card-title">Body Fat Percentage</div>
+                <div class="card-value">${bodyFat}%</div>
+                <div class="card-note ${bodyFatN.cls}">${bodyFatN.txt}</div>
+              </div>
+              ${getSleepCard()}
+            `;
+            document.getElementById('cards').innerHTML = cards;
+
+            // ملاحظات عامة
+            let notesArr = allNotes({
+              activity, bmi, bpNote:bpN, glucoseNote:glucoseN, waistHipNote:waistHipN
+            }, lang);
+            let notesHtml = `<strong>${txt("notes_title")}</strong><ul>`;
+            notesArr.forEach(n=>notesHtml+=`<li>${n}</li>`);
+            notesHtml += `</ul>`;
+            document.getElementById('notes').innerHTML = notesHtml;
+          });
+      } else {
+        document.getElementById('lastMeasurements').innerHTML = txt("summary_login");
+        document.getElementById('cards').innerHTML = '';
+        document.getElementById('notes').innerHTML = '';
+      }
+    });
+
+    // حفظ أول قياس
+    document.getElementById('firstMeasurementForm').onsubmit = function(e){
+      e.preventDefault();
+      let dob = document.getElementById('dob').value;
+      let age = dob ? Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000)) : '';
+      let measurement = {
+        date: new Date().toISOString(),
+        weight: document.getElementById('weight').value,
+        weightUnit: document.getElementById('weight-unit').value,
+        height: document.getElementById('height').value,
+        heightUnit: document.getElementById('height-unit').value,
+        age: age,
+        dob: dob,
+        gender: document.querySelector('[name="gender"]:checked').value,
+        waist: document.getElementById('waist').value,
+        waistUnit: document.getElementById('waist-unit').value,
+        hip: document.getElementById('hip').value,
+        hipUnit: document.getElementById('hip-unit').value,
+        activity: document.getElementById('activity').value,
+        bp: document.getElementById('bp').value,
+        glucose: document.getElementById('glucose').value,
+        note: document.getElementById('note').value
+      };
+      auth.onAuthStateChanged(function(user){
+        db.collection('users').doc(user.uid).collection('measurements').add(measurement)
+        .then(function() {
+          alert(lang==='ar'?'تم حفظ القياس بنجاح':'Saved successfully');
+          document.getElementById('firstMeasurementModal').style.display='none';
+          location.reload();
+        })
+        .catch(function(error) {
+          alert(lang==='ar' ? 'حدث خطأ أثناء الحفظ: ' + error.message : 'Error while saving: ' + error.message);
+        });
+      });
+    }
+
+    // عند تحميل الصفحة، ضبط اللغة
+    window.onload = function() {
+      setLang(lang);
+    };
+
+    // دوال الحسابات المعدلة لدعم الترجمة...
+    function bmiNote(bmi,lang) {
+      if (bmi < 18.5) return {txt:(lang==='ar'?"نحافة - تحتاج لزيادة الوزن":"Underweight - need to gain weight"),cls:"warn"};
+      if (bmi < 25) return {txt:(lang==='ar'?"وزن طبيعي - حافظ عليه":"Normal weight - keep it up"),cls:"good"};
+      if (bmi < 30) return {txt:(lang==='ar'?"زيادة وزن - يفضل فقدان بعض الوزن":"Overweight - try to lose some weight"),cls:"warn"};
+      return {txt:(lang==='ar'?"سمنة - انتبه لصحتك وقلل وزنك":"Obesity - take care and lose weight"),cls:""};
+    }
+    function calorieNote(cal,lang) {
+      return {txt:(lang==='ar'?"للحفاظ على الوزن الحالي. لفقدان 0.5كجم/أسبوع قلل 500 سعر.":"To maintain current weight. To lose 0.5kg/week, reduce 500 kcal."),cls:"warn"};
+    }
+    function activityTxt(val) {
+      if(lang==='ar') {
+        if(val==='inactive') return 'خامل';
+        if(val==='moderate') return 'متوسط';
+        if(val==='active') return 'نشيط';
+      } else {
+        if(val==='inactive') return 'Inactive';
+        if(val==='moderate') return 'Moderate';
+        if(val==='active') return 'Active';
+      }
+      return '-';
+    }
+    function waistHipNote(ratio,gender,lang) {
+      if(gender==="male" && ratio>0.9) return {txt:(lang==='ar'?"مرتفع - خطر مقاومة انسولين":"High - risk of insulin resistance"),cls:""};
+      if(gender==="female" && ratio>0.85) return {txt:(lang==='ar'?"مرتفع - خطر مقاومة انسولين":"High - risk of insulin resistance"),cls:""};
+      return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+    }
+    function waistHeightNote(ratio,lang) {
+      if(ratio>0.5) return {txt:(lang==='ar'?"مرتفع - سمنة بطن وخطر قلب":"High - abdominal obesity & heart risk"),cls:""};
+      return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+    }
+    function bpNote(bp,lang) {
+      if(!bp) return {txt:(lang==='ar'?"غير محدد":"Not set"),cls:""};
+      let parts = bp.split("/");
+      if(parts.length<2) return {txt:(lang==='ar'?"غير محدد":"Not set"),cls:""};
+      let sys = parseInt(parts[0]), dia = parseInt(parts[1]);
+      if(sys<120 && dia<80) return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+      if(sys<140 && dia<90) return {txt:(lang==='ar'?"مرتفع قليلاً":"Slightly high"),cls:"warn"};
+      return {txt:(lang==='ar'?"مرتفع - راجع طبيبك":"High - consult your doctor"),cls:""};
+    }
+    function glucoseNote(glucose,lang) {
+      if(!glucose) return {txt:(lang==='ar'?"غير محدد":"Not set"),cls:""};
+      glucose = parseFloat(glucose);
+      if(glucose < 100) return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+      if(glucose < 126) return {txt:(lang==='ar'?"ما قبل السكري - ينصح بمراقبة مستمرة":"Pre-diabetes - continuous monitoring advised"),cls:"warn"};
+      return {txt:(lang==='ar'?"مرتفع - راجع طبيبك":"High - consult your doctor"),cls:""};
+    }
+    function bodyFatNote(bf,gender,lang) {
+      if(!bf||isNaN(bf)) return {txt:(lang==='ar'?"غير محدد":"Not set"),cls:""};
+      bf = parseFloat(bf);
+      if(gender==="male") {
+        if(bf<15) return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+        if(bf<25) return {txt:(lang==='ar'?"مرتفع قليلاً":"Slightly high"),cls:"warn"};
+        return {txt:(lang==='ar'?"مرتفع - انتبه لنظامك":"High - watch your diet"),cls:""};
+      } else {
+        if(bf<22) return {txt:(lang==='ar'?"طبيعي":"Normal"),cls:"good"};
+        if(bf<32) return {txt:(lang==='ar'?"مرتفع قليلاً":"Slightly high"),cls:"warn"};
+        return {txt:(lang==='ar'?"مرتفع - انتبهي لنظامك":"High - watch your diet"),cls:""};
+      }
+    }
+    function allNotes(data,lang) {
+      let arr = [];
+      if(data.activity==='inactive') arr.push(lang==='ar'?"النشاط البدني قليل، ينصح بزيادة الحركة.":"Physical activity is low, try to move more.");
+      if(data.bmi>=25) arr.push(lang==='ar'?"الوزن فوق الطبيعي، يفضل اتباع نظام غذائي مناسب.":"Weight is above normal, consider a healthy diet.");
+      if(data.bpNote&&data.bpNote.cls==="warn") arr.push(lang==='ar'?"ضغط الدم بحاجة لمراقبة دورية.":"Blood pressure needs regular monitoring.");
+      if(data.glucoseNote&&data.glucoseNote.cls!=="good") arr.push(lang==='ar'?"ينصح بمراقبة السكر أو مراجعة الطبيب.":"Monitor glucose or consult a doctor.");
+      if(data.waistHipNote&&data.waistHipNote.cls!=="good") arr.push(lang==='ar'?"خطر مقاومة الإنسولين وسمنة مركزية.":"Risk of insulin resistance and central obesity.");
+      if(arr.length===0) arr.push(txt("notes_good"));
+      return arr;
+    }
+    function calcBMI(weight, height) {
+      let h = height/100;
+      let bmi = weight / (h*h);
+      return Math.round(bmi*10)/10;
+    }
+    function calcBMR(weight,height,age,gender) {
+      if(gender==="male") return Math.round(10*weight + 6.25*height - 5*age + 5);
+      else return Math.round(10*weight + 6.25*height - 5*age - 161);
+    }
+    function activityFactor(activity) {
+      if(activity==='inactive') return 1.2;
+      if(activity==='moderate') return 1.375;
+      if(activity==='active') return 1.55;
+      return 1.2;
+    }
+    function calcWaistHip(waist,hip) {
+      if(!waist||!hip) return "-";
+      return Math.round((waist/hip)*100)/100;
+    }
+    function calcWaistHeight(waist,height) {
+      if(!waist||!height) return "-";
+      return Math.round((waist/height)*100)/100;
+    }
+    function calcBodyFat(gender,waist,weight) {
+      if(!waist||!weight) return "-";
+      let bf = (gender==="male") ? (0.74*waist - 0.082*weight - 34.89) : (0.74*waist - 0.082*weight - 44.74);
+      bf = Math.round(bf);
+      if(bf<1) bf=waist;
+      return bf;
+    }
+
+    // دالة إنشاء كارت النوم
+    function getSleepCard() {
+      const sleepData = JSON.parse(localStorage.getItem('sleepAssessment') || 'null');
+      
+      if (!sleepData) {
+        return lang === 'ar' ? `
+          <div class="card" style="border: 2px dashed #9C27B0; background: #F3E5F5;">
+            <div class="card-title" style="color: #9C27B0;">🌙 تقييم النوم</div>
+            <div class="card-value" style="color: #9C27B0;">غير مكتمل</div>
+            <div class="card-note" style="color: #9C27B0;">قم بإجراء تقييم النوم للحصول على تحليل شامل</div>
+            <button class="btn" onclick="window.location.href='../sleep/assessment.html'" style="background: #9C27B0; margin-top: 10px;">ابدأ التقييم</button>
+          </div>
+        ` : `
+          <div class="card" style="border: 2px dashed #9C27B0; background: #F3E5F5;">
+            <div class="card-title" style="color: #9C27B0;">🌙 Sleep Assessment</div>
+            <div class="card-value" style="color: #9C27B0;">Not Completed</div>
+            <div class="card-note" style="color: #9C27B0;">Take the sleep assessment for comprehensive analysis</div>
+            <button class="btn" onclick="window.location.href='sleep/assessment.html'" style="background: #9C27B0; margin-top: 10px;">Start Assessment</button>
+          </div>
+        `;
+      }
+      
+      const score = sleepData.score || 0;
+      const lastAssessment = new Date(sleepData.date).toLocaleDateString('ar-EG');
+      
+      let scoreClass = 'good';
+      let scoreText = lang === 'ar' ? 'ممتاز' : 'Excellent';
+      
+      if (score < 40) {
+        scoreClass = 'card-note';
+        scoreText = lang === 'ar' ? 'يحتاج تحسين' : 'Needs Improvement';
+      } else if (score < 70) {
+        scoreClass = 'warn';
+        scoreText = lang === 'ar' ? 'متوسط' : 'Average';
+      }
+      
+      return lang === 'ar' ? `
+        <div class="card" style="border-left: 4px solid #9C27B0;">
+          <div class="card-title" style="color: #9C27B0;">🌙 جودة النوم</div>
+          <div class="card-value" style="color: #9C27B0;">${score}/100</div>
+          <div class="card-note ${scoreClass}">${scoreText}</div>
+          <div style="font-size: 0.85em; color: #666; margin-top: 5px;">آخر تقييم: ${lastAssessment}</div>
+          <button class="btn" onclick="window.location.href='sleep/index.html'" style="background: #9C27B0; margin-top: 8px; font-size: 0.9em; padding: 6px 16px;">عرض التفاصيل</button>
+        </div>
+      ` : `
+        <div class="card" style="border-left: 4px solid #9C27B0;">
+          <div class="card-title" style="color: #9C27B0;">🌙 Sleep Quality</div>
+          <div class="card-value" style="color: #9C27B0;">${score}/100</div>
+          <div class="card-note ${scoreClass}">${scoreText}</div>
+          <div style="font-size: 0.85em; color: #666; margin-top: 5px;">Last assessment: ${lastAssessment}</div>
+          <button class="btn" onclick="window.location.href='sleep/index.html'" style="background: #9C27B0; margin-top: 8px; font-size: 0.9em; padding: 6px 16px;">View Details</button>
+        </div>
+      `;
+    }
+
+  </script>
+</body>
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+</body>
+</html>

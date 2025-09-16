@@ -1,0 +1,206 @@
+/* 
+ * ملف الأنماط الخاص بصفحة تقييم النوم
+ */
+
+/* أنماط عامة للصفحة */
+body {
+  background: linear-gradient(135deg, #e8eaf6 0%, #d1c4e9 100%);
+  font-family: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(103,58,183,0.13);
+  padding: 32px 18px;
+}
+
+.assessment-container {
+  position: relative;
+}
+
+/* أنماط العناوين */
+h1 {
+  color: #512da8;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h2 {
+  color: #5e35b1;
+  font-size: 1.4em;
+  margin-bottom: 15px;
+}
+
+/* أنماط المقدمة */
+.summary {
+  background: #ede7f6;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-right: 4px solid #673ab7;
+}
+
+.summary strong {
+  color: #512da8;
+  font-size: 1.1em;
+}
+
+/* أنماط النماذج */
+.assessment-form {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.question {
+  margin-bottom: 25px;
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.question-text {
+  font-weight: bold;
+  color: #512da8;
+  margin-bottom: 10px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+}
+
+.option input[type="radio"] {
+  margin-left: 10px;
+}
+
+/* أنماط النتائج */
+.results-card {
+  background: #e8f5e9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(76,175,80,0.15);
+}
+
+.score-title {
+  color: #2e7d32;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.score-value {
+  font-size: 2.5em;
+  color: #388e3c;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.score-interpretation {
+  background: #c8e6c9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+/* أنماط الأزرار */
+button {
+  background: #673ab7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #512da8;
+}
+
+#backBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #673ab7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.lang-btn {
+  padding: 5px 10px;
+  background: #ede7f6;
+  color: #673ab7;
+  border: 1px solid #673ab7;
+  border-radius: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.lang-btn:hover, 
+.lang-btn.active {
+  background: #673ab7;
+  color: white;
+}
+
+#lang-switch {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.submit-btn {
+  background: #4caf50;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 12px 30px;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submit-btn:hover {
+  background: #388e3c;
+}
+
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  #backBtn {
+    top: 10px;
+    right: 10px;
+  }
+}

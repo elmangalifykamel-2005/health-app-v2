@@ -1,0 +1,52 @@
+<!-- 
+    قالب النوافذ المنبثقة الموحد لتطبيق "صحتك بالدنيا"
+    يستخدم هذا القالب لإضافة أزرار عودة وإغلاق موحدة في جميع النوافذ المنبثقة
+-->
+
+<div class="modal-navigation">
+    <button class="close-btn" onclick="window.close()">
+        <i class="fas fa-times"></i> إغلاق
+    </button>
+</div>
+
+<style>
+    /* أنماط موحدة لأزرار التنقل في النوافذ المنبثقة */
+    .modal-navigation {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+    
+    .close-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .close-btn:hover {
+        background-color: #d32f2f;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<script>
+    // إضافة مستمع للتحقق من إغلاق النافذة
+    window.addEventListener('beforeunload', function() {
+        // يمكن إضافة منطق إضافي هنا إذا لزم الأمر
+        console.log('إغلاق النافذة المنبثقة');
+    });
+    
+    // إضافة دعم الإغلاق بواسطة زر ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') window.close();
+    });
+</script>

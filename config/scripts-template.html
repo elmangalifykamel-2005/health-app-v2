@@ -1,0 +1,46 @@
+<!-- 
+    Scripts Template for صحتك بالدنيا (Healthy Life) Application
+    This template provides standardized script includes for proper module functionality
+-->
+
+<!-- Required Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<!-- Required Configuration and Services -->
+<script src="../../config/app-config.js"></script>
+<script src="../../firebase-config.js"></script>
+<script src="../../config/shared-functions.js"></script>
+
+<!-- Font Awesome (if needed) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Custom Module Scripts -->
+<!-- Add your module-specific scripts here -->
+
+<!-- Module Initialization -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication status if needed
+        if (window.firebaseService) {
+            firebaseService.auth.onAuthStateChanged(function(user) {
+                if (user) {
+                    console.log("✅ المستخدم مسجل الدخول:", user.uid);
+                    // Additional authenticated user logic
+                } else {
+                    console.log("⚠️ المستخدم غير مسجل الدخول");
+                    // Additional non-authenticated user logic
+                }
+            });
+        }
+        
+        // Initialize module-specific functionality
+        initializeModule();
+    });
+    
+    function initializeModule() {
+        // Add your module initialization code here
+        console.log("تم تهيئة الوحدة بنجاح");
+    }
+</script>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>شهاداتي | My Certificates</title>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    
+    <link rel="stylesheet" href="shared-styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .cert-container {
+            background: rgba(255,255,255,0.97);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(76, 175, 80, 0.2);
+            padding: 38px 20px 32px 20px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        .cert-title {
+            font-size: 1.25em;
+            color: #2E7D32;
+            margin-bottom: 28px;
+            font-weight: bold;
+        }
+        .cert-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 36px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .cert-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 320px;
+            max-width: 98vw;
+        }
+        .cert-img {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 16px rgba(76, 175, 80, 0.3);
+            border: 3px solid #4CAF50;
+            background: #f8fff8;
+        }
+        .cert-caption {
+            font-size: 1.07em;
+            color: #444;
+            margin-bottom: 8px;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        .back-btn {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #45a049;
+        }
+        @media (max-width: 750px) {
+            .cert-row {
+                flex-direction: column;
+                gap: 22px;
+            }
+            .cert-col {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cert-container" id="certContent"></div>
+    <script>
+        const lang = localStorage.getItem('hl_language') || 'ar';
+        let html = '';
+        if (lang === 'en') {
+            html = `
+                <div class="cert-title">My Certificates</div>
+                <div class="cert-row">
+                    <div class="cert-col">
+                        <img src="photo/diploma.jpg" class="cert-img" alt="Diploma">
+                        <div class="cert-caption">Diploma in Clinical Nutrition</div>
+                    </div>
+                    <div class="cert-col">
+                        <img src="photo/license.jpg" class="cert-img" alt="License">
+                        <div class="cert-caption">Professional Practice License</div>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="window.history.back()">Back</button>
+            `;
+        } else {
+            html = `
+                <div class="cert-title">شهاداتي</div>
+                <div class="cert-row">
+                    <div class="cert-col">
+                        <img src="photo/diploma.jpg" class="cert-img" alt="دبلومة التغذية">
+                        <div class="cert-caption">دبلومة التغذية العلاجية</div>
+                    </div>
+                    <div class="cert-col">
+                        <img src="photo/license.jpg" class="cert-img" alt="كارنيه مزاولة المهنة">
+                        <div class="cert-caption">ترخيص مزاولة المهنة</div>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="window.history.back()">رجوع</button>
+            `;
+        }
+        document.getElementById('certContent').innerHTML = html;
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+/* تصميم صفحة الأعشاب الطبية */
+
+.page-header {
+    background: linear-gradient(135deg, #2c5530, #4a7c59);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.page-header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.page-header nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.page-header nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.warning-section {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-right: 5px solid #f39c12;
+}
+
+.warning-section h2 {
+    color: #856404;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.warning-section h2::before {
+    content: "⚠️";
+    font-size: 1.2em;
+}
+
+/* إضافة الأنماط الجديدة للتصنيفات */
+.herb-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.category-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* ألوان التصنيفات */
+.category-digestive { background: #e8f5e8; color: #2d5016; }
+.category-cardiovascular { background: #ffe8e8; color: #8b0000; }
+.category-immune { background: #e8f4fd; color: #1e40af; }
+.category-cognitive { background: #f3e8ff; color: #6b21a8; }
+.category-anti-inflammatory { background: #fef3c7; color: #92400e; }
+.category-liver { background: #ecfdf5; color: #065f46; }
+.category-respiratory { background: #e0f2fe; color: #0c4a6e; }
+.category-sleep { background: #f1f5f9; color: #334155; }
+.category-stress { background: #fef7cd; color: #a16207; }
+.category-hormonal { background: #fce7f3; color: #be185d; }
+.category-skin { background: #fff7ed; color: #c2410c; }
+.category-energy { background: #fef2f2; color: #dc2626; }
+.category-mental-health { background: #f0f9ff; color: #0369a1; }
+
+.search-filter-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+#herb-search {
+    flex: 2;
+    min-width: 250px;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+#category-filter, #evidence-filter {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+}
+
+/* باقي الأنماط كما هي... */
+.herbs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.herb-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #e0e0e0;
+}
+
+.herb-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.herb-header {
+    background: linear-gradient(135deg, #4a7c59, #2c5530);
+    color: white;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.herb-name {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.scientific-name {
+    margin: 0 0 1rem 0;
+    font-style: italic;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.evidence-level {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.evidence-high {
+    background: #d4edda;
+    color: #155724;
+}
+
+.evidence-moderate {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.evidence-low {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.herb-content {
+    padding: 1.5rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.section h4 {
+    color: #2c5530;
+    margin: 0 0 0.75rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 2px solid #4a7c59;
+    padding-bottom: 0.3rem;
+}
+
+.section p {
+    margin: 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+.section ul {
+    margin: 0;
+    padding-right: 1.2rem;
+    list-style-type: disc;
+}
+
+.section li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+.warnings {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 1rem;
+    border-right: 4px solid #e53e3e;
+}
+
+.warnings h4 {
+    color: #c53030;
+    border-bottom-color: #e53e3e;
+}
+
+.interactions {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    border-right: 4px solid #4299e1;
+}
+
+.interactions h4 {
+    color: #2b6cb0;
+    border-bottom-color: #4299e1;
+}
+
+.references a {
+    color: #4a7c59;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s;
+}
+
+.references a:hover {
+    color: #2c5530;
+    text-decoration: underline;
+}
+
+.references a::after {
+    content: "🔗";
+    font-size: 0.9em;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
+.disclaimer-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.disclaimer-section h2 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.disclaimer-section p {
+    color: #6c757d;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+    .herbs-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .page-header nav ul {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .search-filter-section {
+        flex-direction: column;
+    }
+    
+    #herb-search {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .herb-content {
+        padding: 1rem;
+    }
+    
+    .herb-header {
+        padding: 1rem;
+    }
+    
+    .herb-name {
+        font-size: 1.3rem;
+    }
+}

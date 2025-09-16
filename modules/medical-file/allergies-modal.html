@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إضافة حساسية</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/modal-helpers.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0008;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 18px;
+            max-width: 400px;
+            width: 90vw;
+            margin: auto;
+            padding: 32px 22px;
+            box-shadow: 0 8px 40px #388e3c33;
+            position: relative;
+        }
+        .modal-box h2 {
+            color: #388e3c;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .modal-box label {
+            display: block;
+            margin-bottom: 6px;
+            color: #388e3c;
+            font-weight: bold;
+        }
+        .modal-box input, .modal-box select, .modal-box textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1.5px solid #e8f5e8;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .modal-actions button {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .modal-actions .save-btn {
+            background: #388e3c;
+            color: #fff;
+        }
+        .modal-actions .cancel-btn {
+            background: #eee;
+            color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-box">
+        <h2>إضافة حساسية</h2>
+        <form id="allergyForm">
+            <label>نوع الحساسية</label>
+            <select name="type" required>
+                <option value="">اختر</option>
+                <option value="دواء">دواء</option>
+                <option value="طعام">طعام</option>
+                <option value="بيئة">بيئة</option>
+                <option value="أخرى">أخرى</option>
+            </select>
+            <label>اسم المادة أو الدواء</label>
+            <input type="text" name="name" required>
+            <label>شدة الحساسية</label>
+            <select name="severity" required>
+                <option value="">اختر</option>
+                <option value="خفيفة">خفيفة</option>
+                <option value="متوسطة">متوسطة</option>
+                <option value="شديدة">شديدة</option>
+            </select>
+            <label>أعراض الحساسية (اختياري)</label>
+            <input type="text" name="symptoms">
+            <label>ملاحظات إضافية (اختياري)</label>
+            <textarea name="notes" rows="2"></textarea>
+            <div class="modal-actions">
+                <button type="submit" class="save-btn">حفظ</button>
+                <button type="button" class="cancel-btn" id="cancel-btn">إلغاء</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // التأكد من حالة تسجيل الدخول
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    // المستخدم غير مسجل دخوله، تحويله إلى صفحة تسجيل الدخول
+                    window.location.href = '../../login.html';
+                }
+            });
+
+            // إعداد نموذج إضافة الحساسية
+            document.getElementById('allergyForm').onsubmit = function(e) {
+                e.preventDefault();
+                const form = this;
+                const data = {
+                    type: form.querySelector('[name="type"]').value,
+                    name: form.querySelector('[name="name"]').value,
+                    severity: form.querySelector('[name="severity"]').value,
+                    symptoms: form.querySelector('[name="symptoms"]').value,
+                    notes: form.querySelector('[name="notes"]').value,
+                    createdAt: new Date().toISOString()
+                };
+
+                // احفظ في Firebase
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    firebase.firestore().collection('users').doc(user.uid).get()
+                        .then(doc => {
+                            // الحصول على مصفوفة الحساسية الحالية أو إنشاء مصفوفة فارغة
+                            let allergies = [];
+                            if (doc.exists && doc.data().allergies) {
+                                allergies = doc.data().allergies;
+                            }
+
+                            // إضافة الحساسية الجديدة
+                            allergies.push(data);
+
+                            // حفظ البيانات
+                            return firebase.firestore().collection('users').doc(user.uid).set({
+                                allergies: allergies
+                            }, { merge: true });
+                        })
+                        .then(() => {
+                            alert('تم حفظ الحساسية بنجاح!');
+                            // العودة إلى الصفحة السابقة
+                            window.location.href = 'medical-profile.html';
+                        })
+                        .catch(error => {
+                            console.error('خطأ في حفظ بيانات الحساسية:', error);
+                            alert('حدث خطأ أثناء حفظ المعلومات');
+                        });
+                }
+            };
+
+            // إضافة مستمع حدث لزر الإلغاء
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                // العودة إلى الصفحة السابقة
+                window.location.href = 'medical-profile.html';
+            });
+            
+            // إضافة زر الإغلاق الموحد للنافذة المنبثقة (إذا كان موجودًا)
+            if (typeof addCloseButtonToModal === 'function') {
+                addCloseButtonToModal('.modal-box');
+            }
+        });
+    </script>
+</body>
+</html>

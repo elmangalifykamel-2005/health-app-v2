@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدراسات العلمية - تطبيق الحياة الصحية</title>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="studies-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <header class="page-header">
+        <h1><i class="fas fa-microscope"></i> الدراسات العلمية</h1>
+        <nav>
+            <ul>
+                <li><a href="javascript:navigationService.navigateTo(getPagePath('main'))"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="#studies-list"><i class="fas fa-list"></i> الدراسات</a></li>
+                <li><a href="#categories"><i class="fas fa-tags"></i> التصنيفات</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="warning-section">
+            <h2><i class="fas fa-info-circle"></i> معلومات مهمة</h2>
+            <div class="warning-content">
+                <p><strong>تنبيه طبي:</strong> هذه الدراسات العلمية مقدمة لأغراض تعليمية وتثقيفية فقط. يُرجى استشارة أخصائي الرعاية الصحية المؤهل قبل اتخاذ أي قرارات صحية بناءً على هذه المعلومات.</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-user-md"></i>
+                        <div>
+                            <h4>استشارة طبية</h4>
+                            <p>لا تستبدل هذه المعلومات بالاستشارة الطبية المتخصصة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-flask"></i>
+                        <div>
+                            <h4>دراسات علمية</h4>
+                            <p>جميع الدراسات من مصادر علمية موثقة ومحكمة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <h4>تحذير</h4>
+                            <p>النتائج قد تختلف من شخص لآخر حسب الحالة الصحية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-book-open"></i>
+                        <div>
+                            <h4>للتعلم فقط</h4>
+                            <p>هدف هذه الدراسات هو التثقيف الصحي والتوعية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-filter-section">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="study-search" placeholder="ابحث في الدراسات العلمية...">
+            </div>
+            
+            <select id="category-filter">
+                <option value="all">جميع التصنيفات</option>
+                <option value="diabetes-insulin">السكري ومقاومة الإنسولين</option>
+                <option value="inflammation-processed">الالتهاب والأطعمة المعالجة</option>
+                <option value="microbiome-digestion">الميكروبيوم والهضم</option>
+                <option value="fats-cholesterol">الدهون والكوليسترول</option>
+                <option value="sugars-fructose">السكريات والفركتوز</option>
+            </select>
+            
+            <select id="year-filter">
+                <option value="all">جميع السنوات</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="older">أقدم من 2020</option>
+            </select>
+            
+            <select id="type-filter">
+                <option value="all">جميع أنواع الدراسات</option>
+                <option value="meta-analysis">تحليل تلوي</option>
+                <option value="clinical-trial">تجربة سريرية</option>
+                <option value="systematic-review">مراجعة منهجية</option>
+                <option value="comprehensive-review">مراجعة شاملة</option>
+                <option value="longitudinal">دراسة طولية</option>
+            </select>
+        </section>
+
+        <section id="studies-stats" class="stats-section">
+            <div class="stat-card">
+                <i class="fas fa-file-medical"></i>
+                <div class="stat-number" id="total-studies">12</div>
+                <div class="stat-label">إجمالي الدراسات</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="stat-number" id="recent-studies">6</div>
+                <div class="stat-label">دراسات حديثة (2022+)</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tags"></i>
+                <div class="stat-number">5</div>
+                <div class="stat-label">تصنيفات رئيسية</div>
+            </div>
+        </section>
+
+        <section id="studies-list" class="studies-grid">
+            <!-- سيتم ملء الدراسات هنا بواسطة JavaScript -->
+        </section>
+
+        <div id="study-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-title">
+                    <!-- عنوان الدراسة -->
+                </div>
+                <div id="modal-body">
+                    <!-- محتوى تفاصيل الدراسة -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="studies-data.js"></script>
+    <script src="studies-app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+        
+        // إصلاح زر العودة
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.navigationFixes && typeof navigationFixes.fixStudiesPage === 'function') {
+                navigationFixes.fixStudiesPage();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>قياساتي | Healthy Life</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 38px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 22px rgba(76, 175, 80, 0.2);
+            padding: 24px 18px;
+            direction: rtl;
+        }
+        h2 {
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        #backBtn {
+            background:#eee;
+            color:#4CAF50;
+            border:none;
+            border-radius:8px;
+            padding:8px 20px;
+            font-weight:bold;
+            cursor:pointer;
+            float:right;
+            margin-bottom:18px;
+        }
+        #addMeasurementBtn {
+            background:#4CAF50;
+            color:#fff;
+            padding:10px 18px;
+            border-radius:8px;
+            border:none;
+            font-weight:bold;
+            cursor:pointer;
+            float:left;
+        }
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background:rgba(0,0,0,0.25); z-index:9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #fff; padding: 30px 16px 16px 16px;
+            border-radius: 14px; box-shadow: 0 2px 18px rgba(76, 175, 80, 0.2);
+            min-width: 340px; max-width: 98vw;
+        }
+        .form-row {
+            display: flex; flex-direction: column; gap: 4px; margin-bottom:12px;
+        }
+        #measurementsTable {
+            width:100%;
+            border-collapse:collapse;
+            background:#fff;
+            direction: rtl;
+            text-align: right;
+        }
+        #measurementsTable th, #measurementsTable td {
+            padding:7px 8px;
+            border:1px solid #eee;
+            text-align: right;
+            white-space:nowrap;
+        }
+        #measurementsTable th {
+            font-weight:bold;
+            background:#c8e6c9 !important;
+        }
+        #measurementsTable tbody tr:nth-child(even) {
+            background:#f9f9f9;
+        }
+        @media (max-width: 700px) {
+            .container {padding: 10px 4px;}
+            .modal-content {min-width: 95vw;}
+            #measurementsTable th, #measurementsTable td {font-size: 0.95em;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="backBtn">رجوع</button>
+        <h2>سجل قياساتك الصحية</h2>
+        <div style="text-align:left;margin:22px 0;">
+            <button id="addMeasurementBtn">إضافة قياس جديد</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table id="measurementsTable">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>الوزن</th>
+                        <th>الطول</th>
+                        <th>السن</th>
+                        <th>النوع</th>
+                        <th>الخصر</th>
+                        <th>الورك</th>
+                        <th>النشاط</th>
+                        <th>الضغط</th>
+                        <th>سكر صايم</th>
+                        <th>ملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- صفوف القياسات -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- نافذة منبثقة لإدخال قياس جديد -->
+    <div id="measurementsModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content" dir="rtl">
+            <h2 style="text-align:right;" id="modalTitle">أدخل بيانات القياس الجديد</h2>
+            <form id="measurementsForm">
+                <div id="basicFields">
+                    <div class="form-row">
+                        <label for="dob">تاريخ الميلاد</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-row">
+                        <label>النوع</label>
+                        <div>
+                            <label><input type="radio" name="gender" value="male" required> ذكر</label>
+                            <label><input type="radio" name="gender" value="female"> أنثى</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="weight">الوزن</label>
+                    <input type="number" id="weight" name="weight" min="20" max="300" step="0.1">
+                    <select id="weight-unit">
+                        <option value="kg">كجم</option>
+                        <option value="lb">رطل</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="height">الطول</label>
+                    <input type="number" id="height" name="height" min="80" max="250" step="0.1">
+                    <select id="height-unit">
+                        <option value="cm">سم</option>
+                        <option value="in">بوصة</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="waist">محيط الخصر</label>
+                    <input type="number" id="waist" name="waist" min="40" max="200" step="0.1">
+                    <select id="waist-unit">
+                        <option value="cm">سم</option>
+                        <option value="in">بوصة</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="hip">محيط الورك (اختياري)</label>
+                    <input type="number" id="hip" name="hip" min="40" max="200" step="0.1">
+                    <select id="hip-unit">
+                        <option value="cm">سم</option>
+                        <option value="in">بوصة</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="activity">النشاط البدني</label>
+                    <select id="activity" name="activity">
+                        <option value="" disabled selected>-- اختر --</option>
+                        <option value="inactive">خامل</option>
+                        <option value="moderate">متوسط</option>
+                        <option value="active">نشيط</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="bp">ضغط الدم (اختياري)</label>
+                    <input type="text" id="bp" name="bp" placeholder="120/80">
+                </div>
+                <div class="form-row">
+                    <label for="glucose">سكر صايم (اختياري)</label>
+                    <input type="number" id="glucose" name="glucose" min="50" max="400" step="0.1">
+                </div>
+                <div class="form-row">
+                    <label for="note">ملاحظات (اختياري)</label>
+                    <textarea id="note" name="note" rows="2"></textarea>
+                </div>
+                <div style="text-align:center;margin-top:18px;">
+                    <button type="submit">حفظ البيانات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // إعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCdUHldUu83kfgc_qUn-h5rZ8xTl2rhNjA",
+            authDomain: "healthy-wealthy-app.firebaseapp.com",
+            projectId: "healthy-wealthy-app",
+            storageBucket: "healthy-wealthy-app.appspot.com",
+            messagingSenderId: "182436316225",
+            appId: "1:182436316225:web:5cfd34f879204b12ebf2c0"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let measurements = [];
+
+        function formatDate(dateStr) {
+            try { let d=new Date(dateStr); return d.toLocaleDateString('ar-EG'); } catch(e){ return dateStr; }
+        }
+        function activityText(val) {
+            if(val==='inactive') return 'خامل';
+            if(val==='moderate') return 'متوسط';
+            if(val==='active') return 'نشيط';
+            return '-';
+        }
+        function renderTable(measurements) {
+            const tbody = document.querySelector("#measurementsTable tbody");
+            tbody.innerHTML = '';
+            measurements.forEach(m=>{
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${formatDate(m.date)}</td>
+                        <td>${m.weight ? m.weight + ' ' + m.weightUnit : '-'}</td>
+                        <td>${m.height ? m.height + ' ' + m.heightUnit : '-'}</td>
+                        <td>${m.age || '-'}</td>
+                        <td>${m.gender==='male'?'ذكر':m.gender==='female'?'أنثى':'-'}</td>
+                        <td>${m.waist ? m.waist + ' ' + m.waistUnit : '-'}</td>
+                        <td>${m.hip ? m.hip + ' ' + m.hipUnit : '-'}</td>
+                        <td>${activityText(m.activity)}</td>
+                        <td>${m.bp||'-'}</td>
+                        <td>${m.glucose||'-'}</td>
+                        <td>${m.note||'-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        auth.signInAnonymously().catch(function(error) {
+            if (!error.message.includes('administrators only')) {
+                alert("فشل الدخول: " + error.message);
+            }
+        });
+
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                currentUser = user;
+                db.collection('users').doc(currentUser.uid).collection('measurements').orderBy('date', 'desc')
+                    .onSnapshot(function(snapshot) {
+                        measurements = [];
+                        snapshot.forEach(function(doc) {
+                            let m = doc.data();
+                            m.id = doc.id;
+                            measurements.push(m);
+                        });
+                        renderTable(measurements);
+                    });
+            }
+        });
+
+        // زر إضافة قياس جديد
+        document.getElementById('addMeasurementBtn').onclick = function() {
+            // تحقق هل يوجد قياسات سابقة
+            db.collection('users').doc(currentUser.uid).collection('measurements').get().then(function(snapshot){
+                let firstTime = snapshot.empty;
+                document.getElementById('measurementsModal').style.display = 'flex';
+                document.getElementById('basicFields').style.display = firstTime ? 'block' : 'none';
+                // اجعل الحقول الأساسية مطلوبة فقط في أول مرة
+                document.getElementById('dob').required = firstTime;
+                document.querySelectorAll('[name="gender"]').forEach(function(el){ el.required = firstTime; });
+                document.getElementById('modalTitle').textContent = firstTime ? 'أدخل جميع بياناتك الأساسية' : 'أدخل أو عدل أي قياس تريد';
+            });
+        };
+
+        document.getElementById('measurementsForm').onsubmit = function(e) {
+            e.preventDefault();
+            // تحقق هل أول مرة
+            db.collection('users').doc(currentUser.uid).collection('measurements').get().then(function(snapshot){
+                let firstTime = snapshot.empty;
+                // تحقق من الحقول الأساسية فقط في أول مرة
+                if(firstTime){
+                    if(!document.getElementById('dob').value || !document.querySelector('[name="gender"]:checked')){
+                        alert('يجب إدخال تاريخ الميلاد والنوع في أول مرة');
+                        return;
+                    }
+                }
+                let dob = document.getElementById('dob').value;
+                let age = dob ? Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000)) : '';
+                let gender = document.querySelector('[name="gender"]:checked') ? document.querySelector('[name="gender"]:checked').value : '';
+                let measurement = {
+                    date: new Date().toISOString(),
+                    weight: document.getElementById('weight').value,
+                    weightUnit: document.getElementById('weight-unit').value,
+                    height: document.getElementById('height').value,
+                    heightUnit: document.getElementById('height-unit').value,
+                    age: age,
+                    dob: dob,
+                    gender: gender,
+                    waist: document.getElementById('waist').value,
+                    waistUnit: document.getElementById('waist-unit').value,
+                    hip: document.getElementById('hip').value,
+                    hipUnit: document.getElementById('hip-unit').value,
+                    activity: document.getElementById('activity').value,
+                    bp: document.getElementById('bp').value,
+                    glucose: document.getElementById('glucose').value,
+                    note: document.getElementById('note').value
+                };
+                db.collection('users').doc(currentUser.uid).collection('measurements').add(measurement)
+                    .then(function() {
+                        alert('تم حفظ القياس بنجاح');
+                        document.getElementById('measurementsModal').style.display='none';
+                        document.getElementById('measurementsForm').reset();
+                    })
+                    .catch(function(error) {
+                        alert('حدث خطأ أثناء الحفظ: ' + error.message);
+                    });
+            });
+        };
+
+        // إغلاق النافذة عند الضغط خارجها
+        document.getElementById('measurementsModal').onclick = function(e) {
+            if (e.target === this) this.style.display = 'none';
+        };
+
+        // زر الرجوع
+        document.getElementById('backBtn').onclick = function() {
+            window.history.back();
+        };
+    </script>
+</body>
+</html>

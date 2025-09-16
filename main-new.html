@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صحتك بالدنيا | الصفحة الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="config/shared-styles.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    
+    <!-- ملفات الإعدادات والتوابع -->
+    <script src="config/app-config.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="config/shared-functions.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #388e3c;
+            --primary-light: #81c784;
+            --primary-dark: #2e7d32;
+            --accent-color: #00796b;
+            --warning-color: #f57c00;
+            --danger-color: #d32f2f;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f5f5f5;
+            --card-bg: #ffffff;
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 25px;
+            --spacing-xl: 40px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+        
+        /* هيدر التطبيق */
+        .app-header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-md) var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .app-logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* المحتوى الرئيسي */
+        .main-content {
+            padding: var(--spacing-lg) 0;
+        }
+        
+        /* قسم الترحيب */
+        .welcome-section {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            text-align: right;
+        }
+        
+        .welcome-title {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+            color: var(--primary-dark);
+        }
+        
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* البطاقات */
+        .cards-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .card-header {
+            padding: var(--spacing-md);
+            background-color: var(--primary-light);
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-content {
+            padding: var(--spacing-md);
+        }
+        
+        /* تذكيرات اليوم */
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .reminder-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reminder-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reminder-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reminder-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .reminder-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .reminder-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        /* المؤشر الصحي */
+        .health-indicator {
+            text-align: center;
+            padding: var(--spacing-sm);
+        }
+        
+        .indicator-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .indicator-label {
+            margin-top: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
+            color: #666;
+        }
+        
+        .indicator-progress {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: var(--spacing-md) 0;
+            overflow: hidden;
+        }
+        
+        .indicator-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        /* المهام المطلوبة */
+        .action-needed {
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            border-right: 4px solid var(--warning-color);
+            background-color: rgba(245, 124, 0, 0.05);
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .action-needed:hover {
+            background-color: rgba(245, 124, 0, 0.1);
+        }
+        
+        .action-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--warning-color);
+            margin-bottom: 4px;
+        }
+        
+        .action-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-right: 25px;
+        }
+        
+        /* الإجراءات السريعة */
+        .quick-actions {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+            position: relative;
+            padding-right: 15px;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .action-button {
+            background-color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg) var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .action-button i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .action-button:hover i {
+            transform: scale(1.1);
+        }
+        
+        .action-button-text {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* نصيحة صحية */
+        .health-tip {
+            background-color: white;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .tip-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .tip-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .tip-content {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        /* فوتر */
+        .app-footer {
+            background-color: var(--card-bg);
+            padding: var(--spacing-md);
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        /* زر استشارة عائم */
+        .floating-action-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+        
+        .floating-action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background-color: var(--primary-dark);
+        }
+        
+        .pulse-btn {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(56, 142, 60, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(56, 142, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(56, 142, 60, 0);
+            }
+        }
+
+        /* استايلات خاصة بالقائمة الجانبية */
+        .main-with-sidebar {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        #sidebar-content {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        #sidebar-content.open {
+            right: 0;
+        }
+
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-group-ar, .btn-group-en {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-logout-ar {
+            display: flex;
+            gap: 10px;
+            margin-left: 15px;
+        }
+
+        .sidebar-btn-ar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-btn-ar:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* أزرار الملف الشخصي والخروج */
+        #logout-btn, #profile-btn {
+            padding: 10px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #logout-btn:hover, #profile-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        #profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- قالب القائمة الجانبية -->
+    <div class="main-with-sidebar">
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <div id="sidebar"></div>
+        
+        <div class="container">
+            <!-- هيدر التطبيق -->
+            <header class="app-header">
+                <div class="app-logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>صحتك بالدنيا</span>
+                </div>
+                <div id="header-btns"></div>
+            </header>
+            
+            <div class="main-content" id="main-content">
+                <!-- قسم الترحيب -->
+                <section class="welcome-section">
+                    <h2 class="welcome-title">مرحباً، <span id="user-name">عزيزي المستخدم</span></h2>
+                    <p class="welcome-message">نتمنى لك يوماً صحياً ومليئاً بالنشاط. تذكر أن تهتم بصحتك اليوم!</p>
+                </section>
+                
+                <!-- البطاقات الرئيسية -->
+                <section class="cards-section">
+                    <!-- تذكيرات اليوم -->
+                    <div class="dashboard-card" onclick="window.location.href='modules/medical-file/medical-profile.html';" style="cursor: pointer;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>تذكيرات اليوم</span>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-icon" style="background-color: #f57c00;">
+                                        <i class="fas fa-pills"></i>
+                                    </div>
+                                    <div>
+                                        <div class="reminder-name">جرعة دواء: أوميجا 3</div>
+                                        <div class="reminder-time">9:00 صباحاً</div>
+                                    </div>
+                                </div>
+                                <div class="reminder-status">تم</div>
+                            </div>
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-icon" style="background-color: #2196f3;">
+                                        <i class="fas fa-stethoscope"></i>
+                                    </div>
+                                    <div>
+                                        <div class="reminder-name">قياس ضغط الدم</div>
+                                        <div class="reminder-time">2:00 مساءً</div>
+                                    </div>
+                                </div>
+                                <div class="reminder-status" style="background-color: #bdbdbd;">متبقي</div>
+                            </div>
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-icon" style="background-color: #9c27b0;">
+                                        <i class="fas fa-hospital-user"></i>
+                                    </div>
+                                    <div>
+                                        <div class="reminder-name">موعد مع الطبيب</div>
+                                        <div class="reminder-time">غداً - 11:00 صباحاً</div>
+                                    </div>
+                                </div>
+                                <div class="reminder-status" style="background-color: #bdbdbd;">متبقي</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- المؤشر الصحي الرئيسي -->
+                    <div class="dashboard-card" onclick="window.location.href='modules/health-state/healthstate.html';" style="cursor: pointer;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-heart-pulse"></i>
+                                <span>مؤشر الصحة العام</span>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="health-indicator">
+                                <div class="indicator-value">75%</div>
+                                <div class="indicator-label">مستوى الصحة العامة</div>
+                                <div class="indicator-progress">
+                                    <div class="indicator-bar" style="width: 75%"></div>
+                                </div>
+                                <div class="indicator-label">جيد - حافظ على مستوى نشاطك البدني</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- المهام المطلوبة -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>الإجراءات المطلوبة</span>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="action-needed" onclick="window.location.href='modules/medical-file/medical-tests.html';" style="cursor: pointer;">
+                                <div class="action-title">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>تحديث نتائج التحاليل</span>
+                                </div>
+                                <div class="action-description">آخر تحديث قبل 3 أشهر</div>
+                            </div>
+                            <div class="action-needed" onclick="window.location.href='modules/health-state/measurments.html?type=glucose';" style="cursor: pointer;">
+                                <div class="action-title">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>قياس مستوى السكر</span>
+                                </div>
+                                <div class="action-description">لم يتم التسجيل منذ أسبوع</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- الإجراءات السريعة -->
+                <section class="quick-actions">
+                    <h3 class="section-title">إجراءات سريعة</h3>
+                    <div class="action-buttons">
+                        <button class="action-button" data-action="add_measurement">
+                            <i class="fas fa-weight"></i>
+                            <span class="action-button-text">تسجيل قياس جديد</span>
+                        </button>
+                        <button class="action-button" data-action="add_symptom">
+                            <i class="fas fa-notes-medical"></i>
+                            <span class="action-button-text">إضافة عَرَض</span>
+                        </button>
+                        <button class="action-button" data-action="add_medication">
+                            <i class="fas fa-prescription-bottle-medical"></i>
+                            <span class="action-button-text">تسجيل دواء</span>
+                        </button>
+                        <button class="action-button" data-action="add_activity">
+                            <i class="fas fa-person-walking"></i>
+                            <span class="action-button-text">تسجيل نشاط بدني</span>
+                        </button>
+                    </div>
+                </section>
+                
+                <!-- نصيحة صحية -->
+                <section class="health-tip">
+                    <div class="tip-header">
+                        <div class="tip-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="tip-title">نصيحة اليوم</h3>
+                    </div>
+                    <p class="tip-content" id="dailyTip">
+                        تناول 8 أكواب من الماء يومياً يساعد في تحسين وظائف الجسم، تنشيط الدورة الدموية، وتخليص الجسم من السموم. يُنصح بتوزيع شرب الماء على مدار اليوم بدلاً من شربها دفعة واحدة.
+                    </p>
+                </section>
+                
+                <!-- معلومة طبية -->
+                <section class="health-tip">
+                    <div class="tip-header">
+                        <div class="tip-icon" style="background-color: var(--primary-dark);">
+                            <i class="fas fa-book-medical"></i>
+                        </div>
+                        <h3 class="tip-title">معلومة طبية</h3>
+                    </div>
+                    <p class="tip-content" id="medicalFact">
+                        هل تعلم أن ممارسة المشي لمدة 30 دقيقة يومياً تقلل من خطر الإصابة بأمراض القلب بنسبة تصل إلى 19%، وتحسن المزاج من خلال إطلاق هرمون الإندورفين، وتساعد في الحفاظ على وزن صحي.
+                    </p>
+                </section>
+            </div>
+            
+            <footer class="app-footer">
+                <p class="footer-text">© 2025 صحتك بالدنيا - جميع الحقوق محفوظة</p>
+            </footer>
+            
+            <!-- زر الاستشارة العائم -->
+            <div class="floating-action-btn pulse-btn" id="consultationBtn" title="احجز استشارة الآن" onclick="window.location.href='modules/about/about-me.html#consultation'">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // مراقبة حالة مصادقة المستخدم
+        let userAuthenticated = false;
+        let userData = null;
+        
+        function logoutUser() {
+            userService.logout();
+        }
+        
+        // التحقق من حالة المصادقة
+        document.addEventListener('DOMContentLoaded', function() {
+            // استخدام خدمة Firebase المركزية للتحقق من حالة المصادقة
+            if (window.firebaseService) {
+                firebaseService.auth.onAuthStateChanged(function(user) {
+                    if (user) {
+                        // المستخدم مسجل الدخول
+                        console.log("✅ المستخدم مسجل الدخول:", user.uid);
+                        userAuthenticated = true;
+                        updateUserInterface();
+                        
+                        // تحميل بيانات الملف الشخصي
+                        loadUserProfile();
+                    } else {
+                        // المستخدم غير مسجل الدخول
+                        console.log("⚠️ المستخدم غير مسجل الدخول");
+                        userAuthenticated = false;
+                        updateUserInterface();
+                    }
+                });
+            } else {
+                console.warn("⚠️ خدمة Firebase غير متاحة");
+                userAuthenticated = false;
+                updateUserInterface();
+            }
+        });
+        
+        // تحديث واجهة المستخدم بناءً على حالة المصادقة
+        function updateUserInterface() {
+            const profileBtn = document.getElementById('profile-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            if (!profileBtn || !logoutBtn) return; // انتظار تحميل العناصر
+            
+            if (userAuthenticated) {
+                // إظهار زر الملف الشخصي وزر تسجيل الخروج
+                profileBtn.style.display = 'flex';
+                logoutBtn.style.display = 'block';
+                
+                if (userData && userData.fullName) {
+                    const nameParts = userData.fullName.split(' ');
+                    const firstName = nameParts[0];
+                    const span = profileBtn.querySelector('span');
+                    if (span) {
+                        span.textContent = firstName;
+                    }
+                    
+                    // تحديث اسم المستخدم في قسم الترحيب
+                    const userNameElement = document.getElementById('user-name');
+                    if (userNameElement) {
+                        userNameElement.textContent = firstName;
+                    }
+                }
+            } else {
+                // إخفاء زر تسجيل الخروج وتغيير زر الملف الشخصي لتسجيل الدخول
+                profileBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ' + 
+                    (currentLang === 'ar' ? 'تسجيل الدخول' : 'Login');
+                profileBtn.onclick = function() {
+                    window.location.href = 'login.html';
+                };
+                logoutBtn.style.display = 'none';
+            }
+        }
+        
+        // تحميل بيانات الملف الشخصي
+        function loadUserProfile() {
+            if (window.firebaseService && userAuthenticated) {
+                firebaseService.data.get(APP_CONFIG.firebase.collections.profile, 'userData')
+                    .then(data => {
+                        if (data) {
+                            userData = data;
+                            updateUserInterface();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading user profile:", error);
+                    });
+            }
+        }
+
+        // ترجمة عناصر القائمة
+        const menuAr = [
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-ruler", text:"قياساتي" },
+            { href: getModulePath("medicalFile", "medical-profile.html"), icon:"fa-file-medical", text:"ملفي الطبي" },
+            { href: getModulePath("nutrition", "index.html"), icon:"fa-utensils", text:"خطتي الغذائية" },
+            { href: getModulePath("calories", "calories.html"), icon:"fa-calculator", text:"دليل السعرات الحرارية" },
+            { href: getModulePath("sleep", "index.html"), icon:"fa-bed", text:"نومي" },
+            { href: getModulePath("mentalHealth", "mental-health.html"), icon:"fa-brain", text:"صحتي النفسية" },
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-notes-medical", text:"حالتي الصحية" },
+            { href: getModulePath("healthyRecipes", "healthy-recipes.html"), icon:"fa-bowl-food", text:"وصفات صحية" },
+            { href: getModulePath("herbs", "herbs.html"), icon:"fa-leaf", text:"الأعشاب الطبية" },
+            { href: getModulePath("studies", "studies.html"), icon:"fa-book-open", text:"الأدلة العلمية والدراسات" }
+        ];
+        const menuEn = [
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-ruler", text:"My Measurements" },
+            { href: getModulePath("medicalFile", "medical-profile.html"), icon:"fa-file-medical", text:"My Medical Profile" },
+            { href: getModulePath("nutrition", "index.html"), icon:"fa-utensils", text:"My Diet Plan" },
+            { href: getModulePath("calories", "calories.html"), icon:"fa-calculator", text:"Calories Guide" },
+            { href: getModulePath("sleep", "index.html"), icon:"fa-bed", text:"My Sleep" },
+            { href: getModulePath("mentalHealth", "mental-health.html"), icon:"fa-brain", text:"My Mental Health" },
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-notes-medical", text:"My Health Status" },
+            { href: getModulePath("healthyRecipes", "healthy-recipes.html"), icon:"fa-bowl-food", text:"Healthy Recipes" },
+            { href: getModulePath("herbs", "herbs.html"), icon:"fa-leaf", text:"Medicinal Herbs" },
+            { href: getModulePath("studies", "studies.html"), icon:"fa-book-open", text:"Scientific Evidence & Studies" }
+        ];
+
+        // تحديد اللغة
+        const lang = localStorage.getItem('hl_language') || 'ar';
+        const headerBtns = document.getElementById('header-btns');
+
+        function renderHeaderBtns(lang) {
+            if (lang === 'ar') {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-ar">
+                        <div class="profile-logout-ar">
+                            <button id="profile-btn" onclick="navigationService.navigateToModule('about', 'profile.html')">
+                                <i class="fa-solid fa-user"></i> <span>ملفي الشخصي</span>
+                            </button>
+                            <button id="logout-btn" onclick="logoutUser()">خروج</button>
+                        </div>
+                        <button id="sidebar-toggle" class="sidebar-btn-ar" title="القائمة الجانبية">
+                            <i class="fa-solid fa-bars"></i> <span>القائمة</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-en">
+                        <button id="sidebar-toggle" class="sidebar-btn-en" title="Sidebar Menu">
+                            <i class="fa-solid fa-bars"></i> <span>Menu</span>
+                        </button>
+                        <div class="profile-logout-en">
+                            <button id="profile-btn" onclick="navigationService.navigateToModule('about', 'profile.html')">
+                                <i class="fa-solid fa-user"></i> <span>Profile</span>
+                            </button>
+                            <button id="logout-btn" onclick="logoutUser()">Logout</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // تحميل القائمة الجانبية من sidebar.html
+        function loadSidebar() {
+            fetch('sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('sidebar').innerHTML = html;
+                    attachSidebarEvents();
+                });
+        }
+
+        // ربط زر الإغلاق للقائمة الجانبية
+        function attachSidebarEvents() {
+            const closeBtn = document.querySelector('.sidebar-close-btn');
+            if (closeBtn) {
+                closeBtn.onclick = closeSidebar;
+            }
+        }
+
+        // فتح القائمة الجانبية
+        function openSidebar() {
+            const sidebarContent = document.getElementById('sidebar-content');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebarContent) sidebarContent.classList.add('open');
+            if (backdrop) backdrop.classList.add('open');
+        }
+
+        // إغلاق القائمة الجانبية
+        function closeSidebar() {
+            const sidebarContent = document.getElementById('sidebar-content');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebarContent) sidebarContent.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            renderHeaderBtns(lang);
+            
+            // ربط أزرار الإجراءات السريعة
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    handleQuickAction(action);
+                });
+            });
+            
+            // إضافة مستمع حدث لخلفية القائمة الجانبية
+            document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
+            
+            // إضافة مستمع حدث لإغلاق القائمة عند الضغط على زر ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "Escape") closeSidebar();
+            });
+        });
+
+        // ربط زر القائمة الجانبية بعد تحميل DOM
+        document.addEventListener('click', function(e){
+            if(e.target && e.target.id === 'sidebar-toggle') {
+                openSidebar();
+            }
+        });
+
+        // معالجة الإجراءات السريعة
+        function handleQuickAction(action) {
+            switch(action) {
+                case 'add_measurement':
+                    window.location.href = 'modules/health-state/measurments-popup.html';
+                    break;
+                case 'add_symptom':
+                    window.location.href = 'modules/medical-file/medical-profile.html#symptoms';
+                    break;
+                case 'add_medication':
+                    window.location.href = 'modules/medical-file/medications-modal.html';
+                    break;
+                case 'add_activity':
+                    window.location.href = 'modules/health-state/healthstate.html#activity';
+                    break;
+                default:
+                    console.log('Unknown action:', action);
+            }
+        }
+
+        // التحقق من حالة المصادقة وعرض البيانات الأساسية عند تحميل الصفحة
+        window.onload = function() {
+            // التحقق من حالة المصادقة قبل التحقق من البيانات الأساسية
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // المستخدم مسجل دخول، قم بالتحقق من البيانات الأساسية
+                    checkAndShowBasicInfoIfNeeded();
+                }
+                // إذا كان المستخدم غير مسجل دخول، لا داعي للتحقق من البيانات الأساسية
+            });
+        };
+        
+        // وظيفة منفصلة للتحقق من البيانات الأساسية وعرض النافذة المنبثقة إذا لزم الأمر
+        function checkAndShowBasicInfoIfNeeded() {
+            console.log("جاري التحقق من البيانات الأساسية...");
+            
+            // تحقق أولاً مما إذا كانت النافذة قد تم عرضها بالفعل في هذه الجلسة
+            if (sessionStorage.getItem('basicInfoModalShown') === 'true') {
+                console.log("تم عرض النافذة بالفعل في هذه الجلسة، تجاوز...");
+                return;
+            }
+            
+            // التحقق من وجود البيانات الأساسية باستخدام خدمة Firebase
+            if (window.firebaseService && firebaseService.isInitialized) {
+                firebaseService.helpers.hasBasicInfo()
+                    .then(hasBasicInfo => {
+                        console.log("نتيجة التحقق من Firebase:", hasBasicInfo);
+                        if (!hasBasicInfo) {
+                            showBasicInfoModal();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ أثناء التحقق من البيانات الأساسية:", error);
+                        // Fallback لـ localStorage
+                        userService.hasBasicInfo()
+                            .then(hasLocalBasicInfo => {
+                                console.log("نتيجة التحقق المحلي:", hasLocalBasicInfo);
+                                if (!hasLocalBasicInfo) {
+                                    showBasicInfoModal();
+                                }
+                            });
+                    });
+            } else {
+                // Fallback لـ localStorage
+                userService.hasBasicInfo()
+                    .then(hasLocalBasicInfo => {
+                        console.log("نتيجة التحقق المحلي (فقط):", hasLocalBasicInfo);
+                        if (!hasLocalBasicInfo) {
+                            showBasicInfoModal();
+                        }
+                    });
+            }
+        }
+        
+        // المتغير لتتبع ما إذا كانت النافذة مفتوحة بالفعل
+        let basicInfoModalOpened = false;
+        
+        function showBasicInfoModal() {
+            // تجنب فتح النافذة أكثر من مرة
+            if (basicInfoModalOpened) {
+                console.log("النافذة المنبثقة مفتوحة بالفعل، تجاوز...");
+                return;
+            }
+            
+            basicInfoModalOpened = true;
+            
+            // تخزين علامة لتجنب فتح النافذة المنبثقة بعد إعادة تحميل الصفحة
+            sessionStorage.setItem('basicInfoModalShown', 'true');
+            
+            uiService.showAlert("عدم إدخال البيانات الأساسية يؤدي إلى عدم دقة المعلومات التي ينتجها التطبيق.", "warning", 3000);
+            setTimeout(function() {
+                const modalWindow = window.open(getModulePath('medicalFile', 'basic-info-modal.html'), 'basicInfoModal', 'width=450,height=700');
+                
+                // إعادة تعيين الحالة عندما تغلق النافذة
+                if (modalWindow) {
+                    const checkClosed = setInterval(function() {
+                        if (modalWindow.closed) {
+                            clearInterval(checkClosed);
+                            basicInfoModalOpened = false;
+                        }
+                    }, 500);
+                }
+            }, 3100);
+        }
+    </script>
+</body>
+</html>

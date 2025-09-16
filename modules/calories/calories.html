@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل السعرات الحرارية | Calories Guide</title>
+    <meta name="description" content="دليل شامل للسعرات الحرارية والقيم الغذائية للأطعمة مع إمكانية البحث المتقدم">
+    <meta name="keywords" content="سعرات حرارية، تغذية، بروتين، كربوهيدرات، دهون، مؤشر جلايسيمي">
+    <meta name="author" content="Healthy Life App">
+    <meta name="theme-color" content="#009688">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="دليل السعرات">
+    <link rel="preload" href="../../core/css/unified-styles.css" as="style">
+    <link rel="preload" href="../../core/js/language-manager.js" as="script">
+    <link rel="preload" href="css/calories.css" as="style">
+    <link rel="stylesheet" href="../../core/css/unified-styles.css">
+    <link rel="stylesheet" href="css/calories.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p id="loading-text">جاري التحميل...</p>
+    </div>
+    <header class="calories-header">
+        <div class="header-controls">
+            <button class="back-btn" onclick="window.history.back()" title="العودة">
+                <i class="fa fa-arrow-right"></i>
+                <span data-translate="back">رجوع</span>
+            </button>
+            <button class="lang-toggle" onclick="toggleLanguage()" title="تغيير اللغة">
+                <i class="fa fa-globe"></i>
+                <span id="current-lang">EN</span>
+            </button>
+        </div>
+        <div class="header-content">
+            <h1 class="main-title" data-translate="calories.title">دليل السعرات الحرارية</h1>
+            <p class="main-description" data-translate="calories.description">
+                آلاف الأطعمة مع السعرات والبروتين والكربوهيدرات والدهون والمؤشر الجلايسيمي
+            </p>
+        </div>
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="search" 
+                           id="food-search" 
+                           class="search-input"
+                           data-translate-placeholder="calories.search_placeholder"
+                           placeholder="ابحث عن الطعام أو المجموعة..."
+                           autocomplete="off">
+                    <button class="clear-search" onclick="clearSearch()" title="مسح البحث">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <select id="category-filter" class="category-filter">
+                    <option value="" data-translate="calories.all_categories">كل المجموعات</option>
+                </select>
+                <button class="advanced-search-btn" onclick="openAdvancedSearch()" title="البحث المتقدم">
+                    <i class="fa fa-search-plus"></i>
+                    <span data-translate="calories.advanced_search">بحث متقدم</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-utensils"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-foods">0</h3>
+                        <p data-translate="calories.total_foods">إجمالي الأطعمة</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-layer-group"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-categories">0</h3>
+                        <p data-translate="calories.total_categories">المجموعات</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-database"></i>
+                    </div>
+                    <div class="stat-content">
+                        <a href="https://fdc.nal.usda.gov/" target="_blank" style="text-decoration:none;">
+                            <h3 style="color:#1976d2;">USDA</h3>
+                        </a>
+                        <p data-translate="calories.usda_integration">قاعدة بيانات أمريكية</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-database"></i>
+                    </div>
+                    <div class="stat-content">
+                        <a href="https://www.moh.gov.bh/healthinfo/foods" target="_blank" style="text-decoration:none;">
+                            <h3 style="color:#388e3c;">MOH Bahrain</h3>
+                        </a>
+                        <p>دليل السعرات البحريني</p>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:18px;text-align:center;">
+                <a href="https://www.moh.gov.bh/healthinfo/foods" target="_blank" class="btn" style="background:#388e3c;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1em;text-decoration:none;display:inline-block;">
+                    صفحة السعرات البحرينية
+                </a>
+            </div>
+        </section>
+        <section class="table-section">
+            <div class="table-container">
+                <table class="foods-table" id="foods-table">
+                    <thead>
+                        <tr>
+                            <th class="image-col"></th>
+                            <th data-translate="calories.english_name">الاسم الإنجليزي</th>
+                            <th data-translate="calories.arabic_name">الاسم العربي</th>
+                            <th data-translate="calories.quantity">الكمية</th>
+                            <th data-translate="calories.calories">سعرات</th>
+                            <th data-translate="calories.protein">بروتين</th>
+                            <th data-translate="calories.carbs">كربوهيدرات</th>
+                            <th data-translate="calories.fat">دهون</th>
+                            <th data-translate="calories.fiber">ألياف</th>
+                            <th data-translate="calories.glycemic_index">المؤشر الجلايسيمي</th>
+                            <th data-translate="calories.category">المجموعة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="foods-table-body">
+                        <!-- سيتم ملء البيانات عبر JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-results" class="no-results" style="display: none;">
+                <div class="no-results-icon">
+                    <i class="fa fa-search"></i>
+                </div>
+                <h3 data-translate="calories.no_results">لا توجد نتائج</h3>
+                <p data-translate="calories.try_different_search">جرب كلمات بحث مختلفة</p>
+            </div>
+        </section>
+    </main>
+    <div id="advanced-search-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width:650px;width:95vw;margin:auto;padding:24px 18px;">
+            <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;">
+                <h2 style="font-size:1.5em;margin:0;color:#2e7d32;">
+                    البحث المتقدم في قاعدة بيانات USDA
+                </h2>
+                <button class="modal-close" onclick="closeAdvancedSearch()" style="background:none;border:none;font-size:1.5em;color:#888;cursor:pointer;">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:22px 0;">
+                <div style="margin-bottom:14px;color:#f44336;font-size:1.1em;text-align:center;">
+                    البحث المتقدم متاح حاليا باللغة الإنجليزية فقط
+                </div>
+                <form id="usda-search-form" style="display:flex;gap:12px;">
+                    <input type="text" id="usda-search-input" class="form-input"
+                        style="flex:1;padding:14px;border-radius:10px;border:1px solid #ccc;font-size:1.1em;"
+                        placeholder="Search for food in English..." autocomplete="off">
+                    <button type="submit" class="search-btn"
+                        style="padding:14px 28px;background:#4CAF50;color:#fff;border:none;border-radius:10px;font-size:1.1em;cursor:pointer;">
+                        <i class="fa fa-search"></i>
+                        بحث
+                    </button>
+                </form>
+                <div id="usda-loading" class="loading-state" style="display:none;text-align:center;margin:22px 0;">
+                    <div class="loading-spinner"></div>
+                    <p>جاري البحث...</p>
+                </div>
+                <div id="usda-results" class="usda-results" style="margin-top:22px;"></div>
+            </div>
+        </div>
+    </div>
+    <div id="food-details-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="food-details-title">تفاصيل الطعام</h2>
+                <button class="modal-close" onclick="closeFoodDetails()">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="food-details-content">
+                <!-- سيتم ملء التفاصيل عبر JavaScript -->
+            </div>
+        </div>
+    </div>
+    <div id="toast-container" class="toast-container"></div>
+    <div id="offline-banner" class="offline-banner" style="display: none;">
+        <i class="fa fa-wifi"></i>
+        <span data-translate="offline_message">لا يوجد اتصال بالإنترنت</span>
+    </div>
+    <!-- Scripts -->
+    <script>
+        // إعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCdUHldUu83kfgc_qUn-h5rZ8xTl2rhNjA",
+            authDomain: "healthy-wealthy-app.firebaseapp.com",
+            projectId: "healthy-wealthy-app",
+            storageBucket: "healthy-wealthy-app.appspot.com",
+            messagingSenderId: "182436316225",
+            appId: "1:182436316225:web:5cfd34f879204b12ebf2c0"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // جلب البيانات من Firestore وعرضها في الجدول والإحصائيات
+        function loadFoods() {
+            document.getElementById('loading-overlay').style.display = 'block';
+            db.collection('foods').get().then(snapshot => {
+                const tbody = document.getElementById('foods-table-body');
+                tbody.innerHTML = '';
+                let categoriesSet = new Set();
+                let totalFoods = 0;
+                if (snapshot.empty) {
+                    document.getElementById('no-results').style.display = 'block';
+                    document.getElementById('total-foods').textContent = "0";
+                    document.getElementById('total-categories').textContent = "0";
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    return;
+                }
+                document.getElementById('no-results').style.display = 'none';
+                snapshot.forEach(doc => {
+                    const food = doc.data();
+                    totalFoods++;
+                    if (food.category) categoriesSet.add(food.category);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td></td>
+                        <td>${food.englishName || ''}</td>
+                        <td>${food.arabicName || ''}</td>
+                        <td>${food.quantity || ''}</td>
+                        <td>${food.calories || ''}</td>
+                        <td>${food.protein || ''}</td>
+                        <td>${food.carbs || ''}</td>
+                        <td>${food.fat || ''}</td>
+                        <td>${food.fiber || ''}</td>
+                        <td>${food.glycemicIndex || ''}</td>
+                        <td>${food.category || ''}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById('total-foods').textContent = totalFoods;
+                document.getElementById('total-categories').textContent = categoriesSet.size;
+                document.getElementById('loading-overlay').style.display = 'none';
+            }).catch(error => {
+                document.getElementById('no-results').style.display = 'block';
+                document.getElementById('no-results').innerHTML = `<h3>خطأ في جلب البيانات</h3><p>${error.message}</p>`;
+                document.getElementById('total-foods').textContent = "0";
+                document.getElementById('total-categories').textContent = "0";
+                document.getElementById('loading-overlay').style.display = 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFoods);
+
+        // نافذة البحث المتقدم في قاعدة بيانات USDA
+        const USDA_API_KEY = "Axpnv9fHrtUArDzyeZsibjxG1oS2mWOlfjsKPQaG";
+
+        function openAdvancedSearch() {
+            document.getElementById('advanced-search-modal').style.display = 'block';
+            document.getElementById('usda-search-input').value = '';
+            document.getElementById('usda-results').innerHTML = '';
+        }
+        function closeAdvancedSearch() {
+            document.getElementById('advanced-search-modal').style.display = 'none';
+        }
+
+        function searchUSDA() {
+            const query = document.getElementById('usda-search-input').value.trim();
+            const loading = document.getElementById('usda-loading');
+            const resultsDiv = document.getElementById('usda-results');
+            if (!query) {
+                resultsDiv.innerHTML = '<div style="color:#f44336;text-align:center;">يرجى كتابة كلمة البحث بالإنجليزية</div>';
+                return;
+            }
+            loading.style.display = 'block';
+            resultsDiv.innerHTML = '';
+            fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&api_key=${USDA_API_KEY}`)
+                .then(res => res.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    if (!data.foods || data.foods.length === 0) {
+                        resultsDiv.innerHTML = '<div style="color:#f44336;text-align:center;">لا توجد نتائج</div>';
+                        return;
+                    }
+                    let html = '<ul style="list-style:none;padding:0;">';
+                    data.foods.forEach(food => {
+                        html += `<li style="background:#f8f8f8;margin-bottom:8px;padding:10px;border-radius:8px;">
+                            <div style="font-weight:bold;color:#2e7d32;">${food.description}</div>
+                            <div style="font-size:0.95em;color:#555;">${food.foodCategory || ''}</div>
+                            <div style="font-size:0.95em;color:#888;">Calories: ${food.foodNutrients?.find(n=>n.nutrientName==='Energy')?.value || 'N/A'}</div>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                    resultsDiv.innerHTML = html;
+                })
+                .catch(() => {
+                    loading.style.display = 'none';
+                    resultsDiv.innerHTML = '<div style="color:#f44336;text-align:center;">حدث خطأ أثناء البحث</div>';
+                });
+        }
+
+        // ربط زر البحث بدالة البحث عند الضغط أو Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            var usdaForm = document.getElementById('usda-search-form');
+            if (usdaForm) {
+                usdaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    searchUSDA();
+                });
+            }
+        });
+    </script>
+    <script src="../../config/firebase.js"></script>
+    <script src="../../core/js/language-manager.js"></script>
+    <script src="../../core/js/utils.js"></script>
+    <script src="js/usda-api.js"></script>
+    <script src="js/calories-app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../../sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

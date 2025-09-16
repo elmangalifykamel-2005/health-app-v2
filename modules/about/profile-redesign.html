@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صحتك بالدنيا | الملف الشخصي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- ملفات الإعدادات والتوابع -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #388e3c;
+            --primary-light: #81c784;
+            --primary-dark: #2e7d32;
+            --accent-color: #00796b;
+            --warning-color: #f57c00;
+            --danger-color: #d32f2f;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f5f5f5;
+            --card-bg: #ffffff;
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 25px;
+            --spacing-xl: 40px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+        
+        /* --- Header Section --- */
+        .app-header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-area h1 {
+            font-size: 1.5rem;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .action-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* --- Profile Section --- */
+        .profile-section {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-light);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-left: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border: 3px solid var(--primary-light);
+        }
+        
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-image i {
+            font-size: 3rem;
+            color: #aaa;
+        }
+        
+        .profile-details h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        
+        .profile-meta {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-profile {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s;
+            margin-right: auto;
+        }
+        
+        .edit-profile:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .profile-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .profile-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .profile-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        /* --- Tabs Section --- */
+        .profile-tabs {
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: var(--spacing-lg);
+            overflow-x: auto;
+            scrollbar-width: thin;
+            position: sticky;
+            top: 70px;
+            background-color: var(--bg-light);
+            z-index: 90;
+            padding: var(--spacing-xs) 0;
+        }
+        
+        .tabs-header::-webkit-scrollbar {
+            height: 5px;
+        }
+        
+        .tabs-header::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 5px;
+        }
+        
+        .tab-button {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+            transition: color 0.2s;
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transition: transform 0.2s;
+        }
+        
+        .tab-button.active::after {
+            transform: scaleX(1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* --- Medical Data Section --- */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-xs);
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .add-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .medical-item {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .item-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .item-details {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .item-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .item-action {
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .item-action:hover {
+            background-color: #eee;
+        }
+        
+        /* --- Charts Section --- */
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .chart-filters {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .chart-filter {
+            background-color: #eee;
+            border: none;
+            border-radius: 15px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .chart-filter.active {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+        }
+        
+        .chart-placeholder {
+            height: 200px;
+            background-color: #f9f9f9;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-style: italic;
+        }
+        
+        .medical-tests-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .test-item {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .test-name {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .test-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .test-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .result-unit {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .result-status {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background-color: #e8f5e9;
+            color: var(--primary-color);
+        }
+        
+        .result-status.warning {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+        
+        .result-status.danger {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+        
+        /* --- Footer --- */
+        .app-footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: var(--spacing-lg);
+            text-align: center;
+            margin-top: var(--spacing-xl);
+        }
+        
+        .footer-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-image {
+                margin-left: 0;
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .edit-profile {
+                margin: var(--spacing-sm) auto 0;
+            }
+            
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .medical-tests-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="app-header">
+        <div class="logo-area">
+            <button class="back-button" id="backButton">
+                <i class="fas fa-arrow-right"></i>
+                <span>رجوع</span>
+            </button>
+            <h1>الملف الشخصي</h1>
+        </div>
+        <div class="header-actions">
+            <div class="action-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="action-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Profile Section -->
+        <section class="profile-section">
+            <div class="profile-header">
+                <div class="profile-image">
+                    <img src="../../photo/profile.jpg" alt="صورة شخصية">
+                </div>
+                <div class="profile-details">
+                    <h2>أحمد محمد علي</h2>
+                    <div class="profile-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>45 سنة</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-venus-mars"></i>
+                            <span>ذكر</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tint"></i>
+                            <span>A+</span>
+                        </div>
+                    </div>
+                    <button class="edit-profile">
+                        <i class="fas fa-pen"></i>
+                        <span>تعديل البيانات</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="profile-grid">
+                <div class="profile-item">
+                    <div class="profile-label">الطول</div>
+                    <div class="profile-value">178 سم</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">الوزن</div>
+                    <div class="profile-value">82 كجم</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">البريد الإلكتروني</div>
+                    <div class="profile-value">ahmed.m@example.com</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">رقم الهاتف</div>
+                    <div class="profile-value">+966 50 123 4567</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">جهة اتصال للطوارئ</div>
+                    <div class="profile-value">محمد علي (الابن) - 0512345678</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">تاريخ آخر تحديث</div>
+                    <div class="profile-value">5 سبتمبر 2025</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tabs Section -->
+        <section class="profile-tabs">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="medical-history">السجل الطبي</button>
+                <button class="tab-button" data-tab="measurements">القياسات الحيوية</button>
+                <button class="tab-button" data-tab="medications">الأدوية</button>
+                <button class="tab-button" data-tab="medical-tests">التحاليل الطبية</button>
+                <button class="tab-button" data-tab="reports">التقارير والإحصائيات</button>
+            </div>
+            
+            <!-- Tab Content: السجل الطبي -->
+            <div class="tab-content active" id="medical-history">
+                <div class="section-title">
+                    <span>الأمراض المزمنة</span>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">ارتفاع ضغط الدم</div>
+                        <div class="item-date">منذ 2018</div>
+                    </div>
+                    <div class="item-details">
+                        تم تشخيصه بعد قراءات متكررة أكثر من 140/90. يتم التحكم به من خلال الأدوية والنظام الغذائي.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">السكري من النوع الثاني</div>
+                        <div class="item-date">منذ 2020</div>
+                    </div>
+                    <div class="item-details">
+                        تم التشخيص بناءً على فحص السكر التراكمي HbA1c بقراءة 7.2%. يتم التحكم من خلال الأنسولين.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 30px;">
+                    <span>الحساسية</span>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">حساسية من البنسلين</div>
+                        <div class="item-date">منذ الطفولة</div>
+                    </div>
+                    <div class="item-details">
+                        تظهر على شكل طفح جلدي وصعوبة في التنفس.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 30px;">
+                    <span>العمليات الجراحية</span>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">استئصال الزائدة الدودية</div>
+                        <div class="item-date">2010</div>
+                    </div>
+                    <div class="item-details">
+                        تمت العملية في مستشفى الملك فهد التخصصي. التعافي كان سريعًا دون مضاعفات.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Content: القياسات الحيوية -->
+            <div class="tab-content" id="measurements">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">الوزن</div>
+                        <div class="chart-filters">
+                            <button class="chart-filter">أسبوع</button>
+                            <button class="chart-filter active">شهر</button>
+                            <button class="chart-filter">3 أشهر</button>
+                            <button class="chart-filter">سنة</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">[هنا يتم عرض رسم بياني للوزن]</div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">ضغط الدم</div>
+                        <div class="chart-filters">
+                            <button class="chart-filter">أسبوع</button>
+                            <button class="chart-filter active">شهر</button>
+                            <button class="chart-filter">3 أشهر</button>
+                            <button class="chart-filter">سنة</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">[هنا يتم عرض رسم بياني لضغط الدم]</div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">السكر</div>
+                        <div class="chart-filters">
+                            <button class="chart-filter">أسبوع</button>
+                            <button class="chart-filter active">شهر</button>
+                            <button class="chart-filter">3 أشهر</button>
+                            <button class="chart-filter">سنة</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">[هنا يتم عرض رسم بياني للسكر]</div>
+                </div>
+            </div>
+            
+            <!-- Tab Content: الأدوية -->
+            <div class="tab-content" id="medications">
+                <div class="section-title">
+                    <span>الأدوية الحالية</span>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">ليزينوبريل (Lisinopril)</div>
+                        <div class="item-date">20 ملغ - مرة يومياً</div>
+                    </div>
+                    <div class="item-details">
+                        لعلاج ارتفاع ضغط الدم. يتم تناوله في الصباح.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">ميتفورمين (Metformin)</div>
+                        <div class="item-date">850 ملغ - مرتين يومياً</div>
+                    </div>
+                    <div class="item-details">
+                        لعلاج داء السكري. يتم تناوله قبل وجبات الطعام الصباحية والمسائية.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">فيتامين د (Vitamin D)</div>
+                        <div class="item-date">1000 وحدة دولية - مرة يومياً</div>
+                    </div>
+                    <div class="item-details">
+                        مكمل غذائي. يتم تناوله مع وجبة الإفطار.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-pen"></i> تعديل</span>
+                        <span class="item-action"><i class="fas fa-trash"></i> حذف</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Content: التحاليل الطبية -->
+            <div class="tab-content" id="medical-tests">
+                <div class="section-title">
+                    <span>آخر التحاليل</span>
+                    <button class="add-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="medical-tests-grid">
+                    <div class="test-item">
+                        <div class="test-header">
+                            <div class="test-name">الهيموجلوبين (Hb)</div>
+                            <div class="test-date">5 يوليو 2025</div>
+                        </div>
+                        <div class="test-result">
+                            <div>
+                                <span class="result-value">14.2</span>
+                                <span class="result-unit">g/dL</span>
+                            </div>
+                            <div class="result-status">طبيعي</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="test-header">
+                            <div class="test-name">السكر التراكمي (HbA1c)</div>
+                            <div class="test-date">5 يوليو 2025</div>
+                        </div>
+                        <div class="test-result">
+                            <div>
+                                <span class="result-value">7.2</span>
+                                <span class="result-unit">%</span>
+                            </div>
+                            <div class="result-status warning">مرتفع</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="test-header">
+                            <div class="test-name">الكوليسترول الكلي</div>
+                            <div class="test-date">5 يوليو 2025</div>
+                        </div>
+                        <div class="test-result">
+                            <div>
+                                <span class="result-value">210</span>
+                                <span class="result-unit">mg/dL</span>
+                            </div>
+                            <div class="result-status warning">مرتفع قليلاً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="test-header">
+                            <div class="test-name">الكرياتينين</div>
+                            <div class="test-date">5 يوليو 2025</div>
+                        </div>
+                        <div class="test-result">
+                            <div>
+                                <span class="result-value">0.9</span>
+                                <span class="result-unit">mg/dL</span>
+                            </div>
+                            <div class="result-status">طبيعي</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 30px;">
+                    <span>سجل التحاليل</span>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">فحص شامل</div>
+                        <div class="item-date">5 يوليو 2025</div>
+                    </div>
+                    <div class="item-details">
+                        فحص دم شامل في مختبر الريان. تضمن صورة دم كاملة، كيمياء الدم، وظائف الكبد والكلى.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-eye"></i> عرض</span>
+                        <span class="item-action"><i class="fas fa-download"></i> تحميل</span>
+                    </div>
+                </div>
+                
+                <div class="medical-item">
+                    <div class="item-header">
+                        <div class="item-name">فحص السكر التراكمي</div>
+                        <div class="item-date">10 أبريل 2025</div>
+                    </div>
+                    <div class="item-details">
+                        فحص HbA1c للتحقق من مستوى السكر التراكمي على مدى 3 أشهر.
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-action"><i class="fas fa-eye"></i> عرض</span>
+                        <span class="item-action"><i class="fas fa-download"></i> تحميل</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Content: التقارير والإحصائيات -->
+            <div class="tab-content" id="reports">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">تقرير الحالة الصحية</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-weight: 500;">المؤشر الصحي العام:</span>
+                            <span style="font-weight: 600; color: var(--primary-color);">75%</span>
+                        </div>
+                        <div style="width: 100%; height: 8px; background-color: #eee; border-radius: 4px; overflow: hidden;">
+                            <div style="width: 75%; height: 100%; background-color: var(--primary-color);"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-weight: 500; margin-bottom: 5px;">الوزن المثالي</div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                الوزن الحالي: 82 كجم<br>
+                                الوزن المثالي: 75-78 كجم<br>
+                                الفارق: +4 كجم
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 500; margin-bottom: 5px;">مؤشر كتلة الجسم (BMI)</div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                مؤشر BMI: 25.9<br>
+                                التصنيف: زيادة طفيفة في الوزن<br>
+                                المعدل المثالي: 18.5-24.9
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: 500; margin-bottom: 5px;">توصيات صحية</div>
+                        <ul style="font-size: 0.9rem; color: #666; padding-right: 20px;">
+                            <li>تقليل استهلاك السكريات والنشويات للمساعدة في تنظيم مستوى السكر في الدم</li>
+                            <li>ممارسة المشي لمدة 30 دقيقة يومياً</li>
+                            <li>الالتزام بأدوية السكري وضغط الدم</li>
+                            <li>إجراء فحص للعينين مرة كل 6 أشهر</li>
+                        </ul>
+                    </div>
+                    
+                    <button style="background-color: var(--primary-color); color: var(--text-light); border: none; border-radius: 20px; padding: 8px 15px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0 auto;">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>تحميل التقرير كامل</span>
+                    </button>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">إحصائيات التطبيق</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 600; color: var(--primary-color);">87%</div>
+                            <div style="font-size: 0.9rem; color: #666;">التزام بالأدوية</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 600; color: var(--primary-color);">24</div>
+                            <div style="font-size: 0.9rem; color: #666;">قياس خلال الشهر</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 600; color: var(--primary-color);">5</div>
+                            <div style="font-size: 0.9rem; color: #666;">تحاليل مسجلة</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer class="app-footer">
+        <p class="footer-text">© 2025 صحتك بالدنيا - جميع الحقوق محفوظة</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // زر الرجوع
+            document.getElementById('backButton').addEventListener('click', function() {
+                window.history.back();
+            });
+            
+            // تبديل التبويبات
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // إزالة الفئة النشطة من جميع الأزرار
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    // إضافة الفئة النشطة للزر المنقور
+                    this.classList.add('active');
+                    
+                    // إخفاء جميع المحتويات
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    // إظهار المحتوى المناسب
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

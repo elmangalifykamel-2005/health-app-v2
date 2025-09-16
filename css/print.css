@@ -1,0 +1,93 @@
+/**
+ * ملف أنماط الطباعة
+ * Print Styles
+ * 
+ * يحتوي هذا الملف على أنماط CSS الخاصة بطباعة الصفحات
+ * This file contains CSS styles specific to page printing
+ */
+
+@media print {
+    /* إخفاء العناصر غير الضرورية للطباعة */
+    header, footer, nav, .sidebar, .no-print, button, .btn, .back-btn {
+        display: none !important;
+    }
+    
+    /* إعدادات عامة للطباعة */
+    body {
+        font-family: serif;
+        color: #000 !important;
+        background: #fff !important;
+    }
+    
+    /* تحسين العناوين */
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+    
+    /* تحسين الروابط */
+    a {
+        color: #000 !important;
+        text-decoration: underline;
+    }
+    
+    /* إظهار عناوين الروابط */
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+    }
+    
+    /* إلغاء إظهار عناوين الروابط الداخلية */
+    a[href^="#"]:after {
+        content: "";
+    }
+    
+    /* تحسين الجداول */
+    table {
+        border-collapse: collapse !important;
+    }
+    
+    table, th, td {
+        border: 1px solid #999 !important;
+    }
+    
+    /* تحسين الصور */
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+    
+    /* تحسين فواصل الصفحات */
+    p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    /* فواصل صفحات للأقسام الرئيسية */
+    section {
+        page-break-inside: avoid;
+    }
+    
+    /* التصميم الشامل للطباعة */
+    .container, main {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* تعديل ألوان الخلفية وحدود البطاقات */
+    .card, .section, .panel {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        background: #fff !important;
+        break-inside: avoid;
+    }
+    
+    /* حذف أي تأثيرات */
+    * {
+        transition: none !important;
+        animation: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}

@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير التحليل الطبي الشامل - صحتك بالدنيا</title>
+    
+    <!-- الأنماط الموحدة -->
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="medical-report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- مكتبات جافا سكريبت -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-helpers.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .health-summary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .health-score-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .health-score-circle {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-text {
+            position: absolute;
+            text-align: center;
+            color: white;
+        }
+
+        .health-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .health-status {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #4CAF50;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.warning {
+            border-top-color: #ff9800;
+        }
+
+        .stat-card.danger {
+            border-top-color: #f44336;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .stat-card.warning .stat-icon {
+            color: #ff9800;
+        }
+
+        .stat-card.danger .stat-icon {
+            color: #f44336;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .section {
+            margin: 50px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: #4CAF50;
+        }
+
+        .test-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .test-result-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+
+        .test-result-item.warning {
+            border-left-color: #ff9800;
+            background: #fff8e1;
+        }
+
+        .test-result-item.danger {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .test-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .test-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .test-result-item.warning .test-value {
+            color: #ff9800;
+        }
+
+        .test-result-item.danger .test-value {
+            color: #f44336;
+        }
+
+        .test-range {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 2s ease-in-out;
+            background: #4CAF50;
+        }
+
+        .progress-fill.warning {
+            background: #ff9800;
+        }
+
+        .progress-fill.danger {
+            background: #f44336;
+        }
+
+        .diseases-section, .risks-section, .recommendations-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .disease-item, .risk-factor, .recommendation-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .disease-item:hover, .risk-factor:hover, .recommendation-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .disease-header, .risk-header, .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .disease-name, .risk-name, .rec-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .severity-badge, .priority-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .severity-high, .priority-high {
+            background: #f44336;
+        }
+
+        .severity-medium, .priority-medium {
+            background: #ff9800;
+        }
+
+        .severity-low, .priority-low {
+            background: #4CAF50;
+        }
+
+        .disease-description, .risk-description, .rec-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .rec-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            margin-top: 15px;
+        }
+
+        .actions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .actions li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .actions li:last-child {
+            border-bottom: none;
+        }
+
+        .actions li i {
+            color: #4CAF50;
+            font-size: 0.9rem;
+        }
+
+        .disclaimer {
+            background: #fff8e1;
+            border: 2px solid #ff9800;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 40px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .disclaimer i {
+            color: #ff9800;
+            font-size: 2rem;
+            margin-top: 5px;
+        }
+
+        .disclaimer-content h3 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .disclaimer-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn.primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .action-btn.tertiary {
+            background: #ff9800;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .health-summary {
+                padding: 30px 20px;
+            }
+
+            .health-score {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .test-results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 250px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> تقرير التحليل الطبي الشامل</h1>
+            <p>تحليل مفصل لحالتك الصحية بناءً على نتائج التحاليل الطبية</p>
+        </div>
+
+        <div class="content">
+            <!-- ملخص الحالة الصحية -->
+            <div class="health-summary">
+                <div class="health-score-container">
+                    <div class="health-score-circle">
+                        <svg width="200" height="200">
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8"/>
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="white" stroke-width="8" 
+                                    stroke-dasharray="565.48" stroke-dashoffset="113.1" 
+                                    stroke-linecap="round" class="score-circle"/>
+                        </svg>
+                        <div class="score-text">
+                            <div class="health-score" id="health-score">80</div>
+                            <div class="score-label">من 100</div>
+                        </div>
+                    </div>
+                    <div class="health-status" id="health-status">حالة صحية جيدة</div>
+                </div>
+            </div>
+
+            <!-- إحصائيات سريعة -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-number" id="normal-count">0</div>
+                    <div class="stat-label">تحاليل طبيعية</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-number" id="warning-count">0</div>
+                    <div class="stat-label">تحتاج متابعة</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-number" id="danger-count">0</div>
+                    <div class="stat-label">تحتاج تدخل</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="stat-number" id="risk-factors">0</div>
+                    <div class="stat-label">عوامل خطورة</div>
+                </div>
+            </div>
+
+            <!-- نتائج التحاليل المفصلة -->
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-vial"></i>
+                    نتائج التحاليل المفصلة
+                </h2>
+                <div class="test-results-grid" id="test-results">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- الرسم البياني للنتائج -->
+            <div class="chart-container">
+                <h3 class="chart-title">توزيع نتائج التحاليل</h3>
+                <canvas id="testResultsChart" width="400" height="200"></canvas>
+            </div>
+
+            <!-- الأمراض المحتملة -->
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-stethoscope"></i>
+                    الأمراض المحتملة والتشخيص
+                </h2>
+                <div class="diseases-section" id="diseases">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- عوامل الخطورة -->
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    عوامل الخطورة
+                </h2>
+                <div class="risks-section" id="risk-factors-section">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+
+            <!-- التوصيات والإرشادات -->
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-lightbulb"></i>
+                    التوصيات والإرشادات الطبية
+                </h2>
+                <div class="recommendations-section">
+                    <div class="recommendations-grid" id="recommendations">
+                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- إخلاء مسؤولية -->
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i>
+                <div class="disclaimer-content">
+                    <h3>إخلاء مسؤولية طبية</h3>
+                    <p>هذا التحليل هو لأغراض إعلامية فقط ولا يعتبر عن الاستشارة الطبية المتخصصة. يجب مراجعة الطبيب المختص لتفسير النتائج والحصول على التشخيص والعلاج المناسب. لا تعتمد على قرارات طبية بناءً على هذا التحليل وحده.</p>
+                </div>
+            </div>
+
+            <!-- أزرار الإجراءات -->
+            <div class="action-buttons">
+                <button class="action-btn primary" id="btn-print-report">
+                    <i class="fas fa-print"></i>
+                    طباعة التقرير
+                </button>
+                <button class="action-btn secondary" id="btn-save-report">
+                    <i class="fas fa-download"></i>
+                    حفظ النتائج
+                </button>
+                <button class="action-btn tertiary" id="btn-share-report">
+                    <i class="fas fa-share"></i>
+                    مشاركة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // البيانات المستخرجة من ملف medical-tests.html
+        const medicalData = {
+            // التحاليل الأساسية
+            hemoglobin: 12.5,
+            wbc: 7.5,
+            platelets: 250,
+            hematocrit: 42.0,
+            total_cholesterol: 180,
+            ldl: 100,
+            hdl: 50,
+            triglycerides: 120,
+            fasting_glucose: 90,
+            postprandial_glucose: 120,
+            hba1c: 5.5,
+            creatinine: 1.0,
+            urea: 30,
+            alt: 20,
+            ast: 20,
+            alp: 100,
+            ggt: 30,
+            
+            // التحاليل الإضافية (قيم افتراضية للعرض)
+            tsh: 2.5,
+            vitamin_d: 25,
+            vitamin_b12: 350,
+            iron: 80,
+            ferritin: 50,
+            calcium: 9.5,
+            crp: 2.0,
+            esr: 12,
+            psa: 1.5,
+            pt: 12,
+            iga: 200,
+            igg: 1000
+        };
+
+        // المعدلات الطبيعية للتحاليل
+        const normalRanges = {
+            // التحاليل الأساسية
+            hemoglobin: { min: 12.1, max: 17.2, unit: 'g/dL', name: 'الهيموجلوبين' },
+            wbc: { min: 4.5, max: 11.0, unit: '×10³/μL', name: 'كريات الدم البيضاء' },
+            platelets: { min: 150, max: 450, unit: '×10³/μL', name: 'الصفائح الدموية' },
+            hematocrit: { min: 36, max: 50, unit: '%', name: 'الهيماتوكريت' },
+            total_cholesterol: { min: 0, max: 200, unit: 'mg/dL', name: 'الكوليسترول الكلي' },
+            ldl: { min: 0, max: 100, unit: 'mg/dL', name: 'الكوليسترول الضار' },
+            hdl: { min: 40, max: 999, unit: 'mg/dL', name: 'الكوليسترول النافع' },
+            triglycerides: { min: 0, max: 150, unit: 'mg/dL', name: 'الدهون الثلاثية' },
+            fasting_glucose: { min: 70, max: 99, unit: 'mg/dL', name: 'سكر الدم صائم' },
+            postprandial_glucose: { min: 70, max: 140, unit: 'mg/dL', name: 'سكر الدم فاطر' },
+            hba1c: { min: 4.0, max: 5.6, unit: '%', name: 'السكر التراكمي' },
+            creatinine: { min: 0.6, max: 1.3, unit: 'mg/dL', name: 'الكرياتينين' },
+            urea: { min: 15, max: 45, unit: 'mg/dL', name: 'اليوريا' },
+            alt: { min: 7, max: 56, unit: 'U/L', name: 'ALT' },
+            ast: { min: 10, max: 40, unit: 'U/L', name: 'AST' },
+            alp: { min: 44, max: 147, unit: 'U/L', name: 'ALP' },
+            ggt: { min: 9, max: 48, unit: 'U/L', name: 'GGT' },
+            
+            // التحاليل الإضافية
+            tsh: { min: 0.4, max: 4.0, unit: 'mIU/L', name: 'هرمون الغدة الدرقية' },
+            vitamin_d: { min: 30, max: 100, unit: 'ng/mL', name: 'فيتامين د' },
+            vitamin_b12: { min: 200, max: 900, unit: 'pg/mL', name: 'فيتامين ب12' },
+            iron: { min: 50, max: 175, unit: 'μg/dL', name: 'الحديد' },
+            ferritin: { min: 12, max: 300, unit: 'ng/mL', name: 'الفيريتين' },
+            calcium: { min: 8.5, max: 10.5, unit: 'mg/dL', name: 'الكالسيوم' },
+            crp: { min: 0, max: 3.0, unit: 'mg/L', name: 'البروتين التفاعلي C' },
+            esr: { min: 0, max: 20, unit: 'mm/hr', name: 'سرعة الترسيب' },
+            psa: { min: 0, max: 4.0, unit: 'ng/mL', name: 'مستضد البروستاتا' },
+            pt: { min: 11, max: 13, unit: 'ثانية', name: 'زمن البروثرومبين' },
+            iga: { min: 70, max: 400, unit: 'mg/dL', name: 'الغلوبولين المناعي A' },
+            igg: { min: 700, max: 1600, unit: 'mg/dL', name: 'الغلوبولين المناعي G' }
+        };
+
+        function analyzeTestResults() {
+            const results = [];
+            let normalCount = 0;
+            let warningCount = 0;
+            let dangerCount = 0;
+
+            for (const [key, value] of Object.entries(medicalData)) {
+                const range = normalRanges[key];
+                if (!range) continue;
+
+                let status = 'normal';
+                let statusText = 'طبيعي';
+                
+                if (value < range.min) {
+                    if (value < range.min * 0.8) {
+                        status = 'danger';
+                        statusText = 'منخفض جداً';
+                        dangerCount++;
+                    } else {
+                        status = 'warning';
+                        statusText = 'منخفض';
+                        warningCount++;
+                    }
+                } else if (value > range.max) {
+                    if (value > range.max * 1.2) {
+                        status = 'danger';
+                        statusText = 'مرتفع جداً';
+                        dangerCount++;
+                    } else {
+                        status = 'warning';
+                        statusText = 'مرتفع';
+                        warningCount++;
+                    }
+                } else {
+                    normalCount++;
+                }
+
+                results.push({
+                    name: range.name,
+                    value: value,
+                    unit: range.unit,
+                    status: status,
+                    statusText: statusText,
+                    range: `${range.min}-${range.max} ${range.unit}`
+                });
+            }
+
+            return { results, normalCount, warningCount, dangerCount };
+        }
+
+        function calculateHealthScore(analysis) {
+            let score = 100;
+            score -= analysis.warningCount * 5;
+            score -= analysis.dangerCount * 15;
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function getHealthStatus(score) {
+            if (score >= 90) return 'حالة صحية ممتازة';
+            if (score >= 75) return 'حالة صحية جيدة';
+            if (score >= 60) return 'حالة صحية مقبولة';
+            return 'تحتاج لعناية طبية';
+        }
+
+        function identifyDiseases(analysis) {
+            const diseases = [];
+
+            // تحليل السكري
+            if (medicalData.fasting_glucose > 126 || medicalData.hba1c > 6.5) {
+                diseases.push({
+                    name: 'داء السكري من النوع الثاني',
+                    severity: 'high',
+                    description: 'مستويات السكر في الدم مرتفعة بشكل مستمر، مما يشير إلى احتمالية الإصابة بداء السكري.',
+                    tests: ['fasting_glucose', 'hba1c']
+                });
+            } else if (medicalData.fasting_glucose > 100 || medicalData.hba1c > 5.7) {
+                diseases.push({
+                    name: 'مقدمات السكري',
+                    severity: 'medium',
+                    description: 'مستويات السكر أعلى من الطبيعي ولكن لم تصل لمستوى السكري بعد.',
+                    tests: ['fasting_glucose', 'hba1c']
+                });
+            }
+
+            // تحليل أمراض القلب
+            if (medicalData.total_cholesterol > 240 || medicalData.ldl > 160) {
+                diseases.push({
+                    name: 'ارتفاع الكوليسترول',
+                    severity: 'high',
+                    description: 'مستويات الكوليسترول مرتفعة مما يزيد من خطر الإصابة بأمراض القلب والأوعية الدموية.',
+                    tests: ['total_cholesterol', 'ldl']
+                });
+            }
+
+            // تحليل أمراض الكلى
+            if (medicalData.creatinine > 1.5 || medicalData.urea > 50) {
+                diseases.push({
+                    name: 'قصور في وظائف الكلى',
+                    severity: 'high',
+                    description: 'مؤشرات وظائف الكلى تظهر احتمالية وجود مشاكل في الكلى.',
+                    tests: ['creatinine', 'urea']
+                });
+            }
+
+            // تحليل أمراض الكبد
+            if (medicalData.alt > 60 || medicalData.ast > 50) {
+                diseases.push({
+                    name: 'التهاب الكبد',
+                    severity: 'medium',
+                    description: 'إنزيمات الكبد مرتفعة مما قد يشير إلى التهاب أو تلف في الكبد.',
+                    tests: ['alt', 'ast']
+                });
+            }
+
+            // تحليل أمراض الغدة الدرقية
+            if (medicalData.tsh > 4.0) {
+                diseases.push({
+                    name: 'قصور الغدة الدرقية',
+                    severity: 'medium',
+                    description: 'مستوى هرمون TSH مرتفع مما يشير إلى قصور في نشاط الغدة الدرقية.',
+                    tests: ['tsh']
+                });
+            } else if (medicalData.tsh < 0.4) {
+                diseases.push({
+                    name: 'فرط نشاط الغدة الدرقية',
+                    severity: 'medium',
+                    description: 'مستوى هرمون TSH منخفض مما يشير إلى فرط في نشاط الغدة الدرقية.',
+                    tests: ['tsh']
+                });
+            }
+
+            // تحليل نقص الفيتامينات
+            if (medicalData.vitamin_d < 20) {
+                diseases.push({
+                    name: 'نقص شديد في فيتامين د',
+                    severity: 'high',
+                    description: 'مستوى فيتامين د منخفض جداً مما يؤثر على صحة العظام والمناعة.',
+                    tests: ['vitamin_d']
+                });
+            } else if (medicalData.vitamin_d < 30) {
+                diseases.push({
+                    name: 'نقص في فيتامين د',
+                    severity: 'medium',
+                    description: 'مستوى فيتامين د أقل من المثالي مما قد يؤثر على صحة العظام.',
+                    tests: ['vitamin_d']
+                });
+            }
+
+            // تحليل نقص الحديد وفقر الدم
+            if (medicalData.hemoglobin < 12 && medicalData.iron < 50) {
+                diseases.push({
+                    name: 'فقر الدم بنقص الحديد',
+                    severity: 'medium',
+                    description: 'مستويات الهيموجلوبين والحديد منخفضة مما يشير إلى فقر الدم بنقص الحديد.',
+                    tests: ['hemoglobin', 'iron', 'ferritin']
+                });
+            }
+
+            // تحليل الالتهابات
+            if (medicalData.crp > 10 || medicalData.esr > 30) {
+                diseases.push({
+                    name: 'التهاب مزمن',
+                    severity: 'medium',
+                    description: 'مؤشرات الالتهاب مرتفعة مما قد يشير إلى وجود التهاب مزمن في الجسم.',
+                    tests: ['crp', 'esr']
+                });
+            }
+
+            return diseases;
+        }
+
+        function identifyRiskFactors(analysis) {
+            const riskFactors = [];
+
+            // عوامل خطر القلب والأوعية الدموية
+            if (medicalData.total_cholesterol > 200) {
+                riskFactors.push({
+                    name: 'خطر أمراض القلب',
+                    level: medicalData.total_cholesterol > 240 ? 'high' : 'medium',
+                    description: 'مستويات الكوليسترول المرتفعة تزيد من خطر الإصابة بأمراض القلب.'
+                });
+            }
+
+            // عوامل خطر السكري
+            if (medicalData.fasting_glucose > 100) {
+                riskFactors.push({
+                    name: 'خطر السكري',
+                    level: medicalData.fasting_glucose > 126 ? 'high' : 'medium',
+                    description: 'مستويات السكر المرتفعة تزيد من خطر الإصابة بداء السكري.'
+                });
+            }
+
+            return riskFactors;
+        }
+
+        function generateRecommendations(analysis, diseases, riskFactors) {
+            const recommendations = [];
+
+            // توصيات عامة
+            recommendations.push({
+                title: 'نمط حياة صحي',
+                icon: 'fas fa-heart',
+                description: 'اتباع نظام غذائي متوازن وممارسة الرياضة بانتظام.',
+                actions: [
+                    'تناول 5 حصص من الفواكه والخضروات يومياً',
+                    'ممارسة الرياضة لمدة 30 دقيقة يومياً',
+                    'تجنب التدخين والكحول',
+                    'الحصول على نوم كافٍ (7-8 ساعات)'
+                ],
+                priority: 'high'
+            });
+
+            // توصيات خاصة بالكوليسترول
+            if (medicalData.total_cholesterol > 200) {
+                recommendations.push({
+                    title: 'إدارة الكوليسترول',
+                    icon: 'fas fa-heartbeat',
+                    description: 'خطة شاملة لخفض مستويات الكوليسترول في الدم.',
+                    actions: [
+                        'تقليل الدهون المشبعة في النظام الغذائي',
+                        'زيادة تناول الألياف والحبوب الكاملة',
+                        'ممارسة الرياضة الهوائية بانتظام',
+                        'مراجعة الطبيب لتقييم الحاجة للأدوية'
+                    ],
+                    priority: 'high'
+                });
+            }
+
+            // توصيات خاصة بالسكر
+            if (medicalData.fasting_glucose > 100) {
+                recommendations.push({
+                    title: 'إدارة السكر',
+                    icon: 'fas fa-cube',
+                    description: 'استراتيجيات للحفاظ على مستويات السكر الطبيعية.',
+                    actions: [
+                        'تجنب السكريات البسيطة والمشروبات المحلاة',
+                        'تناول وجبات صغيرة ومتكررة',
+                        'مراقبة مستوى السكر بانتظام',
+                        'استشارة أخصائي تغذية'
+                    ],
+                    priority: 'high'
+                });
+            }
+
+            // توصيات المتابعة الطبية
+            recommendations.push({
+                title: 'المتابعة الطبية',
+                icon: 'fas fa-user-md',
+                description: 'جدولة زيارات منتظمة للطبيب لمراقبة الحالة الصحية.',
+                actions: [
+                    'مراجعة الطبيب كل 3-6 أشهر',
+                    'إعادة إجراء التحاليل حسب توصيات الطبيب',
+                    'مناقشة أي أعراض جديدة مع الطبيب',
+                    'الالتزام بالأدوية الموصوفة'
+                ],
+                priority: 'medium'
+            });
+
+            return recommendations;
+        }
+
+        function renderTestResults(results) {
+            const container = document.getElementById('test-results');
+            container.innerHTML = '';
+
+            results.forEach(test => {
+                const progressWidth = Math.min(100, Math.max(10, 
+                    ((test.value - normalRanges[Object.keys(normalRanges).find(k => normalRanges[k].name === test.name)].min) / 
+                    (normalRanges[Object.keys(normalRanges).find(k => normalRanges[k].name === test.name)].max - 
+                     normalRanges[Object.keys(normalRanges).find(k => normalRanges[k].name === test.name)].min)) * 100
+                ));
+
+                const testElement = document.createElement('div');
+                testElement.className = `test-result-item ${test.status}`;
+                testElement.innerHTML = `
+                    <div class="test-name">${test.name}</div>
+                    <div class="test-value">${test.value} ${test.unit}</div>
+                    <div class="test-range">المعدل الطبيعي: ${test.range}</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${test.status}" style="width: ${progressWidth}%"></div>
+                    </div>
+                    <div style="margin-top: 10px; font-weight: 600; color: ${
+                        test.status === 'normal' ? '#4CAF50' : 
+                        test.status === 'warning' ? '#ff9800' : '#f44336'
+                    }">
+                        ${test.statusText}
+                    </div>
+                `;
+                container.appendChild(testElement);
+            });
+        }
+
+        function renderDiseases(diseases) {
+            const container = document.getElementById('diseases');
+            
+            if (diseases.length === 0) {
+                container.innerHTML = `
+                    <div class="disease-item">
+                        <div class="disease-header">
+                            <div class="disease-name">لا توجد أمراض محتملة</div>
+                            <span class="severity-badge severity-low">منخفض</span>
+                        </div>
+                        <div class="disease-description">
+                            نتائج التحاليل لا تشير إلى وجود أمراض واضحة. استمر في اتباع نمط حياة صحي للحفاظ على صحتك.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            diseases.forEach(disease => {
+                const diseaseElement = document.createElement('div');
+                diseaseElement.className = 'disease-item';
+                diseaseElement.innerHTML = `
+                    <div class="disease-header">
+                        <div class="disease-name">${disease.name}</div>
+                        <span class="severity-badge severity-${disease.severity}">
+                            ${disease.severity === 'high' ? 'عالي' : disease.severity === 'medium' ? 'متوسط' : 'منخفض'}
+                        </span>
+                    </div>
+                    <div class="disease-description">${disease.description}</div>
+                `;
+                container.appendChild(diseaseElement);
+            });
+        }
+
+        function renderRiskFactors(riskFactors) {
+            const container = document.getElementById('risk-factors-section');
+            
+            if (riskFactors.length === 0) {
+                container.innerHTML = `
+                    <div class="risk-factor">
+                        <div class="risk-header">
+                            <div class="risk-name">لا توجد عوامل خطورة واضحة</div>
+                            <span class="severity-badge severity-low">منخفض</span>
+                        </div>
+                        <div class="risk-description">
+                            نتائج التحاليل لا تظهر عوامل خطورة كبيرة. استمر في المحافظة على نمط حياة صحي.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            riskFactors.forEach(risk => {
+                const riskElement = document.createElement('div');
+                riskElement.className = 'risk-factor';
+                riskElement.innerHTML = `
+                    <div class="risk-header">
+                        <div class="risk-name">${risk.name}</div>
+                        <span class="severity-badge severity-${risk.level}">
+                            ${risk.level === 'high' ? 'عالي' : risk.level === 'medium' ? 'متوسط' : 'منخفض'}
+                        </span>
+                    </div>
+                    <div class="risk-description">${risk.description}</div>
+                `;
+                container.appendChild(riskElement);
+            });
+        }
+
+        function renderRecommendations(recommendations) {
+            const container = document.getElementById('recommendations');
+            container.innerHTML = '';
+
+            recommendations.forEach(rec => {
+                const recElement = document.createElement('div');
+                recElement.className = 'recommendation-item';
+                recElement.innerHTML = `
+                    <div class="rec-header">
+                        <div class="rec-icon">
+                            <i class="${rec.icon}"></i>
+                        </div>
+                        <div class="rec-title">
+                            <h4>${rec.title}</h4>
+                            <span class="priority-badge priority-${rec.priority}">
+                                ${rec.priority === 'high' ? 'أولوية عالية' : 'أولوية متوسطة'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="rec-description">${rec.description}</div>
+                    <div class="actions">
+                        <ul>
+                            ${rec.actions.map(action => `
+                                <li><i class="fas fa-check"></i> ${action}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+                container.appendChild(recElement);
+            });
+        }
+
+        function createChart(analysis) {
+            const ctx = document.getElementById('testResultsChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['طبيعي', 'يحتاج متابعة', 'يحتاج تدخل'],
+                    datasets: [{
+                        data: [analysis.normalCount, analysis.warningCount, analysis.dangerCount],
+                        backgroundColor: ['#4CAF50', '#ff9800', '#f44336'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Segoe UI' },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        function saveReport() {
+            const content = document.querySelector('.container').innerHTML;
+            const blob = new Blob([`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>تقرير التحليل الطبي</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; direction: rtl; }
+                        .container { max-width: 1200px; margin: 0 auto; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">${content}</div>
+                </body>
+                </html>
+            `], { type: 'text/html' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'تقرير-التحليل-الطبي.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function shareReport() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'تقرير التحليل الطبي',
+                    text: 'تقرير شامل للحالة الصحية',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('تم نسخ الرابط');
+            }
+        }
+
+        // تشغيل التحليل عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            const analysis = analyzeTestResults();
+            const healthScore = calculateHealthScore(analysis);
+            const healthStatus = getHealthStatus(healthScore);
+            const diseases = identifyDiseases(analysis);
+            const riskFactors = identifyRiskFactors(analysis);
+            const recommendations = generateRecommendations(analysis, diseases, riskFactors);
+
+            // تحديث النتيجة الإجمالية
+            document.getElementById('health-score').textContent = healthScore;
+            document.getElementById('health-status').textContent = healthStatus;
+
+            // تحديث الإحصائيات
+            document.getElementById('normal-count').textContent = analysis.normalCount;
+            document.getElementById('warning-count').textContent = analysis.warningCount;
+            document.getElementById('danger-count').textContent = analysis.dangerCount;
+            document.getElementById('risk-factors').textContent = riskFactors.length;
+
+            // عرض النتائج
+            renderTestResults(analysis.results);
+            renderDiseases(diseases);
+            renderRiskFactors(riskFactors);
+            renderRecommendations(recommendations);
+            createChart(analysis);
+
+            // تحديث دائرة النتيجة
+            const circle = document.querySelector('.score-circle');
+            const circumference = 2 * Math.PI * 90;
+            const offset = circumference - (healthScore / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        });
+        
+        // تطبيق إصلاحات التنقل
+        if (window.navigationFixes && typeof navigationFixes.fixMedicalFilePage === 'function') {
+            navigationFixes.fixMedicalFilePage();
+        }
+    </script>
+</body>
+</html>

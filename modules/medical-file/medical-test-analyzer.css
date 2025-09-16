@@ -1,0 +1,165 @@
+/* 
+ * ملف الأنماط الخاص بصفحة تحليل التحاليل الطبية
+ */
+
+/* الأنماط العامة للصفحة */
+body {
+    background: linear-gradient(135deg, #e3f2fd 0%, #e8f5e8 100%); 
+    min-height: 100vh; 
+    margin: 0; 
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif;
+}
+
+.container {
+    max-width: 900px; 
+    margin: 40px auto; 
+    background: #fff; 
+    border-radius: 18px; 
+    box-shadow: 0 4px 24px #388e3c22; 
+    padding: 32px 18px;
+}
+
+h1 {
+    color: #1976d2; 
+    font-size: 2em; 
+    margin-bottom: 18px; 
+    text-align: right;
+}
+
+/* بطاقة التحليل */
+.analysis-card {
+    background: #fffde7;
+    border-right: 6px solid #fbc02d;
+    color: #f57c00;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #fbc02d22;
+    padding: 18px 14px;
+    margin-bottom: 18px;
+    font-size: 1.08em;
+    line-height: 1.7;
+}
+
+/* زر الرجوع */
+.back-btn {
+    background: #1976d2; 
+    color: #fff; 
+    border: none; 
+    border-radius: 12px;
+    padding: 8px 22px; 
+    font-size: 1em; 
+    font-weight: bold; 
+    cursor: pointer;
+    margin-bottom: 18px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    transition: background 0.2s;
+}
+
+.back-btn:hover { 
+    background: #388e3c; 
+}
+
+/* القوائم */
+ul {
+    margin: 8px 0 18px 0;
+}
+
+ul li {
+    margin-bottom: 6px;
+}
+
+/* أنماط للتوصيات */
+.recommend {
+    color: #d84315; 
+    font-weight: bold;
+}
+
+/* رسالة فارغة */
+.empty-msg {
+    background: #e3f2fd;
+    color: #1976d2;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 18px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* تفاصيل الاختبار */
+.test-details {
+    background: #e8f5e8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    color: #388e3c;
+    font-size: 1em;
+}
+
+.test-title {
+    font-weight: bold;
+    color: #1976d2;
+    margin-bottom: 4px;
+}
+
+.test-en {
+    color:#888;
+    font-size:0.95em;
+}
+
+.test-section {
+    color:#388e3c;
+    font-size:0.95em;
+}
+
+/* قائمة نتائج الاختبارات */
+.test-result-list {
+    margin:0;
+    padding:0;
+}
+
+.test-result-list li {
+    margin-bottom:2px;
+}
+
+/* حالة النتائج */
+.sub-warning {
+    color:#d84315;
+    font-size:0.98em;
+}
+
+.sub-normal {
+    color:#388e3c;
+    font-size:0.98em;
+}
+
+.diagnosis {
+    color:#d84315;
+    font-weight:bold;
+}
+
+/* تكيف مع الشاشات المختلفة */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 20px 12px;
+    }
+    
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .analysis-card {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+    }
+    
+    .test-details {
+        padding: 8px;
+    }
+}

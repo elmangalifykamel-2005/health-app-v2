@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title-ar">تقييم النوم - تطبيق الحياة الصحية</title>
+    <title id="title-en" style="display:none;">Sleep Assessment - Healthy Life App</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../theme.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="sleep-assessment.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button onclick="window.history.back()" id="backBtn">
+        <span id="back-ar" style="display:block;"><i class="fas fa-arrow-right"></i> رجوع</span>
+        <span id="back-en" style="display:none;"><i class="fas fa-arrow-left"></i> Back</span>
+    </button>
+    
+    <div class="container assessment-container">
+        <div id="lang-switch">
+            <button class="lang-btn" id="lang-ar" style="font-weight:bold;">العربية</button>
+            <button class="lang-btn" id="lang-en">English</button>
+        </div>
+        
+        <h1 id="page-title-ar" style="display:block;">📋 تقييم جودة النوم</h1>
+        <h1 id="page-title-en" style="display:none;">📋 Sleep Quality Assessment</h1>
+        
+        <div class="summary">
+            <p id="intro-ar" style="display:block;">
+                <strong>اكتشف جودة نومك!</strong><br>
+                أجب على الأسئلة التالية للحصول على تقييم شامل لجودة نومك وتوصيات مخصصة.
+            </p>
+            <p id="intro-en" style="display:none;">
+                <strong>Discover your sleep quality!</strong><br>
+                Answer the following questions to get a comprehensive assessment of your sleep quality and personalized recommendations.
+            </p>
+        </div>
+
+        <!-- شريط التقدم -->
+        <div class="assessment-progress">
+            <div class="assessment-progress-fill" id="progress-bar" style="width: 0%;"></div>
+        </div>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            <span id="progress-text-ar" style="display:block;">السؤال 1 من 15</span>
+            <span id="progress-text-en" style="display:none;">Question 1 of 15</span>
+        </p>
+
+        <!-- الأسئلة -->
+        <form id="sleep-assessment-form">
+            <!-- القسم الأول: العادات الأساسية -->
+            <div class="question-section" id="section-1">
+                <h3 id="section1-title-ar" style="display:block;">🕐 العادات الأساسية للنوم</h3>
+                <h3 id="section1-title-en" style="display:none;">🕐 Basic Sleep Habits</h3>
+                
+                <div class="question-item">
+                    <label id="q1-ar" style="display:block;">كم ساعة تنام عادة في الليلة؟</label>
+                    <label id="q1-en" style="display:none;">How many hours do you usually sleep per night?</label>
+                    <select name="sleep_hours" required>
+                        <option value="">اختر...</option>
+                        <option value="4">أقل من 5 ساعات</option>
+                        <option value="5">5-6 ساعات</option>
+                        <option value="7">7-8 ساعات</option>
+                        <option value="9">9+ ساعات</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <label id="q2-ar" style="display:block;">في أي وقت تذهب للنوم عادة؟</label>
+                    <label id="q2-en" style="display:none;">What time do you usually go to bed?</label>
+                    <input type="time" name="bedtime" required>
+                </div>
+
+                <div class="question-item">
+                    <label id="q3-ar" style="display:block;">في أي وقت تستيقظ عادة؟</label>
+                    <label id="q3-en" style="display:none;">What time do you usually wake up?</label>
+                    <input type="time" name="wakeup" required>
+                </div>
+
+                <div class="question-item">
+                    <label id="q4-ar" style="display:block;">هل تحافظ على نفس مواعيد النوم في عطلة نهاية الأسبوع؟</label>
+                    <label id="q4-en" style="display:none;">Do you maintain the same sleep schedule on weekends?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="weekend_schedule" value="yes" id="weekend_yes">
+                            <label for="weekend_yes" id="yes-ar" style="display:block;">نعم، دائماً</label>
+                            <label for="weekend_yes" id="yes-en" style="display:none;">Yes, always</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="weekend_schedule" value="sometimes" id="weekend_sometimes">
+                            <label for="weekend_sometimes" id="sometimes-ar" style="display:block;">أحياناً</label>
+                            <label for="weekend_sometimes" id="sometimes-en" style="display:none;">Sometimes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="weekend_schedule" value="no" id="weekend_no">
+                            <label for="weekend_no" id="no-ar" style="display:block;">لا، أبداً</label>
+                            <label for="weekend_no" id="no-en" style="display:none;">No, never</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- القسم الثاني: جودة النوم -->
+            <div class="question-section" id="section-2" style="display:none;">
+                <h3 id="section2-title-ar" style="display:block;">⭐ جودة النوم</h3>
+                <h3 id="section2-title-en" style="display:none;">⭐ Sleep Quality</h3>
+                
+                <div class="question-item">
+                    <label id="q5-ar" style="display:block;">كم من الوقت تحتاج عادة للنوم بعد الذهاب للفراش؟</label>
+                    <label id="q5-en" style="display:none;">How long does it usually take you to fall asleep?</label>
+                    <select name="sleep_latency" required>
+                        <option value="">اختر...</option>
+                        <option value="5">أقل من 15 دقيقة</option>
+                        <option value="15">15-30 دقيقة</option>
+                        <option value="45">30-60 دقيقة</option>
+                        <option value="60">أكثر من ساعة</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <label id="q6-ar" style="display:block;">كم مرة تستيقظ أثناء الليل؟</label>
+                    <label id="q6-en" style="display:none;">How many times do you wake up during the night?</label>
+                    <select name="night_awakenings" required>
+                        <option value="">اختر...</option>
+                        <option value="0">لا أستيقظ</option>
+                        <option value="1">1-2 مرات</option>
+                        <option value="3">3-4 مرات</option>
+                        <option value="5">أكثر من 4 مرات</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <label id="q7-ar" style="display:block;">كيف تشعر عند الاستيقاظ صباحاً؟</label>
+                    <label id="q7-en" style="display:none;">How do you feel when you wake up in the morning?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="morning_feeling" value="refreshed" id="refreshed">
+                            <label for="refreshed" id="refreshed-ar" style="display:block;">منتعش ونشيط</label>
+                            <label for="refreshed" id="refreshed-en" style="display:none;">Refreshed and energetic</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="morning_feeling" value="okay" id="okay">
+                            <label for="okay" id="okay-ar" style="display:block;">عادي</label>
+                            <label for="okay" id="okay-en" style="display:none;">Okay</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="morning_feeling" value="tired" id="tired">
+                            <label for="tired" id="tired-ar" style="display:block;">متعب ومرهق</label>
+                            <label for="tired" id="tired-en" style="display:none;">Tired and exhausted</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- القسم الثالث: العوامل المؤثرة -->
+            <div class="question-section" id="section-3" style="display:none;">
+                <h3 id="section3-title-ar" style="display:block;">🌙 العوامل المؤثرة على النوم</h3>
+                <h3 id="section3-title-en" style="display:none;">🌙 Factors Affecting Sleep</h3>
+                
+                <div class="question-item">
+                    <label id="q8-ar" style="display:block;">هل تتناول الكافيين؟ إذا كان الجواب نعم، متى آخر مرة تتناوله؟</label>
+                    <label id="q8-en" style="display:none;">Do you consume caffeine? If yes, when is your last intake?</label>
+                    <select name="caffeine" required>
+                        <option value="">اختر...</option>
+                        <option value="none">لا أتناول الكافيين</option>
+                        <option value="morning">في الصباح فقط</option>
+                        <option value="afternoon">حتى بعد الظهر</option>
+                        <option value="evening">في المساء</option>
+                        <option value="night">قبل النوم مباشرة</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <label id="q9-ar" style="display:block;">هل تستخدم الشاشات (هاتف، تلفاز، كمبيوتر) قبل النوم؟</label>
+                    <label id="q9-en" style="display:none;">Do you use screens (phone, TV, computer) before bed?</label>
+                    <select name="screen_time" required>
+                        <option value="">اختر...</option>
+                        <option value="none">لا أستخدمها قبل النوم</option>
+                        <option value="1hour">أتوقف قبل النوم بساعة</option>
+                        <option value="30min">أتوقف قبل النوم بـ30 دقيقة</option>
+                        <option value="immediately">أستخدمها حتى وقت النوم</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <label id="q10-ar" style="display:block;">كيف تصف بيئة نومك؟</label>
+                    <label id="q10-en" style="display:none;">How would you describe your sleep environment?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="sleep_environment" value="ideal" id="ideal">
+                            <label for="ideal" id="ideal-ar" style="display:block;">مثالية (مظلمة، هادئة، باردة)</label>
+                            <label for="ideal" id="ideal-en" style="display:none;">Ideal (dark, quiet, cool)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="sleep_environment" value="good" id="good">
+                            <label for="good" id="good-ar" style="display:block;">جيدة</label>
+                            <label for="good" id="good-en" style="display:none;">Good</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="sleep_environment" value="poor" id="poor">
+                            <label for="poor" id="poor-ar" style="display:block;">سيئة (مضيئة، صاخبة، حارة)</label>
+                            <label for="poor" id="poor-en" style="display:none;">Poor (bright, noisy, hot)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار التنقل -->
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn secondary" id="prev-btn" onclick="previousSection()" disabled>
+                    <span id="prev-ar" style="display:block;">السابق</span>
+                    <span id="prev-en" style="display:none;">Previous</span>
+                </button>
+                <button type="button" class="nav-btn" id="next-btn" onclick="nextSection()">
+                    <span id="next-ar" style="display:block;">التالي</span>
+                    <span id="next-en" style="display:none;">Next</span>
+                </button>
+                <button type="submit" class="nav-btn" id="submit-btn" style="display:none;">
+                    <span id="submit-ar" style="display:block;">احصل على النتائج</span>
+                    <span id="submit-en" style="display:none;">Get Results</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- نتائج التقييم -->
+        <div id="results-container" style="display:none;">
+            <div class="card">
+                <h2 id="results-title-ar" style="display:block;">🎯 نتائج تقييم النوم</h2>
+                <h2 id="results-title-en" style="display:none;">🎯 Sleep Assessment Results</h2>
+                
+                <div id="score-display">
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 3em; font-weight: bold; color: #4CAF50;" id="score-value">85</div>
+                        <div id="score-label-ar" style="display:block;">نقطة من 100</div>
+                        <div id="score-label-en" style="display:none;">out of 100 points</div>
+                    </div>
+                </div>
+                
+                <div id="recommendations">
+                    <h3 id="rec-title-ar" style="display:block;">💡 التوصيات المخصصة</h3>
+                    <h3 id="rec-title-en" style="display:none;">💡 Personalized Recommendations</h3>
+                    <ul id="recommendations-list"></ul>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="saveToHealthState()">
+                        <span id="save-ar" style="display:block;">حفظ في حالتي الصحية</span>
+                        <span id="save-en" style="display:none;">Save to Health State</span>
+                    </button>
+                    <button class="btn" onclick="retakeAssessment()" style="background: #f5f5f5; color: #666; margin-right: 10px;">
+                        <span id="retake-ar" style="display:block;">إعادة التقييم</span>
+                        <span id="retake-en" style="display:none;">Retake Assessment</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="sleep-utils.js"></script>
+    <script>
+        let currentSection = 1;
+        const totalSections = 3;
+        const totalQuestions = 10;
+        
+        function updateProgress() {
+            const progress = ((currentSection - 1) / totalSections) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            const questionNumber = (currentSection - 1) * Math.ceil(totalQuestions / totalSections) + 1;
+            document.getElementById('progress-text-ar').textContent = `القسم ${currentSection} من ${totalSections}`;
+            document.getElementById('progress-text-en').textContent = `Section ${currentSection} of ${totalSections}`;
+        }
+        
+        function nextSection() {
+            if (validateCurrentSection()) {
+                document.getElementById(`section-${currentSection}`).style.display = 'none';
+                currentSection++;
+                
+                if (currentSection <= totalSections) {
+                    document.getElementById(`section-${currentSection}`).style.display = 'block';
+                    updateProgress();
+                    
+                    document.getElementById('prev-btn').disabled = false;
+                    
+                    if (currentSection === totalSections) {
+                        document.getElementById('next-btn').style.display = 'none';
+                        document.getElementById('submit-btn').style.display = 'inline-block';
+                    }
+                }
+            }
+        }
+        
+        function previousSection() {
+            if (currentSection > 1) {
+                document.getElementById(`section-${currentSection}`).style.display = 'none';
+                currentSection--;
+                document.getElementById(`section-${currentSection}`).style.display = 'block';
+                updateProgress();
+                
+                document.getElementById('next-btn').style.display = 'inline-block';
+                document.getElementById('submit-btn').style.display = 'none';
+                
+                if (currentSection === 1) {
+                    document.getElementById('prev-btn').disabled = true;
+                }
+            }
+        }
+        
+        function validateCurrentSection() {
+            const section = document.getElementById(`section-${currentSection}`);
+            const requiredFields = section.querySelectorAll('[required]');
+            const radioGroups = section.querySelectorAll('input[type="radio"]');
+            
+            for (let field of requiredFields) {
+                if (!field.value) {
+                    alert(lang === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill all required fields');
+                    return false;
+                }
+            }
+            
+            // التحقق من أزرار الراديو
+            const radioGroupNames = [...new Set([...radioGroups].map(r => r.name))];
+            for (let groupName of radioGroupNames) {
+                const groupRadios = section.querySelectorAll(`input[name="${groupName}"]`);
+                if (groupRadios.length > 0 && ![...groupRadios].some(r => r.checked)) {
+                    alert(lang === 'ar' ? 'يرجى اختيار إجابة لجميع الأسئلة' : 'Please select an answer for all questions');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function calculateScore(formData) {
+            let score = 0;
+            
+            // تقييم ساعات النوم
+            const sleepHours = parseInt(formData.get('sleep_hours'));
+            if (sleepHours === 7) score += 25;
+            else if (sleepHours === 5 || sleepHours === 9) score += 15;
+            else score += 5;
+            
+            // تقييم انتظام النوم
+            const weekendSchedule = formData.get('weekend_schedule');
+            if (weekendSchedule === 'yes') score += 20;
+            else if (weekendSchedule === 'sometimes') score += 10;
+            
+            // تقييم وقت النوم
+            const sleepLatency = parseInt(formData.get('sleep_latency'));
+            if (sleepLatency === 5) score += 15;
+            else if (sleepLatency === 15) score += 10;
+            else if (sleepLatency === 45) score += 5;
+            
+            // تقييم الاستيقاظ الليلي
+            const awakenings = parseInt(formData.get('night_awakenings'));
+            if (awakenings === 0) score += 15;
+            else if (awakenings === 1) score += 10;
+            else if (awakenings === 3) score += 5;
+            
+            // تقييم الشعور الصباحي
+            const morningFeeling = formData.get('morning_feeling');
+            if (morningFeeling === 'refreshed') score += 15;
+            else if (morningFeeling === 'okay') score += 8;
+            
+            // تقييم الكافيين
+            const caffeine = formData.get('caffeine');
+            if (caffeine === 'none' || caffeine === 'morning') score += 10;
+            else if (caffeine === 'afternoon') score += 5;
+            
+            return Math.min(score, 100);
+        }
+        
+        function generateRecommendations(formData, score) {
+            const recommendations = [];
+            
+            if (parseInt(formData.get('sleep_hours')) < 7) {
+                recommendations.push(lang === 'ar' ? 'احرص على النوم 7-9 ساعات يومياً' : 'Aim for 7-9 hours of sleep daily');
+            }
+            
+            if (formData.get('weekend_schedule') !== 'yes') {
+                recommendations.push(lang === 'ar' ? 'حافظ على نفس مواعيد النوم في عطلة نهاية الأسبوع' : 'Maintain consistent sleep schedule on weekends');
+            }
+            
+            if (formData.get('caffeine') === 'evening' || formData.get('caffeine') === 'night') {
+                recommendations.push(lang === 'ar' ? 'تجنب الكافيين بعد الساعة 2 ظهراً' : 'Avoid caffeine after 2 PM');
+            }
+            
+            if (formData.get('screen_time') === 'immediately') {
+                recommendations.push(lang === 'ar' ? 'أغلق الشاشات قبل النوم بساعة واحدة' : 'Turn off screens 1 hour before bed');
+            }
+            
+            if (formData.get('sleep_environment') === 'poor') {
+                recommendations.push(lang === 'ar' ? 'حسّن بيئة النوم: اجعلها مظلمة وهادئة وباردة' : 'Improve sleep environment: make it dark, quiet, and cool');
+            }
+            
+            return recommendations;
+        }
+        
+        document.getElementById('sleep-assessment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateCurrentSection()) return;
+            
+            const formData = new FormData(this);
+            const score = calculateScore(formData);
+            const recommendations = generateRecommendations(formData, score);
+            
+            // عرض النتائج
+            document.getElementById('score-value').textContent = score;
+            
+            const recList = document.getElementById('recommendations-list');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recList.appendChild(li);
+            });
+            
+            // إخفاء النموذج وعرض النتائج
+            document.querySelector('form').style.display = 'none';
+            document.getElementById('results-container').style.display = 'block';
+            
+            // حفظ النتائج
+            const assessmentData = {
+                score: score,
+                recommendations: recommendations,
+                date: new Date().toISOString(),
+                answers: Object.fromEntries(formData)
+            };
+            
+            localStorage.setItem('sleepAssessment', JSON.stringify(assessmentData));
+        });
+        
+        function saveToHealthState() {
+            const assessmentData = JSON.parse(localStorage.getItem('sleepAssessment'));
+            
+            // حفظ في بيانات الحالة الصحية
+            const healthData = JSON.parse(localStorage.getItem('healthStateData') || '{}');
+            healthData.sleepAssessment = assessmentData;
+            localStorage.setItem('healthStateData', JSON.stringify(healthData));
+            
+            alert(lang === 'ar' ? 'تم حفظ النتائج في صفحة حالتي الصحية' : 'Results saved to Health State page');
+        }
+        
+        function retakeAssessment() {
+            location.reload();
+        }
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

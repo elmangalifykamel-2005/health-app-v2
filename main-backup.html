@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>صحتك بالدنيا | Healthy Life</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- ملفات الإعدادات والتوابع -->
+    <script src="config/app-config.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="config/shared-functions.js"></script>
+    
+    <!-- استيراد قالب التنقل الموحد -->
+    <style>
+        /* أنماط موحدة لأزرار التنقل - للاستخدام في حال الحاجة */
+        .navigation-buttons {
+            display: flex;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .standard-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .standard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .standard-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .main-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: absolute;
+            top: 22px;
+            left: 0;
+            padding: 0 22px;
+            box-sizing: border-box;
+            z-index: 30;
+        }
+        .btn-group-ar, .btn-group-en {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 18px;
+        }
+        .btn-group-ar {
+            width: 100%;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+        .sidebar-btn-ar {
+            margin-left: 0;
+            order: 1;
+        }
+        .profile-logout-ar {
+            display: flex;
+            gap: 18px;
+            margin-right: 0;
+            order: 2;
+        }
+        .btn-group-en {
+            margin-right: auto;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .sidebar-btn-en {
+            margin-right: 14px;
+            order: 1;
+        }
+        .profile-logout-en {
+            display: flex;
+            gap: 18px;
+            margin-left: 0;
+            order: 2;
+        }
+        #logout-btn, #profile-btn {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        #logout-btn:hover, #profile-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        #profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #sidebar-toggle {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        #sidebar-toggle:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .main-with-sidebar {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 96;
+            display: none;
+        }
+        .sidebar-backdrop.open {
+            display: block;
+        }
+        .main-center {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            margin-right: 0;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        @media (min-width: 901px) {
+            .main-center {
+                width: calc(100% - 240px);
+                margin-right: 0;
+                padding: 0 40px;
+            }
+            .sidebar.ar.open ~ .main-center {
+                margin-right: 240px;
+            }
+            .sidebar.en.open ~ .main-center {
+                margin-left: 240px;
+            }
+        }
+        .main-title {
+            font-size: 2.8em;
+            font-weight: 600;
+            margin-bottom: 18px;
+            letter-spacing: -0.5px;
+            color: #2e7d32;
+            text-align: center;
+        }
+        .main-subtitle {
+            font-size: 1.4em;
+            color: #6c757d;
+            margin-bottom: 7px;
+            text-align: center;
+        }
+        .main-specialist {
+            font-size: 1.1em;
+            color: #2e7d32;
+            margin-bottom: 28px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .main-profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 14px;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.2);
+        }
+        .main-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: max-content;
+            margin: 0 auto;
+        }
+        .main-btn {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            margin-bottom: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+            min-width: 200px;
+            text-align: center;
+        }
+        .main-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .main-btn:active {
+            transform: translateY(0);
+        }
+        .main-btn:last-child {
+            margin-bottom: 0;
+        }
+        @media (max-width: 480px) {
+            .main-center {
+                margin: 10px;
+                padding: 30px 25px;
+            }
+            .main-title {
+                font-size: 2.2em;
+            }
+            .main-subtitle {
+                font-size: 1.2em;
+            }
+            .main-btns {
+                width: 100%;
+            }
+            .main-btn {
+                padding: 14px 20px;
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 600px) {
+            .main-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+                position: static;
+                margin-bottom: 24px;
+            }
+            .main-btns {
+                width: 95vw;
+            }
+        }
+        .profile-placeholder {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header" id="mainHeader">
+        <div id="header-btns"></div>
+    </div>
+    <div class="main-with-sidebar">
+        <div class="main-center" id="main-content"></div>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+        <div id="sidebar"></div>
+    </div>
+    <script>
+        // مراقبة حالة مصادقة المستخدم
+        let userAuthenticated = false;
+        let userData = null;
+        
+        function logoutUser() {
+            userService.logout();
+        }
+        
+        // التحقق من حالة المصادقة
+        document.addEventListener('DOMContentLoaded', function() {
+            // استخدام خدمة Firebase المركزية للتحقق من حالة المصادقة
+            if (window.firebaseService) {
+                firebaseService.auth.onAuthStateChanged(function(user) {
+                    if (user) {
+                        // المستخدم مسجل الدخول
+                        console.log("✅ المستخدم مسجل الدخول:", user.uid);
+                        userAuthenticated = true;
+                        updateUserInterface();
+                        
+                        // تحميل بيانات الملف الشخصي
+                        loadUserProfile();
+                    } else {
+                        // المستخدم غير مسجل الدخول
+                        console.log("⚠️ المستخدم غير مسجل الدخول");
+                        userAuthenticated = false;
+                        updateUserInterface();
+                    }
+                });
+            } else {
+                console.warn("⚠️ خدمة Firebase غير متاحة");
+                userAuthenticated = false;
+                updateUserInterface();
+            }
+        });
+        
+        // تحديث واجهة المستخدم بناءً على حالة المصادقة
+        function updateUserInterface() {
+            const profileBtn = document.getElementById('profile-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            if (!profileBtn || !logoutBtn) return; // انتظار تحميل العناصر
+            
+            if (userAuthenticated) {
+                // إظهار زر الملف الشخصي وزر تسجيل الخروج
+                profileBtn.style.display = 'flex';
+                logoutBtn.style.display = 'block';
+                
+                if (userData && userData.fullName) {
+                    const nameParts = userData.fullName.split(' ');
+                    const firstName = nameParts[0];
+                    const span = profileBtn.querySelector('span');
+                    if (span) {
+                        span.textContent = firstName;
+                    }
+                }
+            } else {
+                // إخفاء زر تسجيل الخروج وتغيير زر الملف الشخصي لتسجيل الدخول
+                profileBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ' + 
+                    (currentLang === 'ar' ? 'تسجيل الدخول' : 'Login');
+                profileBtn.onclick = function() {
+                    window.location.href = 'login.html';
+                };
+                logoutBtn.style.display = 'none';
+            }
+        }
+        
+        // تحميل بيانات الملف الشخصي
+        function loadUserProfile() {
+            if (window.firebaseService && userAuthenticated) {
+                firebaseService.data.get(APP_CONFIG.firebase.collections.profile, 'userData')
+                    .then(data => {
+                        if (data) {
+                            userData = data;
+                            updateUserInterface();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading user profile:", error);
+                    });
+            }
+        }
+
+        // ترجمة عناصر القائمة
+        const menuAr = [
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-ruler", text:"قياساتي" },
+            { href: getModulePath("medicalFile", "medical-profile.html"), icon:"fa-file-medical", text:"ملفي الطبي" },
+            { href: getModulePath("nutrition", "index.html"), icon:"fa-utensils", text:"خطتي الغذائية" },
+            { href: getModulePath("calories", "calories.html"), icon:"fa-calculator", text:"دليل السعرات الحرارية" },
+            { href: getModulePath("sleep", "index.html"), icon:"fa-bed", text:"نومي" },
+            { href: getModulePath("mentalHealth", "mental-health.html"), icon:"fa-brain", text:"صحتي النفسية" },
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-notes-medical", text:"حالتي الصحية" },
+            { href: getModulePath("healthyRecipes", "healthy-recipes.html"), icon:"fa-bowl-food", text:"وصفات صحية" },
+            { href: getModulePath("herbs", "herbs.html"), icon:"fa-leaf", text:"الأعشاب الطبية" },
+            { href: getModulePath("studies", "studies.html"), icon:"fa-book-open", text:"الأدلة العلمية والدراسات" }
+        ];
+        const menuEn = [
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-ruler", text:"My Measurements" },
+            { href: getModulePath("medicalFile", "medical-profile.html"), icon:"fa-file-medical", text:"My Medical Profile" },
+            { href: getModulePath("nutrition", "index.html"), icon:"fa-utensils", text:"My Diet Plan" },
+            { href: getModulePath("calories", "calories.html"), icon:"fa-calculator", text:"Calories Guide" },
+            { href: getModulePath("sleep", "index.html"), icon:"fa-bed", text:"My Sleep" },
+            { href: getModulePath("mentalHealth", "mental-health.html"), icon:"fa-brain", text:"My Mental Health" },
+            { href: getModulePath("healthState", "healthstate.html"), icon:"fa-notes-medical", text:"My Health Status" },
+            { href: getModulePath("healthyRecipes", "healthy-recipes.html"), icon:"fa-bowl-food", text:"Healthy Recipes" },
+            { href: getModulePath("herbs", "herbs.html"), icon:"fa-leaf", text:"Medicinal Herbs" },
+            { href: getModulePath("studies", "studies.html"), icon:"fa-book-open", text:"Scientific Evidence & Studies" }
+        ];
+
+        // تحديد اللغة
+        const lang = localStorage.getItem('hl_language') || 'ar';
+        const mainDiv = document.getElementById('main-content');
+        const sidebar = document.getElementById('sidebar');
+        const headerBtns = document.getElementById('header-btns');
+
+        function renderHeaderBtns(lang) {
+            if (lang === 'ar') {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-ar">
+                        <div class="profile-logout-ar">
+                            <button id="profile-btn" onclick="navigationService.navigateToModule('about', 'profile.html')">
+                                <i class="fa-solid fa-user"></i> <span>ملفي الشخصي</span>
+                            </button>
+                            <button id="logout-btn" onclick="logoutUser()">خروج</button>
+                        </div>
+                        <button id="sidebar-toggle" class="sidebar-btn-ar" title="القائمة الجانبية">
+                            <i class="fa-solid fa-bars"></i> <span>القائمة</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-en">
+                        <button id="sidebar-toggle" class="sidebar-btn-en" title="Sidebar Menu">
+                            <i class="fa-solid fa-bars"></i> <span>Menu</span>
+                        </button>
+                        <div class="profile-logout-en">
+                            <button id="profile-btn" onclick="navigationService.navigateToModule('about', 'profile.html')">
+                                <i class="fa-solid fa-user"></i> <span>Profile</span>
+                            </button>
+                            <button id="logout-btn" onclick="logoutUser()">Logout</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // صورة افتراضية للملف الشخصي
+        const profileImgHtml = `<div class="profile-placeholder">
+            <i class="fa-solid fa-user-circle" style="font-size: 80px; color: #4CAF50;"></i>
+        </div>`;
+        
+        if (lang === 'en') {
+            document.documentElement.lang = 'en';
+            document.body.dir = 'ltr';
+            renderHeaderBtns('en');
+            sidebar.classList.add('en');
+            mainDiv.innerHTML = `
+                ${profileImgHtml}
+                <div class="main-title">Healthy Life</div>
+                <div class="main-subtitle">with Kamel Elmangalify</div>
+                <div class="main-specialist">Nutrition Specialist</div>
+                <div class="main-btns" style="flex-direction:column;">
+                    <button class="main-btn" onclick="navigationService.navigateToModule('about', 'mystory.html')">My Story</button>
+                    <button class="main-btn" onclick="navigationService.navigateToModule('about', 'certificates.html')">My Certificates</button>
+                    <button class="main-btn" onclick="navigationService.navigateTo(getPagePath('consult'))">Book Consultation</button>
+                </div>
+            `;
+        } else {
+            document.documentElement.lang = 'ar';
+            document.body.dir = 'rtl';
+            renderHeaderBtns('ar');
+            sidebar.classList.add('ar');
+            mainDiv.innerHTML = `
+                ${profileImgHtml}
+                <div class="main-title">صحتك بالدنيا</div>
+                <div class="main-subtitle">مع كامل المنجليفي</div>
+                <div class="main-specialist">أخصائي تغذية</div>
+                <div class="main-btns" style="flex-direction:column;">
+                    <button class="main-btn" onclick="navigationService.navigateToModule('about', 'mystory.html')">قصتي</button>
+                    <button class="main-btn" onclick="navigationService.navigateToModule('about', 'certificates.html')">شهاداتي</button>
+                    <button class="main-btn" onclick="navigationService.navigateTo(getPagePath('consult'))">حجز استشارة</button>
+                </div>
+            `;
+        }
+
+        // تحميل القائمة الجانبية من sidebar.html
+        function loadSidebar() {
+            fetch('sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('sidebar').innerHTML = html;
+                    attachSidebarEvents();
+                });
+        }
+
+        // ربط زر الإغلاق للقائمة الجانبية
+        function attachSidebarEvents() {
+            const closeBtn = document.querySelector('.sidebar-close-btn');
+            if (closeBtn) {
+                closeBtn.onclick = closeSidebar;
+            }
+        }
+
+        // فتح القائمة الجانبية
+        function openSidebar() {
+            const sidebarContent = document.getElementById('sidebar-content');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebarContent) sidebarContent.classList.add('open');
+            if (backdrop) backdrop.classList.add('open');
+        }
+
+        // إغلاق القائمة الجانبية
+        function closeSidebar() {
+            const sidebarContent = document.getElementById('sidebar-content');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebarContent) sidebarContent.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+        });
+
+        // ربط زر القائمة الجانبية
+        document.addEventListener('click', function(e){
+            if(e.target && e.target.id === 'sidebar-toggle') {
+                openSidebar();
+            }
+        });
+
+        document.getElementById('sidebarBackdrop').onclick = closeSidebar;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape") closeSidebar();
+        });
+
+        window.onload = function() {
+            // التحقق من حالة المصادقة قبل التحقق من البيانات الأساسية
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // المستخدم مسجل دخول، قم بالتحقق من البيانات الأساسية
+                    checkAndShowBasicInfoIfNeeded();
+                }
+                // إذا كان المستخدم غير مسجل دخول، لا داعي للتحقق من البيانات الأساسية
+            });
+        };
+        
+        // وظيفة منفصلة للتحقق من البيانات الأساسية وعرض النافذة المنبثقة إذا لزم الأمر
+        function checkAndShowBasicInfoIfNeeded() {
+            console.log("جاري التحقق من البيانات الأساسية...");
+            
+            // تحقق أولاً مما إذا كانت النافذة قد تم عرضها بالفعل في هذه الجلسة
+            if (sessionStorage.getItem('basicInfoModalShown') === 'true') {
+                console.log("تم عرض النافذة بالفعل في هذه الجلسة، تجاوز...");
+                return;
+            }
+            
+            // التحقق من وجود البيانات الأساسية باستخدام خدمة Firebase
+            if (window.firebaseService && firebaseService.isInitialized) {
+                firebaseService.helpers.hasBasicInfo()
+                    .then(hasBasicInfo => {
+                        console.log("نتيجة التحقق من Firebase:", hasBasicInfo);
+                        if (!hasBasicInfo) {
+                            showBasicInfoModal();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("خطأ أثناء التحقق من البيانات الأساسية:", error);
+                        // Fallback لـ localStorage
+                        userService.hasBasicInfo()
+                            .then(hasLocalBasicInfo => {
+                                console.log("نتيجة التحقق المحلي:", hasLocalBasicInfo);
+                                if (!hasLocalBasicInfo) {
+                                    showBasicInfoModal();
+                                }
+                            });
+                    });
+            } else {
+                // Fallback لـ localStorage
+                userService.hasBasicInfo()
+                    .then(hasLocalBasicInfo => {
+                        console.log("نتيجة التحقق المحلي (فقط):", hasLocalBasicInfo);
+                        if (!hasLocalBasicInfo) {
+                            showBasicInfoModal();
+                        }
+                    });
+            }
+        }
+        
+        // المتغير لتتبع ما إذا كانت النافذة مفتوحة بالفعل
+        let basicInfoModalOpened = false;
+        
+        function showBasicInfoModal() {
+            // تجنب فتح النافذة أكثر من مرة
+            if (basicInfoModalOpened) {
+                console.log("النافذة المنبثقة مفتوحة بالفعل، تجاوز...");
+                return;
+            }
+            
+            basicInfoModalOpened = true;
+            
+            // تخزين علامة لتجنب فتح النافذة المنبثقة بعد إعادة تحميل الصفحة
+            sessionStorage.setItem('basicInfoModalShown', 'true');
+            
+            uiService.showAlert("عدم إدخال البيانات الأساسية يؤدي إلى عدم دقة المعلومات التي ينتجها التطبيق.", "warning", 3000);
+            setTimeout(function() {
+                const modalWindow = window.open(getModulePath('medicalFile', 'basic-info-modal.html'), 'basicInfoModal', 'width=450,height=700');
+                
+                // إعادة تعيين الحالة عندما تغلق النافذة
+                if (modalWindow) {
+                    const checkClosed = setInterval(function() {
+                        if (modalWindow.closed) {
+                            clearInterval(checkClosed);
+                            basicInfoModalOpened = false;
+                        }
+                    }, 500);
+                }
+            }, 3100);
+        }
+    </script>
+</body>
+</html>

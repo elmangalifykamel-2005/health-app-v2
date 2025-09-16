@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>قيّم صحتك النفسية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="mental-health.css">
+  <link rel="stylesheet" href="assessment.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script type="module">
+    import { GHQ12, PHQ9, GAD7, ISI } from './assessment-data.js';
+
+    // اختبارات غير متدرجة (مثال: اضطراب الوسواس القهري، اضطراب ما بعد الصدمة، ADHD)
+    const nonGradedTests = [
+      {
+        title: "اختبار اضطراب الوسواس القهري (OCI-R)",
+        source: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3079863/",
+        questions: [
+          "كم مرة تكررت لديك أفكار أو صور غير مرغوبة؟",
+          "كم مرة شعرت بالحاجة للقيام بسلوكيات متكررة (غسل اليدين، التحقق، العد)؟",
+          "كم مرة شعرت بالضيق بسبب هذه الأفكار أو السلوكيات؟"
+        ],
+        options: [
+          { value: 0, label: "أبداً" },
+          { value: 1, label: "نادرًا" },
+          { value: 2, label: "أحيانًا" },
+          { value: 3, label: "كثيرًا" },
+          { value: 4, label: "دائمًا" }
+        ]
+      },
+      {
+        title: "اختبار اضطراب ما بعد الصدمة (PCL-5)",
+        source: "https://www.ptsd.va.gov/professional/assessment/adult-sr/ptsd-checklist.asp",
+        questions: [
+          "هل تتجنب التفكير أو الحديث عن حدث صادم مررت به؟",
+          "هل تعاني من كوابيس أو ذكريات مزعجة متكررة؟",
+          "هل تشعر باليقظة أو التوتر المفرط؟"
+        ],
+        options: [
+          { value: 0, label: "أبداً" },
+          { value: 1, label: "نادرًا" },
+          { value: 2, label: "أحيانًا" },
+          { value: 3, label: "كثيرًا" },
+          { value: 4, label: "دائمًا" }
+        ]
+      },
+      {
+        title: "اختبار اضطرابات فرط الحركة وتشتت الانتباه (ASRS)",
+        source: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1805733/",
+        questions: [
+          "هل تجد صعوبة في التركيز على المهام أو الأنشطة؟",
+          "هل تنسى إتمام الأعمال أو الالتزامات؟",
+          "هل تشعر بالنشاط الزائد أو التململ؟"
+        ],
+        options: [
+          { value: 0, label: "أبداً" },
+          { value: 1, label: "نادرًا" },
+          { value: 2, label: "أحيانًا" },
+          { value: 3, label: "كثيرًا" },
+          { value: 4, label: "دائمًا" }
+        ]
+      }
+    ];
+
+    // متغيرات لحفظ النتائج التفصيلية
+    let ghqScore = null, ghqIndicator = '', ghqResult = '';
+    let phqScore = null, phqIndicator = '', phqResult = '';
+    let gadScore = null, gadIndicator = '', gadResult = '';
+    let isiScore = null, isiIndicator = '', isiResult = '';
+    let nonGradedResults = [];
+
+    // عرض نموذج اختبار ديناميكي
+    function renderTest(testObj, formId, nextBtnText, nextFn) {
+      let html = `<div class="test-card">
+        <strong>${testObj.title}</strong><br>
+        <a class="ref-link" href="${testObj.source}" target="_blank">مصدر علمي</a>
+        <form id="${formId}">`;
+      testObj.questions.forEach((q, idx) => {
+        html += `<div style="margin-top:10px;">
+          <label>${idx + 1}. ${q}</label><br>
+          <select name="q${idx+1}">`;
+        testObj.options.forEach(opt => {
+          html += `<option value="${opt.value}">${opt.label}</option>`;
+        });
+        html += `</select></div>`;
+      });
+      html += `<button type="button" class="test-btn" onclick="${nextFn}()">${nextBtnText}</button>
+        </form></div>`;
+      return html;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // شرح آلية التقييم
+      document.getElementById('graded-explain').innerHTML = `
+        <div class="test-card" style="background:#fffde7; color:#333;">
+          <strong><i class="fas fa-stream"></i> ما هي الاختبارات المتدرجة؟</strong>
+          <div>
+            الاختبارات المتدرجة هي اختبارات تظهر للمستخدم بشكل متسلسل، حيث يبدأ التقييم باختبار عام، وإذا ظهرت مؤشرات لمشكلة نفسية ينتقل المستخدم تلقائيًا لاختبارات أكثر تخصصًا. هذا الأسلوب يساعد في التشخيص الذاتي بشكل علمي وفعال، ويقلل من الإجهاد ويمنع كثرة الأسئلة غير الضرورية.
+          </div>
+        </div>
+      `;
+      // عرض اختبار GHQ-12 أولاً
+      document.getElementById('step-ghq').innerHTML = renderTest(GHQ12, 'ghqForm', 'أكمل التقييم', 'ghqNext');
+      // عرض اختبارات غير متدرجة
+      let nonGradedHtml = '';
+      nonGradedTests.forEach((test, idx) => {
+        nonGradedHtml += renderTest(test, `nonGradedForm${idx}`, 'عرض النتيجة', `nonGradedNext${idx}`);
+      });
+      document.getElementById('non-graded-tests').innerHTML = nonGradedHtml;
+    });
+
+    // بعد كل اختبار: حفظ النتائج
+    function saveAllResults() {
+      localStorage.setItem('assessmentResults', JSON.stringify({
+        graded: {
+          ghqScore, ghqIndicator, ghqResult,
+          phqScore, phqIndicator, phqResult,
+          gadScore, gadIndicator, gadResult,
+          isiScore, isiIndicator, isiResult
+        },
+        nonGraded: nonGradedResults
+      }));
+    }
+
+    // عند تحميل الصفحة: عرض آخر نتيجة محفوظة
+    window.addEventListener('DOMContentLoaded', () => {
+      const lastResults = JSON.parse(localStorage.getItem('assessmentResults'));
+      if (lastResults && lastResults.graded) {
+        ghqScore = lastResults.graded.ghqScore;
+        ghqIndicator = lastResults.graded.ghqIndicator;
+        ghqResult = lastResults.graded.ghqResult;
+        phqScore = lastResults.graded.phqScore;
+        phqIndicator = lastResults.graded.phqIndicator;
+        phqResult = lastResults.graded.phqResult;
+        gadScore = lastResults.graded.gadScore;
+        gadIndicator = lastResults.graded.gadIndicator;
+        gadResult = lastResults.graded.gadResult;
+        isiScore = lastResults.graded.isiScore;
+        isiIndicator = lastResults.graded.isiIndicator;
+        isiResult = lastResults.graded.isiResult;
+        updateGradedResults();
+      }
+      if (lastResults && lastResults.nonGraded) {
+        nonGradedResults = lastResults.nonGraded;
+        updateNonGradedResults();
+      }
+    });
+
+    // دوال التقييم لكل اختبار متدرج
+    window.ghqNext = function() {
+      const f = document.getElementById('ghqForm');
+      let score = 0;
+      for (let i = 1; i <= GHQ12.questions.length; i++) {
+        score += parseInt(f['q'+i].value);
+      }
+      ghqScore = score;
+      if (score <= 12) {
+        ghqIndicator = "طبيعي";
+        ghqResult = "نتيجتك جيدة ولا توجد مؤشرات قوية لمشكلة نفسية حالياً.";
+        showResult(ghqResult + "<br>إذا شعرت بأي أعراض مستمرة، يمكنك إعادة التقييم لاحقاً.");
+        updateGradedResults();
+        saveAllResults();
+        document.getElementById('step-ghq').style.display = 'none';
+      } else if (score <= 18) {
+        ghqIndicator = "متوسط";
+        ghqResult = "هناك مؤشرات متوسطة لمشكلة نفسية. ننصحك بمتابعة التقييم.";
+        document.getElementById('step-ghq').style.display = 'none';
+        document.getElementById('step-phq').innerHTML = renderTest(PHQ9, 'phqForm', 'أكمل التقييم', 'phqNext');
+        document.getElementById('step-phq').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      } else {
+        ghqIndicator = "مرتفع";
+        ghqResult = "هناك مؤشرات مرتفعة لمشكلة نفسية. ننصحك بمتابعة التقييم واستشارة مختص إذا استمرت الأعراض.";
+        document.getElementById('step-ghq').style.display = 'none';
+        document.getElementById('step-phq').innerHTML = renderTest(PHQ9, 'phqForm', 'أكمل التقييم', 'phqNext');
+        document.getElementById('step-phq').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      }
+    };
+
+    window.phqNext = function() {
+      const f = document.getElementById('phqForm');
+      let score = 0;
+      for (let i = 1; i <= PHQ9.questions.length; i++) {
+        score += parseInt(f['q'+i].value);
+      }
+      phqScore = score;
+      if (score < 5) {
+        phqIndicator = "طبيعي";
+        phqResult = "لا توجد مؤشرات قوية للاكتئاب حالياً.";
+        showResult(phqResult);
+        updateGradedResults();
+        saveAllResults();
+        document.getElementById('step-phq').style.display = 'none';
+      } else if (score < 10) {
+        phqIndicator = "اكتئاب خفيف";
+        phqResult = "قد تكون لديك أعراض اكتئاب خفيفة. راقب حالتك وكرر التقييم بعد فترة.";
+        document.getElementById('step-phq').style.display = 'none';
+        document.getElementById('step-gad').innerHTML = renderTest(GAD7, 'gadForm', 'أكمل التقييم', 'gadNext');
+        document.getElementById('step-gad').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      } else if (score < 15) {
+        phqIndicator = "اكتئاب متوسط";
+        phqResult = "هناك أعراض اكتئاب متوسطة. ننصحك باستشارة مختص نفسي إذا استمرت الأعراض.";
+        document.getElementById('step-phq').style.display = 'none';
+        document.getElementById('step-gad').innerHTML = renderTest(GAD7, 'gadForm', 'أكمل التقييم', 'gadNext');
+        document.getElementById('step-gad').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      } else {
+        phqIndicator = "اكتئاب شديد";
+        phqResult = "هناك أعراض اكتئاب شديدة. ننصحك بمراجعة مختص نفسي فوراً.";
+        document.getElementById('step-phq').style.display = 'none';
+        document.getElementById('step-gad').innerHTML = renderTest(GAD7, 'gadForm', 'أكمل التقييم', 'gadNext');
+        document.getElementById('step-gad').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      }
+    };
+
+    window.gadNext = function() {
+      const f = document.getElementById('gadForm');
+      let score = 0;
+      for (let i = 1; i <= GAD7.questions.length; i++) {
+        score += parseInt(f['q'+i].value);
+      }
+      gadScore = score;
+      if (score < 5) {
+        gadIndicator = "طبيعي";
+        gadResult = "لا توجد مؤشرات قوية للقلق حالياً.";
+        showResult(gadResult);
+        updateGradedResults();
+        saveAllResults();
+        document.getElementById('step-gad').style.display = 'none';
+      } else if (score < 10) {
+        gadIndicator = "قلق خفيف";
+        gadResult = "قد تكون لديك أعراض قلق خفيفة. راقب حالتك وكرر التقييم بعد فترة.";
+        document.getElementById('step-gad').style.display = 'none';
+        document.getElementById('step-isi').innerHTML = renderTest(ISI, 'isiForm', 'عرض النتيجة النهائية', 'isiNext');
+        document.getElementById('step-isi').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      } else if (score < 15) {
+        gadIndicator = "قلق متوسط";
+        gadResult = "هناك أعراض قلق متوسطة. ننصحك باستشارة مختص نفسي إذا استمرت الأعراض.";
+        document.getElementById('step-gad').style.display = 'none';
+        document.getElementById('step-isi').innerHTML = renderTest(ISI, 'isiForm', 'عرض النتيجة النهائية', 'isiNext');
+        document.getElementById('step-isi').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      } else {
+        gadIndicator = "قلق شديد";
+        gadResult = "هناك أعراض قلق شديدة. ننصحك بمراجعة مختص نفسي فوراً.";
+        document.getElementById('step-gad').style.display = 'none';
+        document.getElementById('step-isi').innerHTML = renderTest(ISI, 'isiForm', 'عرض النتيجة النهائية', 'isiNext');
+        document.getElementById('step-isi').style.display = 'block';
+        updateGradedResults();
+        saveAllResults();
+      }
+    };
+
+    window.isiNext = function() {
+      const f = document.getElementById('isiForm');
+      let score = 0;
+      for (let i = 1; i <= ISI.questions.length; i++) {
+        score += parseInt(f['q'+i].value);
+      }
+      isiScore = score;
+      if (score <= 7) {
+        isiIndicator = "طبيعي";
+        isiResult = "لا توجد مؤشرات قوية لاضطرابات النوم حالياً.";
+      } else if (score <= 14) {
+        isiIndicator = "أرق خفيف";
+        isiResult = "قد تكون لديك أعراض أرق خفيف. حاول تحسين عادات النوم وراقب حالتك.";
+      } else if (score <= 21) {
+        isiIndicator = "أرق متوسط";
+        isiResult = "هناك أعراض أرق متوسط. ننصحك باستشارة مختص إذا استمرت الأعراض.";
+      } else {
+        isiIndicator = "أرق شديد";
+        isiResult = "هناك أعراض أرق شديد. ننصحك بمراجعة مختص نوم أو طبيب فوراً.";
+      }
+      showResult(isiResult);
+      updateGradedResults();
+      saveAllResults();
+      document.getElementById('step-isi').style.display = 'none';
+    };
+
+    // دوال اختبارات غير متدرجة
+    nonGradedTests.forEach((test, idx) => {
+      window[`nonGradedNext${idx}`] = function() {
+        const f = document.getElementById(`nonGradedForm${idx}`);
+        let score = 0;
+        for (let i = 1; i <= test.questions.length; i++) {
+          score += parseInt(f['q'+i].value);
+        }
+        let indicator = '';
+        if (score <= 3) indicator = "طبيعي";
+        else if (score <= 6) indicator = "خفيف";
+        else if (score <= 9) indicator = "متوسط";
+        else indicator = "شديد";
+        nonGradedResults[idx] = {
+          title: test.title,
+          score,
+          indicator,
+          result: indicator === "طبيعي" ? "لا توجد مؤشرات قوية لهذا الاضطراب." :
+            indicator === "خفيف" ? "قد تكون لديك أعراض خفيفة، راقب حالتك." :
+            indicator === "متوسط" ? "هناك أعراض متوسطة، استشر مختص إذا استمرت الأعراض." :
+            "هناك أعراض شديدة، ننصحك بمراجعة مختص نفسي فوراً."
+        };
+        updateNonGradedResults();
+        saveAllResults();
+      };
+    });
+
+    function showResult(msg) {
+      const card = document.getElementById('resultCard');
+      card.innerHTML = msg;
+      card.style.display = 'block';
+    }
+
+    // عرض النتائج التفصيلية للاختبارات المتدرجة
+    window.updateGradedResults = function() {
+      let html = '';
+      html += `<div><strong>GHQ-12:</strong> الدرجة: ${ghqScore !== null ? ghqScore : '-'} | المؤشر: ${ghqIndicator} <br>النتيجة: ${ghqResult}</div>`;
+      html += `<div style="margin-top:8px;"><strong>PHQ-9:</strong> الدرجة: ${phqScore !== null ? phqScore : '-'} | المؤشر: ${phqIndicator} <br>النتيجة: ${phqResult}</div>`;
+      html += `<div style="margin-top:8px;"><strong>GAD-7:</strong> الدرجة: ${gadScore !== null ? gadScore : '-'} | المؤشر: ${gadIndicator} <br>النتيجة: ${gadResult}</div>`;
+      html += `<div style="margin-top:8px;"><strong>ISI:</strong> الدرجة: ${isiScore !== null ? isiScore : '-'} | المؤشر: ${isiIndicator} <br>النتيجة: ${isiResult}</div>`;
+      document.getElementById('gradedResults').innerHTML = html;
+    }
+
+    // عرض النتائج التفصيلية للاختبارات غير المتدرجة
+    function updateNonGradedResults() {
+      let html = '';
+      nonGradedResults.forEach(res => {
+        if (res) {
+          html += `<div style="margin-bottom:12px;">
+            <strong>${res.title}</strong><br>
+            الدرجة: ${res.score} | المؤشر: ${res.indicator}<br>
+            النتيجة: ${res.result}
+          </div>`;
+        }
+      });
+      if (!html) html = `<em>لم يتم إجراء اختبارات غير متدرجة بعد.</em>`;
+      document.getElementById('nonGradedResults').innerHTML = html;
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-clipboard-check"></i> قيّم صحتك النفسية</h1>
+    <div class="disclaimer">
+      هذه الاختبارات تهدف للتوعية ولا تغني عن الاستشارة الطبية أو التشخيص من مختص نفسي. إذا كانت لديك أعراض مستمرة أو شديدة، يرجى مراجعة الطبيب أو الأخصائي النفسي فوراً.
+    </div>
+    <div class="section-title"><i class="fas fa-stream"></i> الاختبارات المتدرجة</div>
+    <div id="graded-explain"></div>
+    <div class="test-section" id="step-ghq"></div>
+    <div class="test-section" id="step-phq" style="display:none;"></div>
+    <div class="test-section" id="step-gad" style="display:none;"></div>
+    <div class="test-section" id="step-isi" style="display:none;"></div>
+
+    <div class="section-title"><i class="fas fa-vial"></i> الاختبارات غير المتدرجة</div>
+    <div id="non-graded-tests"></div>
+
+    <div class="section-title"><i class="fas fa-clipboard-list"></i> نتيجة التحليل النفسي التفصيلية</div>
+    <div class="analysis-section">
+      <strong>نتائج الاختبارات المتدرجة:</strong>
+      <div id="gradedResults"></div>
+      <hr>
+      <strong>نتائج الاختبارات غير المتدرجة:</strong>
+      <div id="nonGradedResults">
+        <em>لم يتم إجراء اختبارات غير متدرجة بعد.</em>
+      </div>
+    </div>
+    <button class="back-btn" onclick="window.location.href='mental-health.html'"><i class="fas fa-arrow-right"></i> رجوع للصفحة الرئيسية</button>
+  </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

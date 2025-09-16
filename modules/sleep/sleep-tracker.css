@@ -1,0 +1,145 @@
+/* 
+ * ملف الأنماط الخاص بصفحة تتبع النوم
+ */
+
+/* أنماط عامة للصفحة */
+body {
+  background: linear-gradient(135deg, #e8eaf6 0%, #bbdefb 100%);
+  font-family: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(13,71,161,0.13);
+  padding: 32px 18px;
+}
+
+/* أنماط العناوين */
+h1 {
+  color: #3f51b5;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h2 {
+  color: #1976d2;
+  font-size: 1.4em;
+  margin-bottom: 15px;
+}
+
+/* أنماط البطاقات */
+.card {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-row {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* أنماط النماذج */
+input[type="time"], 
+input[type="number"], 
+input[type="date"], 
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* أنماط الأزرار */
+button {
+  background: #3f51b5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #303f9f;
+}
+
+#backBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #3f51b5;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.lang-btn {
+  padding: 5px 10px;
+  background: #e8eaf6;
+  color: #3f51b5;
+  border: 1px solid #3f51b5;
+  border-radius: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.lang-btn:hover, 
+.lang-btn.active {
+  background: #3f51b5;
+  color: white;
+}
+
+#lang-switch {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+/* أنماط الرسومات البيانية */
+.chart-container {
+  margin: 20px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  #backBtn {
+    top: 10px;
+    right: 10px;
+  }
+}

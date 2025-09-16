@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>قصتي | My Story</title>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(76, 175, 80, 0.2);
+            padding: 40px;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .story-section {
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .story-section h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        .story-text {
+            color: #2E7D32;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .highlight {
+            background: #C8E6C9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #2E7D32;
+            font-weight: bold;
+        }
+    </style>
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .story-container {
+            background: rgba(255,255,255,0.97);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(76, 175, 80, 0.2);
+            padding: 40px 28px 30px 28px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+        .story-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 16px;
+            border: 4px solid #4CAF50;
+            box-shadow: 0 2px 16px rgba(76, 175, 80, 0.3);
+        }
+        .story-name {
+            font-size: 1.5em;
+            color: #2E7D32;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .story-job {
+            font-size: 1.1em;
+            color: #4CAF50;
+            margin-bottom: 22px;
+            font-weight: bold;
+        }
+        .story-title {
+            font-size: 1.25em;
+            color: #2E7D32;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+        .story-text {
+            font-size: 1.08em;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 22px;
+            text-align: right;
+        }
+        .back-btn {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #45a049;
+        }
+        .switch-lang-btn {
+            background: #C8E6C9;
+            color: #2E7D32;
+            border: none;
+            padding: 5px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            margin-top: -6px;
+            transition: background 0.2s;
+        }
+        .switch-lang-btn:hover {
+            background: #A5D6A7;
+        }
+    </style>
+</head>
+<body>
+    <div class="story-container" id="storyContent">
+        <!-- سيتم توليد المحتوى تلقائياً حسب اللغة -->
+    </div>
+    <script>
+        // صورة شخصية داخل مجلد photo
+        const profilePic = "photo/profile.jpg";
+
+        const myStoryAr = `
+            اسمي كامل المنجليفي، وهذه ليست مجرد قصة، بل هي رحلة نجاة وإعادة ميلاد.<br><br>
+            بدأت معاناتي في عام 2007 مع تشخيص مرض السكري. كنت حينها أعاني بالفعل من زيادة الوزن ومشاكل مزمنة في القولون والجهاز الهضمي. بدأت رحلة العلاج التقليدية بحبتين دواء، لكنها كانت بداية دوامة طويلة من التدهور. مع مرور السنين، لم تزد إلا أعداد الأدوية، وزاد معها وزني، وظهرت أعراض جديدة أنهكت جسدي وروحي: آلام المفاصل، الإرهاق المزمن، وارتفاع الكوليسترول والدهون الثلاثية.<br><br>
+            وصلت المأساة إلى ذروتها في يوليو 2022، عندما أصبت بجلطة في الشرايين التاجية، وانتهى بي الأمر بتركيب ثلاث دعامات. لكن الصدمة الأكبر كانت اكتشافي لاحقاً أن هذه الجراحة ربما لم تكن ضرورية على الإطلاق. كانت تلك هي اللحظة التي قررت فيها أن أتوقف، وأن أرفض أن أكون مجرد رقم في منظومة تزيد مرضي بدلاً من علاجه.<br><br>
+            بدأت رحلة بحث مكثفة، قادتني إلى أطباء ورواد يتحدثون عن فكرة بدت ثورية وقتها: الشفاء من الأمراض المزمنة عبر التغذية. قررت أن أخوض التجربة بنفسي. في 5 مايو 2024، كان سكري التراكمي 14.6، وسكر الصائم 291، وكنت أتناول 17 حبة دواء يومياً. اتخذت قراراً جذرياً: توقفت عن السكر، والزيوت المهدرجة، والكربوهيدرات المصنعة، واعتمدت على الغذاء الحقيقي مع الصيام المتقطع.<br><br>
+            النتيجة كانت أشبه بالمعجزة. بعد ثلاثة أشهر فقط، انخفض سكري التراكمي إلى 5.6، والصائم إلى 86. لقد أوقفت جميع الأدوية، واكتفيت ببعض المكملات الطبيعية. لم أستعد صحتي فحسب، بل استعدت حياتي.<br><br>
+            هذه التجربة دفعتني للتعمق أكثر في الدراسة، وحصلت على دبلومة في التغذية العلاجية، ليس فقط لأساعد نفسي، بل لأكشف الأساطير والأكاذيب التي تروج لها المنظومة الطبية التقليدية. قصتي هي الدليل على أن الشفاء ممكن، وأن الغذاء يمكن أن يكون أقوى دواء. ومهمتي الآن هي أن أشارك هذه المعرفة، وأن أساعد كل من يبحث عن طريق حقيقي للتعافي.
+        `;
+
+        const myStoryEn = `
+            My name is Kamel Elmangalify, and this is not just a story—it's a journey of survival and rebirth.<br><br>
+            My struggle began in 2007 with a diabetes diagnosis. At the time, I was already suffering from obesity and chronic digestive issues. I started conventional treatment with two pills, but it was the beginning of a long downward spiral. Over the years, my medications increased, my weight grew, and new symptoms drained my body and spirit: joint pain, chronic fatigue, high cholesterol, and triglycerides.<br><br>
+            The tragedy peaked in July 2022 when I suffered a coronary artery blockage and had three stents implanted. The greatest shock came later when I discovered that the surgery might not have been necessary at all. That was the moment I decided to stop and refuse to be just another number in a system that worsened my illness instead of healing it.<br><br>
+            I began an intensive search that led me to doctors and pioneers who spoke about a revolutionary idea: healing chronic diseases through nutrition. I decided to try it myself. On May 5, 2024, my HbA1c was 14.6, fasting glucose 291, and I was taking 17 pills daily. I made a radical decision: I quit sugar, processed oils, and refined carbohydrates, relying on real food and intermittent fasting.<br><br>
+            The result felt like a miracle. After just three months, my HbA1c dropped to 5.6, fasting glucose to 86. I stopped all medications, keeping only a few natural supplements. I didn't just regain my health—I reclaimed my life.<br><br>
+            This experience pushed me to study deeper, earning a diploma in therapeutic nutrition—not only to help myself, but to expose the myths and lies promoted by the conventional medical system. My story is proof that healing is possible, and that food can be the most powerful medicine. My mission now is to share this knowledge and help anyone seeking a true path to recovery.
+        `;
+
+        const jobAr = "أخصائي تغذية";
+        const jobEn = "Nutrition Specialist";
+        const lang = localStorage.getItem('hl_language') || 'ar';
+        const storyContent = document.getElementById('storyContent');
+        const switchLangBtn = `<button class="switch-lang-btn" onclick="switchLang()">${lang === 'ar' ? 'English' : 'العربية'}</button>`;
+
+        if (lang === 'en') {
+            storyContent.innerHTML = `
+                ${switchLangBtn}
+                <img src="${profilePic}" alt="Kamel Elmangalify photo" class="story-img">
+                <div class="story-name">Kamel Elmangalify</div>
+                <div class="story-job">${jobEn}</div>
+                <div class="story-title">My Story</div>
+                <div class="story-text" style="text-align:left;">${myStoryEn}</div>
+                <button class="back-btn" onclick="window.history.back()">Back</button>
+            `;
+        } else {
+            storyContent.innerHTML = `
+                ${switchLangBtn}
+                <img src="${profilePic}" alt="صورة كامل المنجليفي" class="story-img">
+                <div class="story-name">كامل المنجليفي</div>
+                <div class="story-job">${jobAr}</div>
+                <div class="story-title">قصتي</div>
+                <div class="story-text">${myStoryAr}</div>
+                <button class="back-btn" onclick="window.history.back()">رجوع</button>
+            `;
+        }
+
+        function switchLang() {
+            localStorage.setItem('hl_language', lang === 'ar' ? 'en' : 'ar');
+            location.reload();
+        }
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

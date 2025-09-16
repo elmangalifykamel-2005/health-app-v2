@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار التنقل - صحتك بالدنيا</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .results {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            direction: ltr;
+            font-family: monospace;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .test-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+        button:hover {
+            background: #388E3C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار التنقل</h1>
+        
+        <div class="test-controls">
+            <button id="runTests">تشغيل الاختبار</button>
+            <button id="clearResults">مسح النتائج</button>
+        </div>
+        
+        <div class="results" id="testResults">
+            قم بالضغط على "تشغيل الاختبار" لبدء اختبار وظائف التنقل.
+        </div>
+    </div>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="config/app-config.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="config/shared-functions.js"></script>
+    
+    <script>
+        // إعداد الاختبار
+        document.getElementById('runTests').addEventListener('click', function() {
+            const resultsArea = document.getElementById('testResults');
+            resultsArea.innerHTML = 'جاري تشغيل الاختبار...\n\n';
+            
+            // حفظ console.log الأصلي
+            const originalLog = console.log;
+            const originalError = console.error;
+            
+            // إعادة تعريف console.log لعرض النتائج في نافذة الاختبار
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                resultsArea.innerHTML += args.join(' ') + '\n';
+            };
+            
+            // إعادة تعريف console.error لعرض الأخطاء في نافذة الاختبار بلون مختلف
+            console.error = function(...args) {
+                originalError.apply(console, args);
+                resultsArea.innerHTML += '<span style="color: red;">' + args.join(' ') + '</span>\n';
+            };
+            
+            // تنفيذ الاختبار
+            try {
+                // تحميل سكربت الاختبار ديناميكيًا
+                const script = document.createElement('script');
+                script.src = 'navigation-test.js?' + new Date().getTime(); // منع التخزين المؤقت
+                script.onload = function() {
+                    console.log('\nاكتمل تنفيذ الاختبار بنجاح.');
+                };
+                script.onerror = function() {
+                    console.error('حدث خطأ أثناء تحميل سكربت الاختبار.');
+                };
+                document.body.appendChild(script);
+            } catch (error) {
+                console.error('خطأ:', error.message);
+            }
+            
+            // استعادة console.log الأصلي بعد الانتهاء من الاختبار
+            setTimeout(function() {
+                console.log = originalLog;
+                console.error = originalError;
+            }, 1000);
+        });
+        
+        // مسح نتائج الاختبار
+        document.getElementById('clearResults').addEventListener('click', function() {
+            document.getElementById('testResults').innerHTML = 'تم مسح النتائج. قم بتشغيل الاختبار مرة أخرى.';
+        });
+    </script>
+</body>
+</html>

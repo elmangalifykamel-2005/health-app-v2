@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل الأعشاب الطبية - تطبيق الحياة الصحية</title>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+    <link rel="stylesheet" href="shared-styles.css">
+    <link rel="stylesheet" href="herbs-styles.css">
+    <link rel="stylesheet" href="herbs.css">
+</head>
+<body>
+    <header class="page-header">
+        <h1>دليل الأعشاب الطبية</h1>
+        <nav>
+            <ul>
+                <li><a href="javascript:navigationService.navigateTo(getPagePath('main'))">الرئيسية</a></li>
+                <li><a href="#herbs-list">الأعشاب</a></li>
+                <li><a href="#disclaimer">إخلاء المسؤولية</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="warning-section">
+            <h2>تنبيه هام!</h2>
+            <p>المعلومات المقدمة في هذا الدليل هي لأغراض تعليمية وتثقيفية فقط، ولا تغني عن استشارة أخصائي الرعاية الصحية المؤهل. لا تعتمد على هذه المعلومات لتشخيص أو علاج أي مشكلة صحية دون استشارة طبية. استشر طبيبك دائمًا قبل البدء في أي نظام علاجي جديد أو تغيير نظامك الحالي، خاصة إذا كنت تعاني من حالات صحية مزمنة أو تتناول أدوية أخرى.</p>
+        </section>
+
+        <section class="search-filter-section">
+            <input type="text" id="herb-search" placeholder="ابحث عن عشبة معينة أو فائدة صحية...">
+            
+            <select id="category-filter">
+                <option value="all">التصنيف (الكل)</option>
+                <option value="digestive">الجهاز الهضمي</option>
+                <option value="cardiovascular">القلب والأوعية الدموية</option>
+                <option value="immune">تقوية المناعة</option>
+                <option value="cognitive">الوظائف المعرفية</option>
+                <option value="anti-inflammatory">مضاد للالتهابات</option>
+                <option value="liver">صحة الكبد</option>
+                <option value="respiratory">الجهاز التنفسي</option>
+                <option value="sleep">النوم والاسترخاء</option>
+                <option value="stress">إدارة التوتر</option>
+                <option value="hormonal">التوازن الهرموني</option>
+                <option value="skin">صحة الجلد</option>
+                <option value="energy">الطاقة والحيوية</option>
+                <option value="mental-health">الصحة النفسية</option>
+            </select>
+            
+            <select id="evidence-filter">
+                <option value="all">مستوى الأدلة (الكل)</option>
+                <option value="high">عالي</option>
+                <option value="moderate">متوسط</option>
+                <option value="low">منخفض</option>
+            </select>
+        </section>
+
+        <section id="herbs-list" class="herbs-container">
+            <!-- سيتم تحميل بطاقات الأعشاب هنا بواسطة JavaScript -->
+        </section>
+
+        <section id="disclaimer" class="disclaimer-section">
+            <h2>إخلاء المسؤولية</h2>
+            <p>نحن نبذل قصارى جهدنا لتقديم معلومات دقيقة ومحدثة، ولكن لا يمكننا ضمان خلوها من الأخطاء أو سهوها. استخدامك لهذه المعلومات يقع على مسؤوليتك الخاصة. لا تتحمل هذه المنصة أي مسؤولية عن أي أضرار أو خسائر قد تنجم عن استخدام أو الاعتماب على المعلومات الواردة هنا. جميع المراجع العلمية المذكورة هي من مصادر موثوقة مثل المعهد الوطني للصحة الأمريكي (NIH) والمركز الوطني للصحة التكميلية والتكاملية (NCCIH).</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 تطبيق الحياة الصحية. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="herbs-data.js"></script>
+    <script src="herbs-app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+        
+        // إصلاح زر العودة
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.navigationFixes && typeof navigationFixes.fixHerbsPage === 'function') {
+                navigationFixes.fixHerbsPage();
+            }
+        });
+    </script>
+</body>
+</html>

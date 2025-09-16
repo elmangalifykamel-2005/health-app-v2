@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title> كامل المنجليفي - أخصائي التغذية</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --secondary-color: #8D6E63;
+            --accent-color: #FFC107;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --background-light: #f5f5f5;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+        }
+        
+        html {
+            /* تكبير الأساس لزيادة وضوح كل القيم بالـ rem */
+            font-size: 18px;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        .main-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: absolute;
+            top: 22px;
+            left: 0;
+            padding: 0 22px;
+            box-sizing: border-box;
+            z-index: 30;
+        }
+        .btn-group-ar, .btn-group-en {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 18px;
+        }
+        .btn-group-ar {
+            width: 100%;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+        .sidebar-btn-ar {
+            margin-left: 0;
+        }
+        .profile-logout-ar {
+            display: flex;
+            gap: 18px;
+            margin-right: 0;
+        }
+        .btn-group-en {
+            margin-right: auto;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .sidebar-btn-en {
+            margin-right: 14px;
+        }
+        .profile-logout-en {
+            display: flex;
+            gap: 18px;
+            margin-left: 0;
+        }
+        #logout-btn {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #logout-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        #sidebar-toggle {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        #sidebar-toggle:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .main-with-sidebar {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 96;
+            display: none;
+        }
+        .sidebar-backdrop.open {
+            display: block;
+        }
+        .main-center {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            margin-right: 0;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        @media (min-width: 901px) {
+            .main-center {
+                width: calc(100% - 240px);
+                margin-right: 0;
+                padding: 0 40px;
+            }
+            .sidebar.ar.open ~ .main-center {
+                margin-right: 240px;
+            }
+            .sidebar.en.open ~ .main-center {
+                margin-left: 240px;
+            }
+        }
+        .main-title {
+            font-size: 2.8em;
+            font-weight: 600;
+            margin-bottom: 18px;
+            letter-spacing: -0.5px;
+            color: #388e3c;
+            text-align: center;
+            background: linear-gradient(135deg, #388e3c, #4CAF50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .main-subtitle {
+            font-size: 1.4em;
+            color: #6c757d;
+            margin-bottom: 7px;
+            text-align: center;
+        }
+       .main-specialist {
+            font-size: 1.1em;
+            color: #388e3c;
+            margin-bottom: 28px;
+            font-weight: 500;
+            text-align: center;
+        }
+      .main-profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 14px;
+            border: 4px solid #4CAF50;
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+        .main-profile-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
+            border-color: #388e3c;
+        }
+        .main-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: max-content;
+            margin: 0 auto;
+        }
+        .main-btn {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            margin-bottom: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem; /* أكبر قليلاً وبالـ rem */
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+            min-width: 200px;
+            text-align: center;
+        }
+        .main-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .main-btn:active {
+            transform: translateY(0);
+        }
+        .main-btn:last-child {
+            margin-bottom: 0;
+        }
+        @media (max-width: 480px) {
+            .main-center {
+                margin: 10px;
+                padding: 30px 25px;
+            }
+            .main-title {
+                font-size: 2.2em;
+            }
+            .main-subtitle {
+                font-size: 1.2em;
+            }
+            .main-btns {
+                width: 100%;
+            }
+            .main-btn {
+                padding: 14px 20px;
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 600px) {
+            .main-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+                position: static;
+                margin-bottom: 24px;
+            }
+            .main-btns {
+                width: 95vw;
+            }
+        }
+         .profile-placeholder {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .beta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ff9800;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+        }
+        .beta-badge i {
+            font-size: 0.9em;
+        }
+        .doctor-bio {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 500px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .doctor-bio p {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .doctor-bio strong {
+            color: #388e3c;
+            font-weight: 600;
+        }
+        .doctor-bio p {
+            margin-bottom: 12px;
+            text-align: center; /* محاذاة النص تحت الاسم */
+            line-height: 1.7;
+        }
+        .doctor-bio p:last-child {
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header" id="mainHeader">
+        <div id="header-btns"></div>
+    </div>
+    <div class="main-with-sidebar">
+        <div class="main-center" id="main-content"></div>
+    </div>
+    <script>
+        function goToHomePage() {
+            // العودة للصفحة الرئيسية للتطبيق مباشرة
+            window.location.href = "../../main.html";
+        }
+
+        function sendFeedback() {
+            // فتح صفحة feedback في نافذة منفصلة
+            const feedbackWindow = window.open(
+                'feedback-form.html', 
+                'feedbackForm', 
+                'width=650,height=800,scrollbars=yes,resizable=yes'
+            );
+            
+            // التركيز على النافذة الجديدة
+            if (feedbackWindow) {
+                feedbackWindow.focus();
+            }
+        }
+
+        // ترجمة عناصر القائمة
+        const menuAr = [
+            { href:"scr\herbs\herbs.html", icon:"fa-ruler", text:"قياساتي" },
+            { href:"medical-file/medical-profile.html", icon:"fa-file-medical", text:"ملفي الطبي" },
+            { href:"src/modules/nutrition/index.html", icon:"fa-utensils", text:"خطتي الغذائية" },
+            { href:"scr/sleep/index.html", icon:"fa-calculator", text:"دليل السعرات الحرارية" },
+            { href:"scr\sleep\index.html", icon:"fa-bed", text:"نومي" },
+            { href:"scr\mental-health\mental-health.html", icon:"fa-brain", text:"صحتي النفسية" },
+            { href:"health-state\healthstate.html", icon:"fa-notes-medical", text:"حالتي الصحية" },
+            { href:"healthy-recipes.html", icon:"fa-bowl-food", text:"وصفات صحية" },
+            { href:"scr\herbs\herbs.html", icon:"fa-leaf", text:"الأعشاب الطبية" },
+            { href:"scr\studies\studies.html", icon:"fa-book-open", text:"الأدلة العلمية والدراسات" }
+        ];
+        const menuEn = [
+            { href:"measurments.html", icon:"fa-ruler", text:"My Measurements" },
+            { href:"medical-file/medical-profile.html", icon:"fa-file-medical", text:"My Medical Profile" },
+            { href:"src/modules/nutrition/index.html", icon:"fa-utensils", text:"My Diet Plan" },
+            { href:"scr/calories/index.html", icon:"fa-calculator", text:"Calories Guide" },
+            { href:"scr\sleep\index.html", icon:"fa-bed", text:"My Sleep" },
+            { href:"scr\mental-health\mental-health.html", icon:"fa-brain", text:"My Mental Health" },
+            { href:"health-state\healthstate.html", icon:"fa-notes-medical", text:"My Health Status" },
+            { href:"healthy-recipes.html", icon:"fa-bowl-food", text:"Healthy Recipes" },
+            { href:"src/modules/herbs/index.html", icon:"fa-leaf", text:"Medicinal Herbs" },
+            { href:"scr\studies\studies.html", icon:"fa-book-open", text:"Scientific Evidence & Studies" }
+        ];
+
+        // تحديد اللغة
+        const lang = localStorage.getItem('hl_language') || 'ar';
+    const mainDiv = document.getElementById('main-content');
+    const sidebar = null; // sidebar removed
+        const headerBtns = document.getElementById('header-btns');
+
+        function renderHeaderBtns(lang) {
+            if (lang === 'ar') {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-ar">
+                        <div class="profile-logout-ar">
+                            <button id="logout-btn" onclick="goToHomePage()">
+                                <i class="fa-solid fa-arrow-right"></i> <span>رجوع</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                headerBtns.innerHTML = `
+                    <div class="btn-group-en">
+                        <div class="profile-logout-en">
+                            <button id="logout-btn" onclick="goToHomePage()">
+                                <i class="fa-solid fa-arrow-left"></i> <span>Back</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // صورة افتراضية للملف الشخصي
+        const profileImgHtml = `<div class="profile-placeholder">
+            <img src="../../photo/profile.jpg" alt=" كامل المنجليفي" class="main-profile-img">
+        </div>`;
+        
+        if (lang === 'en') {
+            document.documentElement.lang = 'en';
+            document.body.dir = 'ltr';
+            renderHeaderBtns('en');
+            // sidebar removed
+            mainDiv.innerHTML = `
+                ${profileImgHtml}
+                <div class="main-title">Dr. Kamel Elmangalify</div>
+                <div class="main-specialist">Certified Clinical Nutritionist</div>
+                <div class="doctor-bio">
+                    <p>Over 15 years of experience in clinical nutrition</p>
+                    <p>Specialized in obesity treatment and metabolic disorders</p>
+                </div>
+                <div class="beta-badge">
+                    <i class="fas fa-stethoscope"></i>
+                    Certified Medical Consultations
+                </div>
+                
+                <div class="main-btns" style="flex-direction:column;">
+                    <button class="main-btn" onclick="window.location.href='mystory.html'">
+                        My Inspiring Story
+                    </button>
+                    <button class="main-btn" onclick="openCertificates()">
+                        <i class="fas fa-graduation-cap"></i> My Certificates & Qualifications
+                    </button>
+                    
+                    <button class="main-btn" onclick="window.location.href='../../main.html'" style="background:#388e3c;">
+                        <i class="fas fa-home"></i> App Homepage
+                    </button>
+                    <button class="main-btn" onclick="sendFeedback()" style="background:#ff9800;">
+                        <i class="fas fa-comment"></i> Rate Service
+                    </button>
+                </div>
+            `;
+        } else {
+            document.documentElement.lang = 'ar';
+            document.body.dir = 'rtl';
+            renderHeaderBtns('ar');
+                // sidebar removed
+               mainDiv.innerHTML = `
+                ${profileImgHtml}
+                <div class="main-title"> كامل المنجليفي</div>
+                <div class="main-specialist">أخصائي تغذية علاجية معتمد</div>
+                <div class="doctor-bio">
+                    <p>بعد صِراعٍ طويلٍ لأكثر من 17 عاماً مع الأمراض المُزمنة</p>
+                    <p>وبعد الألم والمُعاناة، اكتشفتُ طريقي للشِّفاء</p>
+                    <p>درستُ وتعلَّمتُ وأردتُ أن أنشُر العِلم الحقيقي والتجارب الواقعية</p>
+                    <p>لكي نتحرَّر جميعاً من المرض ونعيش حياةً صحيَّةً أفضل</p>
+                    <p><strong>متخصص في علاج السُّمنة وأمراض التمثيل الغذائي</strong></p>
+                </div>
+                <div class="beta-badge">
+                    <i class="fas fa-leaf"></i>
+                    استشارات تغذية طبيعية
+                </div>
+                
+                <div class="main-btns" style="flex-direction:column;">
+                    <button class="main-btn" onclick="window.location.href='mystory.html'">
+                        قصتي الملهمة
+                    </button>
+                    <button class="main-btn" onclick="openCertificates()">
+                        <i class="fas fa-graduation-cap"></i> شهاداتي ومؤهلاتي
+                    </button>
+                    
+                    <button class="main-btn" onclick="window.location.href='../../main.html'" style="background:#388e3c;">
+                        <i class="fas fa-home"></i> الصفحة الرئيسية للتطبيق
+                    </button>
+                    <button class="main-btn" onclick="sendFeedback()" style="background:#ff9800;">
+                        <i class="fas fa-comment"></i> تقييم الخدمة
+                    </button>
+                </div>
+            `;
+        }
+
+        // sidebar removed: no loading or toggle handlers
+
+        // إبقاء تمرير الاستشارة فقط عند وجود هاش في الرابط
+        window.onload = function() {
+            if (window.location.hash === '#consultation') {
+                const consultationSection = document.getElementById('consultation');
+                if (consultationSection) {
+                    consultationSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        };
+    </script>
+    
+    <!-- قسم الاستشارات (محسّن) -->
+    <div id="consultation" style="margin: 50px 0; padding: 40px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); background-image: linear-gradient(to bottom, #f1f8e9 0%, #ffffff 250px); border-top: 5px solid #4CAF50;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <div style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 25px; border-radius: 30px; margin-bottom: 20px;">
+                <i class="fas fa-headset" style="margin-left: 8px;"></i>
+                استشارات مباشرة
+            </div>
+            <h2 style="color: #2E7D32; font-size: 2rem; margin: 10px 0;">احجز استشارتك الآن</h2>
+            <p style="color: #555; max-width: 600px; margin: 0 auto;">استشارة غذائية شخصية مع أخصائي التغذية كامل المنجليفي لمساعدتك في تحقيق أهدافك الصحية</p>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin-bottom: 40px;">
+            <div style="flex: 1; min-width: 280px; background-color: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(104, 159, 56, 0.15); border-top: 5px solid #689F38; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <div style="background-color: #689F38; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-left: 15px;">
+                        <i class="fas fa-clipboard-check" style="color: white; font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0 0 5px 0; color: #33691E; font-size: 1.4rem;">استشارة غذائية شاملة</h3>
+                        <div style="color: #689F38; font-weight: 500;">تقييم كامل وخطة مخصصة</div>
+                    </div>
+                </div>
+                
+                <p style="line-height: 1.7; color: #555; margin-bottom: 20px;">جلسة لتقييم حالتك الصحية والغذائية وتصميم برنامج غذائي متكامل يناسب احتياجاتك وأهدافك الصحية.</p>
+                
+                <div style="margin: 25px 0; padding: 15px; background-color: #f1f8e9; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <div style="font-weight: 600; color: #33691E;">المدة</div>
+                        <div>60 دقيقة</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="font-weight: 600; color: #33691E;">الأسلوب</div>
+                        <div>مباشر / عن بعد (فيديو)</div>
+                    </div>
+                </div>
+                
+                <div style="font-weight: bold; font-size: 1.6rem; color: #33691E; margin: 20px 0; text-align: center;">200 ريال</div>
+                
+                <button style="background-color: #689F38; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px;" 
+                    onclick="bookAppointment('شاملة')"
+                    onmouseover="this.style.backgroundColor='#558b2f'" 
+                    onmouseout="this.style.backgroundColor='#689F38'">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>احجز موعد</span>
+                </button>
+            </div>
+            
+            <div style="flex: 1; min-width: 280px; background-color: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(67, 160, 71, 0.15); border-top: 5px solid #43A047; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <div style="background-color: #43A047; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-left: 15px;">
+                        <i class="fas fa-sync-alt" style="color: white; font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0 0 5px 0; color: #2E7D32; font-size: 1.4rem;">استشارة متابعة</h3>
+                        <div style="color: #43A047; font-weight: 500;">تعديل وتحسين برنامجك</div>
+                    </div>
+                </div>
+                
+                <p style="line-height: 1.7; color: #555; margin-bottom: 20px;">جلسة لمتابعة تقدمك وتعديل البرنامج الغذائي حسب النتائج والتحديات التي واجهتك.</p>
+                
+                <div style="margin: 25px 0; padding: 15px; background-color: #e8f5e9; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <div style="font-weight: 600; color: #2E7D32;">المدة</div>
+                        <div>30 دقيقة</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="font-weight: 600; color: #2E7D32;">الأسلوب</div>
+                        <div>مباشر / عن بعد (فيديو)</div>
+                    </div>
+                </div>
+                
+                <div style="font-weight: bold; font-size: 1.6rem; color: #2E7D32; margin: 20px 0; text-align: center;">120 ريال</div>
+                
+                <button style="background-color: #43A047; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px;" 
+                    onclick="bookAppointment('متابعة')"
+                    onmouseover="this.style.backgroundColor='#388e3c'" 
+                    onmouseout="this.style.backgroundColor='#43A047'">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>احجز موعد</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="appointmentForm" style="display: none; background-color: #fff; padding: 30px; border-radius: 12px; margin-top: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; transition: all 0.3s ease; opacity: 0; transform: translateY(20px);">
+            <div style="display: flex; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 15px;">
+                <i class="fas fa-calendar-check" style="font-size: 24px; color: #4CAF50; margin-left: 15px;"></i>
+                <h3 style="margin: 0; color: #2E7D32; font-size: 1.4rem;">نموذج حجز الاستشارة</h3>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">الاسم الكامل</label>
+                <input type="text" id="fullName" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;" required 
+                    onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">رقم الجوال</label>
+                <input type="tel" id="phoneNumber" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;" required
+                    onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">البريد الإلكتروني</label>
+                <input type="email" id="email" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;" required
+                    onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';">
+            </div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">التاريخ المفضل</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-calendar-alt" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #4CAF50;"></i>
+                        <input type="date" id="appointmentDate" style="width: 100%; padding: 12px; padding-left: 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: all 0.3s;" required
+                            onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';">
+                    </div>
+                </div>
+                
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">الوقت المفضل</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-clock" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #4CAF50;"></i>
+                        <select id="appointmentTime" style="width: 100%; padding: 12px; padding-left: 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\"%234CAF50\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>'); background-repeat: no-repeat; background-position: left 10px center; transition: all 0.3s;" required
+                            onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';">
+                            <option value="">اختر الوقت</option>
+                            <option value="09:00">09:00 صباحاً</option>
+                            <option value="10:00">10:00 صباحاً</option>
+                            <option value="11:00">11:00 صباحاً</option>
+                            <option value="12:00">12:00 ظهراً</option>
+                            <option value="13:00">01:00 مساءً</option>
+                            <option value="14:00">02:00 مساءً</option>
+                            <option value="15:00">03:00 مساءً</option>
+                            <option value="16:00">04:00 مساءً</option>
+                            <option value="17:00">05:00 مساءً</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">ملاحظات إضافية</label>
+                <textarea id="notes" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; height: 120px; resize: vertical; font-family: inherit; font-size: 1rem; transition: all 0.3s;" 
+                    placeholder="أخبرنا عن احتياجاتك الخاصة أو أي معلومات إضافية تود مشاركتها..."
+                    onFocus="this.style.borderColor='#4CAF50';" onBlur="this.style.borderColor='#ddd';"></textarea>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                <button style="background-color: #388E3C; color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; flex: 3; font-weight: 500; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;" 
+                    onclick="submitAppointment()" 
+                    onmouseover="this.style.backgroundColor='#2E7D32'" 
+                    onmouseout="this.style.backgroundColor='#388E3C'">
+                    <i class="fas fa-check-circle"></i>
+                    <span>تأكيد الحجز</span>
+                </button>
+                <button style="background-color: #f5f5f5; color: #555; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; flex: 1; font-size: 1rem; transition: all 0.3s ease; border: 1px solid #ddd;" 
+                    onclick="cancelBooking()"
+                    onmouseover="this.style.backgroundColor='#e0e0e0'" 
+                    onmouseout="this.style.backgroundColor='#f5f5f5'">
+                    إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let consultationType = '';
+        
+        // دالة حجز موعد
+        function bookAppointment(type) {
+            consultationType = type;
+            const form = document.getElementById('appointmentForm');
+            
+            // تعيين نوع الاستشارة في العنوان
+            const formTitle = form.querySelector('h3');
+            formTitle.innerHTML = `نموذج حجز استشارة ${type}`;
+            
+            // إظهار النموذج بتأثير متدرج
+            form.style.opacity = '0';
+            form.style.display = 'block';
+            form.style.transform = 'translateY(20px)';
+            
+            // تأثير انتقالي
+            setTimeout(() => {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // انتقال سلس إلى النموذج
+            setTimeout(() => {
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+            
+            // تحديد التاريخ الافتراضي للحجز (بعد يومين من اليوم)
+            const defaultDate = new Date();
+            defaultDate.setDate(defaultDate.getDate() + 2);
+            const formattedDate = defaultDate.toISOString().split('T')[0];
+            document.getElementById('appointmentDate').value = formattedDate;
+        }
+        
+        // دالة إلغاء الحجز
+        function cancelBooking() {
+            const form = document.getElementById('appointmentForm');
+            
+            // إخفاء النموذج بتأثير متدرج
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                form.style.display = 'none';
+            }, 300);
+        }
+        
+        // دالة تأكيد الحجز
+        function submitAppointment() {
+            const fullName = document.getElementById('fullName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const email = document.getElementById('email').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const notes = document.getElementById('notes').value;
+            
+            // التحقق من إدخال البيانات المطلوبة
+            if (!fullName || !phoneNumber || !email || !appointmentDate || !appointmentTime) {
+                showFormStatus('يرجى ملء جميع الحقول المطلوبة', true);
+                return;
+            }
+            
+            // تنسيق البيانات
+            const appointmentData = {
+                fullName,
+                phoneNumber,
+                email,
+                date: appointmentDate,
+                time: appointmentTime,
+                type: consultationType,
+                notes,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            // حفظ البيانات في Firebase إذا كان متاحاً
+            if (window.firebase && firebase.firestore) {
+                const db = firebase.firestore();
+                const userID = localStorage.getItem('app_user_id');
+                
+                db.collection('appointments').add({
+                    ...appointmentData,
+                    userId: userID || 'anonymous'
+                })
+                .then(() => {
+                    showFormStatus('تم حجز موعدك بنجاح! سنتواصل معك قريباً لتأكيد الموعد.', false);
+                    document.getElementById('appointmentForm').style.display = 'none';
+                    // إعادة تعيين النموذج
+                    document.getElementById('fullName').value = '';
+                    document.getElementById('phoneNumber').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('appointmentDate').value = '';
+                    document.getElementById('appointmentTime').value = '';
+                    document.getElementById('notes').value = '';
+                })
+                .catch(error => {
+                    console.error('خطأ في حفظ الموعد:', error);
+                    showFormStatus('حدث خطأ أثناء حجز الموعد. يرجى المحاولة مرة أخرى لاحقاً.', true);
+                });
+            } else {
+                // التخزين المحلي كحل بديل
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                appointments.push(appointmentData);
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                showFormStatus('تم حجز موعدك بنجاح! سنتواصل معك قريباً لتأكيد الموعد.', false);
+                document.getElementById('appointmentForm').style.display = 'none';
+                
+                // إعادة تعيين النموذج
+                document.getElementById('fullName').value = '';
+                document.getElementById('phoneNumber').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('appointmentDate').value = '';
+                document.getElementById('appointmentTime').value = '';
+                document.getElementById('notes').value = '';
+            }
+        }
+
+        // عرض رسالة حالة أسفل النموذج بدلاً من alert
+        function showFormStatus(message, isError) {
+            const form = document.getElementById('appointmentForm');
+            if (!form) return;
+            let statusEl = document.getElementById('appointmentStatus');
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.id = 'appointmentStatus';
+                statusEl.style.marginTop = '16px';
+                statusEl.style.padding = '12px 16px';
+                statusEl.style.borderRadius = '8px';
+                statusEl.style.fontWeight = '500';
+                form.appendChild(statusEl);
+            }
+            statusEl.textContent = message;
+            statusEl.style.background = isError ? '#ffebee' : '#e8f5e9';
+            statusEl.style.color = isError ? '#c62828' : '#2e7d32';
+            statusEl.style.border = isError ? '1px solid #ffcdd2' : '1px solid #c8e6c9';
+        }
+
+        // نافذة شهاداتي
+        function openCertificates() {
+            let modal = document.getElementById('certModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'certModal';
+                modal.style.position = 'fixed';
+                modal.style.inset = '0';
+                modal.style.background = 'rgba(0,0,0,0.5)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '9999';
+                modal.innerHTML = `
+                    <div style="background:#fff; border-radius:16px; padding:20px; max-width:800px; width:90%; max-height:90%; overflow:auto;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="margin:0; color:#2E7D32;">الشهادات والتراخيص</h3>
+                            <button onclick=\"closeCertificates()\" style="background:#f5f5f5; border:1px solid #ddd; padding:6px 12px; border-radius:8px; cursor:pointer;">إغلاق</button>
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+                            <div style="text-align:center;">
+                                <div style="position: relative; width: 320px; height: 220px; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 10px;">
+                                    <img src="../../photo/diploma.jpg" alt="شهادة الدبلوم" style="width: 100%; height: 100%; object-fit: cover;" onclick="window.open('../../photo/diploma.jpg','_blank')" />
+                                </div>
+                                <div style="font-weight: 500; color: #388e3c;">شهادة الدبلوم</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="position: relative; width: 320px; height: 220px; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 10px;">
+                                    <img src="../../photo/license.jpg" alt="كارنية مزاولة المهنة" style="width: 100%; height: 100%; object-fit: cover;" onclick="window.open('../../photo/license.jpg','_blank')" />
+                                </div>
+                                <div style="font-weight: 500; color: #388e3c;">كارنية مزاولة المهنة</div>
+                            </div>
+                        </div>
+                    </div>`;
+                document.body.appendChild(modal);
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeCertificates() {
+            const modal = document.getElementById('certModal');
+            if (modal) modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

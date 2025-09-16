@@ -1,0 +1,336 @@
+/**
+ * ملف أنماط الوحدات المخصصة
+ * Module-specific Styles
+ * 
+ * يحتوي هذا الملف على أنماط CSS مخصصة للوحدات المختلفة في التطبيق
+ * This file contains module-specific CSS styles in the application
+ */
+
+/* استيراد المتغيرات والمكونات المشتركة */
+@import 'variables.css';
+@import 'fonts.css';
+
+/* ===== أنماط وحدة الصحة النفسية (Mental Health Module) ===== */
+.mental-health-header {
+    background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    text-align: center;
+}
+
+.mental-health-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #8e24aa;
+}
+
+.mental-health-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.mental-health-card.active {
+    box-shadow: var(--shadow-lg);
+}
+
+.mental-health-btn {
+    background-color: #8e24aa;
+    color: var(--text-white);
+}
+
+.mental-health-btn:hover {
+    background-color: #7b1fa2;
+}
+
+/* ===== أنماط وحدة النوم (Sleep Module) ===== */
+.sleep-header {
+    background: linear-gradient(135deg, #283593 0%, #1a237e 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.sleep-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #283593;
+}
+
+.sleep-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.sleep-btn {
+    background-color: #283593;
+    color: var(--text-white);
+}
+
+.sleep-btn:hover {
+    background-color: #1a237e;
+}
+
+/* ===== أنماط وحدة التغذية (Nutrition Module) ===== */
+.nutrition-header {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.nutrition-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #2e7d32;
+}
+
+.nutrition-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.nutrition-btn {
+    background-color: #2e7d32;
+    color: var(--text-white);
+}
+
+.nutrition-btn:hover {
+    background-color: #1b5e20;
+}
+
+/* ===== أنماط وحدة الأعشاب (Herbs Module) ===== */
+.herbs-header {
+    background: linear-gradient(135deg, #558b2f 0%, #33691e 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.herbs-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #558b2f;
+}
+
+.herbs-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.herbs-btn {
+    background-color: #558b2f;
+    color: var(--text-white);
+}
+
+.herbs-btn:hover {
+    background-color: #33691e;
+}
+
+/* ===== أنماط وحدة الدراسات العلمية (Studies Module) ===== */
+.studies-header {
+    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.studies-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #1976d2;
+}
+
+.studies-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.studies-btn {
+    background-color: #1976d2;
+    color: var(--text-white);
+}
+
+.studies-btn:hover {
+    background-color: #0d47a1;
+}
+
+/* ===== أنماط وحدة الملف الطبي (Medical File Module) ===== */
+.medical-header {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.medical-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #d32f2f;
+}
+
+.medical-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.medical-btn {
+    background-color: #d32f2f;
+    color: var(--text-white);
+}
+
+.medical-btn:hover {
+    background-color: #b71c1c;
+}
+
+/* ===== أنماط وحدة السعرات الحرارية (Calories Module) ===== */
+.calories-header {
+    background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.calories-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #f57c00;
+}
+
+.calories-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.calories-btn {
+    background-color: #f57c00;
+    color: var(--text-white);
+}
+
+.calories-btn:hover {
+    background-color: #e65100;
+}
+
+/* ===== أنماط وحدة الوصفات الصحية (Recipes Module) ===== */
+.recipes-header {
+    background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.recipes-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #43a047;
+}
+
+.recipes-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.recipes-btn {
+    background-color: #43a047;
+    color: var(--text-white);
+}
+
+.recipes-btn:hover {
+    background-color: #2e7d32;
+}
+
+/* ===== أنماط وحدة عني (About Module) ===== */
+.about-header {
+    background: linear-gradient(135deg, #5e35b1 0%, #4527a0 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.about-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #5e35b1;
+}
+
+.about-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.about-btn {
+    background-color: #5e35b1;
+    color: var(--text-white);
+}
+
+.about-btn:hover {
+    background-color: #4527a0;
+}
+
+/* ===== أنماط وحدة الحالة الصحية (Health State Module) ===== */
+.health-state-header {
+    background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+    color: var(--text-white);
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.health-state-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    border-top: var(--border-width-md) solid #0288d1;
+}
+
+.health-state-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.health-state-btn {
+    background-color: #0288d1;
+    color: var(--text-white);
+}
+
+.health-state-btn:hover {
+    background-color: #01579b;
+}

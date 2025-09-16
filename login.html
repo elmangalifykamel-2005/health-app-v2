@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول | Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .login-container h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .login-container label {
+            display: block;
+            text-align: right;
+            margin-bottom: 8px;
+            margin-top: 20px;
+            color: #2e7d32;
+            font-weight: 500;
+            font-size: 1em;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1em;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .login-container input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        .login-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .login-buttons button {
+            flex: 1;
+            padding: 16px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        .login-buttons button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .login-buttons button:active {
+            transform: translateY(0);
+        }
+        .login-buttons button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #google-btn {
+            width: 100%;
+            margin-top: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        #google-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        #google-btn:active {
+            transform: translateY(0);
+        }
+        #google-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #back-btn {
+            width: 100%;
+            margin-top: 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+        }
+        #back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+        #back-btn:active {
+            transform: translateY(0);
+        }
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 0.9em;
+            display: none;
+        }
+        .success-message {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 0.9em;
+            display: none;
+        }
+        #forgot-password-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+        }
+        #forgot-password-btn:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+        #forgot-password-btn:active {
+            transform: translateY(0);
+        }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            .login-container h1 {
+                font-size: 1.8em;
+            }
+            .login-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .login-buttons button,
+            #google-btn,
+            #back-btn,
+            #forgot-password-btn {
+                padding: 14px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+    <!-- مكتبة Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" onerror="firebaseLoadError()"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" onerror="firebaseLoadError()"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" onerror="firebaseLoadError()"></script>
+    
+    <script>
+        // معالجة أخطاء تحميل Firebase
+        function firebaseLoadError() {
+            console.error('❌ فشل تحميل مكتبات Firebase! تحقق من اتصال الإنترنت.');
+            window.firebaseLoadFailed = true;
+        }
+    </script>
+    
+    <!-- ملفات الإعدادات والتوابع -->
+    <script src="config/app-config.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="config/shared-functions.js"></script>
+    <script src="unified-navigation.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <h1 id="login-title">تسجيل الدخول</h1>
+        
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        
+        <form id="login-form">
+            <label id="email-label" for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label id="password-label" for="password">كلمة المرور</label>
+            <input type="password" id="password" name="password" required>
+            
+            <input type="password" id="password-confirm" name="password-confirm" placeholder="تأكيد كلمة المرور" style="display:none; margin-bottom:16px;">
+            
+            <div class="login-buttons">
+                <button type="submit" id="login-btn">دخول</button>
+                <button type="button" id="register-btn">تسجيل جديد</button>
+            </div>
+        </form>
+        
+        <button id="forgot-password-btn" type="button">نسيت كلمة المرور؟</button>
+        <button id="google-btn">الدخول عبر جوجل</button>
+        <button onclick="goBackToLanguage()" id="back-btn">الرجوع لاختيار اللغة</button>
+    </div>
+    
+    <script>
+        
+        let currentLang = 'ar';
+        let registerMode = false;
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+        
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+        
+        function setButtonsDisabled(disabled) {
+            document.getElementById('login-btn').disabled = disabled;
+            document.getElementById('register-btn').disabled = disabled;
+            document.getElementById('google-btn').disabled = disabled;
+            document.getElementById('forgot-password-btn').disabled = disabled;
+        }
+        
+        function validateForm() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            if (!email) {
+                showError(currentLang === 'ar' ? 'يرجى إدخال البريد الإلكتروني' : 'Please enter email');
+                return false;
+            }
+            if (!password) {
+                showError(currentLang === 'ar' ? 'يرجى إدخال كلمة المرور' : 'Please enter password');
+                return false;
+            }
+            if (password.length < 6) {
+                showError(currentLang === 'ar' ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters');
+                return false;
+            }
+            if (registerMode) {
+                const passwordConfirm = document.getElementById('password-confirm').value;
+                if (!passwordConfirm) {
+                    showError(currentLang === 'ar' ? 'يرجى تأكيد كلمة المرور' : 'Please confirm password');
+                    return false;
+                }
+                if (password !== passwordConfirm) {
+                    showError(currentLang === 'ar' ? 'كلمة المرور غير متطابقة' : 'Passwords do not match');
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function goBackToLanguage() {
+            window.location.href = "index.html";
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // التحقق من وجود Firebase
+            if (!window.firebase) {
+                showError(currentLang === 'ar' 
+                    ? 'مكتبة Firebase غير متوفرة. يرجى التحقق من اتصال الإنترنت وتحديث الصفحة.' 
+                    : 'Firebase library is not available. Please check your internet connection and refresh the page.');
+                setButtonsDisabled(true);
+                return;
+            }
+            
+            // فحص معامل اللغة في الرابط أولاً
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            
+            currentLang = urlLang || localStorage.getItem('hl_language') || 'ar';
+            
+            // حفظ اللغة إذا جاءت من الرابط
+            if (urlLang) {
+                localStorage.setItem('hl_language', urlLang);
+            }
+            
+            // إظهار حالة Firebase مباشرة بعد تحميل الصفحة
+            setTimeout(() => {
+                if (!window.firebaseService || !firebaseService.isInitialized) {
+                    console.warn('⚠️ تم تحميل Firebase لكن الخدمة لم يتم تهيئتها بشكل صحيح');
+                    showError(currentLang === 'ar' 
+                        ? 'خدمة Firebase لم يتم تهيئتها بشكل صحيح. سنحاول استخدام Firebase مباشرة.' 
+                        : 'Firebase service was not properly initialized. We will try to use Firebase directly.');
+                    
+                    // محاولة تهيئة Firebase مباشرة
+                    try {
+                        if (firebase.apps.length === 0) {
+                            firebase.initializeApp(firebaseConfig);
+                            console.log('✅ تمت تهيئة Firebase مباشرة');
+                        }
+                    } catch (initError) {
+                        console.error('❌ فشل تهيئة Firebase مباشرة:', initError);
+                    }
+                }
+            }, 1000);
+            
+            // تطبيق اللغة
+            if (currentLang === 'en') {
+                document.documentElement.lang = 'en';
+                document.getElementById('login-title').textContent = "Login";
+                document.getElementById('email-label').textContent = "Email";
+                document.getElementById('password-label').textContent = "Password";
+                document.getElementById('login-btn').textContent = "Login";
+                document.getElementById('register-btn').textContent = "Register";
+                document.getElementById('google-btn').textContent = "Sign in with Google";
+                document.getElementById('back-btn').textContent = "Back to Language Selection";
+                document.getElementById('forgot-password-btn').textContent = "Forgot Password?";
+                document.getElementById('password-confirm').placeholder = "Confirm Password";
+            }
+            
+            // إخفاء الرسائل عند الكتابة
+            document.getElementById('email').addEventListener('input', hideMessages);
+            document.getElementById('password').addEventListener('input', hideMessages);
+            document.getElementById('password-confirm').addEventListener('input', hideMessages);
+            
+            // زر تسجيل جديد: فقط يظهر حقل التأكيد ويغير نص زر الدخول
+            document.getElementById('register-btn').addEventListener('click', function() {
+                registerMode = true;
+                document.getElementById('password-confirm').style.display = 'block';
+                document.getElementById('login-btn').textContent = (currentLang === 'ar') ? 'إنشاء حساب' : 'Register';
+            });
+            
+            // زر الدخول/إنشاء حساب
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                hideMessages();
+                setButtonsDisabled(true);
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!validateForm()) {
+                    setButtonsDisabled(false);
+                    return;
+                }
+
+                if (registerMode) {
+                    console.log('🔐 محاولة تسجيل مستخدم جديد...');
+                    // تسجيل مستخدم جديد باستخدام خدمة Firebase المركزية
+                    firebaseService.auth.createUserWithEmailAndPassword(email, password)
+                        .then(userCredential => {
+                            console.log('✅ تم إنشاء الحساب بنجاح', userCredential);
+                            // إنشاء ملف تعريف أساسي
+                            const userId = userCredential.user.uid;
+                            const profile = {
+                                email: email,
+                                createdAt: new Date().toISOString()
+                            };
+                            
+                            // حفظ الملف التعريفي
+                            return firebaseService.data.save(APP_CONFIG.firebase.collections.profile, 'userData', profile);
+                        })
+                        .then(() => {
+                            showSuccess(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح' : 'Account created successfully');
+                            setTimeout(() => {
+                                window.location.href = "main.html";
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error('❌ خطأ في إنشاء الحساب:', error);
+                            setButtonsDisabled(false);
+                            let errorMessage = firebaseService.helpers.getLocalizedErrorMessage(error, currentLang);
+                            showError(errorMessage);
+                        });
+                } else {
+                    // تسجيل الدخول باستخدام خدمة Firebase المركزية
+                    document.getElementById('password-confirm').style.display = 'none';
+                    document.getElementById('login-btn').textContent = (currentLang === 'ar') ? 'دخول' : 'Login';
+                    
+                    console.log('🔑 محاولة تسجيل الدخول...');
+                    firebase.auth().signInWithEmailAndPassword(email, password)
+                        .then(userCredential => {
+                            console.log('✅ تم تسجيل الدخول بنجاح', userCredential);
+                            showSuccess(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Login successful');
+                            setTimeout(() => {
+                                window.location.href = "main.html";
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error('❌ خطأ في تسجيل الدخول:', error);
+                            setButtonsDisabled(false);
+                            let errorMessage = firebaseService.helpers.getLocalizedErrorMessage(error, currentLang);
+                            showError(errorMessage);
+                        });
+                }
+            });
+            
+            // تسجيل الدخول بحساب جوجل
+            document.getElementById('google-btn').addEventListener('click', function() {
+                setButtonsDisabled(true);
+                hideMessages();
+                
+                console.log('🔄 جاري محاولة تسجيل الدخول بحساب Google...');
+                
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider)
+                    .then(result => {
+                        console.log('✅ تم تسجيل الدخول بحساب Google بنجاح', result);
+                        
+                        // إنشاء ملف تعريف أساسي إذا لم يكن موجوداً
+                        const user = result.user;
+                        const profile = {
+                            email: user.email,
+                            fullName: user.displayName,
+                            photoURL: user.photoURL,
+                            createdAt: new Date().toISOString(),
+                            provider: 'google'
+                        };
+                        
+                        // حفظ الملف التعريفي
+                        firebaseService.data.save(APP_CONFIG.firebase.collections.profile, 'userData', profile);
+                        
+                        showSuccess(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Login successful');
+                        setTimeout(() => {
+                            window.location.href = "main.html";
+                        }, 1000);
+                    })
+                    .catch(error => {
+                        console.error('❌ خطأ في تسجيل الدخول بحساب Google:', error);
+                        setButtonsDisabled(false);
+                        let errorMessage = firebaseService.helpers.getLocalizedErrorMessage(error, currentLang);
+                        showError(errorMessage);
+                    });
+            });
+
+            // استرجاع كلمة المرور
+            document.getElementById('forgot-password-btn').addEventListener('click', function() {
+                const email = document.getElementById('email').value.trim();
+                if (!email) {
+                    showError(currentLang === 'ar' ? 'يرجى إدخال البريد الإلكتروني أولاً' : 'Please enter your email first');
+                    return;
+                }
+                setButtonsDisabled(true);
+                
+                console.log('🔄 جاري إرسال رابط استعادة كلمة المرور...');
+                firebase.auth().sendPasswordResetEmail(email)
+                    .then(() => {
+                        console.log('✅ تم إرسال رابط استعادة كلمة المرور بنجاح');
+                        showSuccess(currentLang === 'ar' ? 'تم إرسال رابط استرجاع كلمة المرور إلى بريدك الإلكتروني.' : 'Password reset link sent to your email.');
+                        setButtonsDisabled(false);
+                    })
+                    .catch(error => {
+                        console.error('❌ خطأ في إرسال رابط استعادة كلمة المرور:', error);
+                        setButtonsDisabled(false);
+                        let errorMessage = firebaseService.helpers.getLocalizedErrorMessage(error, currentLang);
+                        showError(errorMessage);
+                    });
+            });
+        });
+        
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

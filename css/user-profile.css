@@ -1,0 +1,173 @@
+/* تنسيق صفحة الملف الشخصي للمستخدم - صحتك بالدنيا */
+
+/* تنسيق البطاقة الرئيسية للملف الشخصي */
+.profile-card {
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* تنسيق حاوية الصورة الشخصية */
+.profile-image-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+/* تنسيق الصورة الشخصية */
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 5px solid #f8f9fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* زر تعديل الصورة */
+.edit-image-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* تنسيق لإحصائيات الملف الشخصي */
+.profile-stats {
+    padding: 10px 0;
+}
+
+.profile-stats h5 {
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #28a745;
+}
+
+/* تنسيق البطاقات العامة */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* تنسيق قائمة الأهداف */
+#health-goals-list .list-group-item {
+    border-right: none;
+    border-left: none;
+    padding: 15px;
+    border-radius: 0;
+}
+
+#health-goals-list .list-group-item:first-child {
+    border-top: none;
+}
+
+#health-goals-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* تنسيق شارات الإنجازات */
+.achievement-badge {
+    border-radius: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    height: 100%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.achievement-badge:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.badge-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #28a745;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.achievement-badge.locked .badge-icon {
+    background-color: #6c757d;
+    opacity: 0.7;
+}
+
+.achievement-badge.locked {
+    opacity: 0.7;
+}
+
+/* تنسيق العنوان الرئيسي */
+.main-title {
+    color: #28a745;
+    border-bottom: 2px solid #28a745;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* تنسيقات النموذج */
+#profile-form .form-control:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* تأثير التحول عند التفاعل */
+.btn-outline-primary:hover,
+.btn-outline-danger:hover,
+.btn-outline-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* تنسيق زر التعديل */
+#edit-profile-btn {
+    transition: all 0.3s ease;
+}
+
+/* تحسين تجربة المستخدم على الشاشات الصغيرة */
+@media (max-width: 767.98px) {
+    .profile-image-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .badge-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .achievement-badge h6 {
+        font-size: 0.9rem;
+    }
+}
+
+/* تنسيق المحتوى الرئيسي ليتناسب مع القائمة الجانبية */
+.content-container {
+    padding-right: 280px;
+    transition: padding-right 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+    .content-container {
+        padding-right: 0;
+    }
+}

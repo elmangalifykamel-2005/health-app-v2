@@ -1,0 +1,68 @@
+{
+  "cbc": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "hemoglobin": 12.8,
+    "wbc": 6.5,
+    "platelets": 210,
+    "hematocrit": 40.2
+  },
+  "lipid": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "Cholesterol": 185,
+    "HDL": 48,
+    "LDL": 95,
+    "Triglycerides": 130
+  },
+  "sugar": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "Fasting": 92,
+    "Postprandial": 125,
+    "HbA1c": 5.3
+  },
+  "kidney": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "Creatinine": 1.0,
+    "Urea": 28
+  },
+  "liver": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "ALT": 24,
+    "AST": 19,
+    "ALP": 105,
+    "GGT": 28
+  },
+  "urine": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "Urinalysis": "طبيعي",
+    "Microalbumin": 18,
+    "Protein24h": 90
+  },
+  "hormones": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "TSH": 2.2,
+    "T3": 110,
+    "T4": 8.7,
+    "Cortisol": 13,
+    "Insulin": 9,
+    "Testosterone": 520,
+    "Estradiol": 62,
+    "Prolactin": 13
+  },
+  "vitamins": {
+    "test_date": "2025-09-10",
+    "laboratory": "مختبر الصحة",
+    "VitD": 36,
+    "VitB12": 340,
+    "Folate": 7.8,
+    "VitA": 0.52,
+    "VitE": 11,
+    "VitC": 1.3
+  }
+}

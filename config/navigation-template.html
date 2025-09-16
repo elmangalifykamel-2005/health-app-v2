@@ -1,0 +1,50 @@
+<!-- 
+    Navigation Template for صحتك بالدنيا (Healthy Life) Application
+    This template provides standardized navigation elements with proper service calls
+-->
+
+<!-- Back to Main Navigation Button -->
+<a href="javascript:navigationService.navigateTo(getPagePath('main'))" class="back-btn">
+    <i class="fas fa-arrow-right"></i> العودة للرئيسية
+</a>
+
+<!-- Standard Module Navigation -->
+<nav class="module-navigation">
+    <ul>
+        <li><a href="javascript:navigationService.navigateTo(getPagePath('main'))"><i class="fas fa-home"></i> الرئيسية</a></li>
+        <!-- Add module-specific navigation links here -->
+    </ul>
+</nav>
+
+<!-- Sidebar Toggle Button -->
+<button class="sidebar-toggle-btn" onclick="document.getElementById('sidebar-content').classList.add('open');document.getElementById('sidebarBackdrop').classList.add('open');">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Module Navigation Service Pattern -->
+<script>
+/**
+ * نموذج للتنقل بين صفحات الوحدة
+ * Module Navigation Pattern
+ */
+const moduleNavigation = {
+    // Navigate to another page in the same module
+    goToPage: function(pageName) {
+        // Using current module path + page name
+        const currentModule = getCurrentModuleName();
+        navigationService.navigateToModule(currentModule, pageName);
+    },
+    
+    // Navigate to another module
+    goToModule: function(moduleName, pageName = '') {
+        navigationService.navigateToModule(moduleName, pageName);
+    },
+    
+    // Get current module name
+    getCurrentModuleName: function() {
+        const path = window.location.pathname;
+        const moduleMatch = path.match(/modules\/([^\/]+)/);
+        return moduleMatch ? moduleMatch[1] : '';
+    }
+};
+</script>

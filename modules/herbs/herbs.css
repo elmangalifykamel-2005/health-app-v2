@@ -1,0 +1,176 @@
+/* 
+ * ملف الأنماط الخاص بصفحة الأعشاب الطبية
+ */
+
+/* أنماط عامة للصفحة */
+body {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  font-family: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* ترويسة الصفحة */
+.page-header {
+  background: linear-gradient(135deg, #2c5530, #4a7c59);
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-header h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.page-header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.page-header nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.page-header nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* قسم التحذير */
+.warning-section {
+  background-color: #fffde7;
+  border: 2px solid #ffc107;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 0 auto 2rem auto;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+}
+
+.warning-section h2 {
+  color: #f57c00;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.warning-section p {
+  color: #795548;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+/* قائمة الأعشاب */
+.herbs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.herb-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.herb-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.herb-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.herb-content {
+  padding: 1.5rem;
+}
+
+.herb-title {
+  color: #2e7d32;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #c8e6c9;
+  padding-bottom: 0.5rem;
+}
+
+.herb-scientific {
+  color: #757575;
+  font-style: italic;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.herb-benefits {
+  margin: 0 0 1rem 0;
+  padding-right: 1.2rem;
+}
+
+.herb-benefits li {
+  margin-bottom: 0.5rem;
+  color: #424242;
+}
+
+.herb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.herb-tag {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+/* تصميم تذييل الصفحة */
+footer {
+  background: #1b5e20;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+footer p {
+  margin: 0.5rem 0;
+}
+
+/* تعديلات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .herbs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .page-header nav ul {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

@@ -1,0 +1,2249 @@
+/* أنماط CSS خاصة بصفحات النوم */
+
+/* Main Sleep Page Styles */
+.sleep-problems-main {
+    margin: 20px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.sleep-problems-main h2 {
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.problems-overview {
+    background: var(--primary-light);
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border-right: 4px solid var(--primary-color);
+}
+
+.problems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.problem-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.problem-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.problem-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+.problem-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.problem-card p {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.learn-more-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.learn-more-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* Causes Section */
+.causes-section {
+    margin: 20px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.causes-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.causes-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.cause-category {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.cause-category h3 {
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.cause-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cause-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.cause-item:hover {
+    border-color: var(--primary-color);
+    transform: translateX(-4px);
+}
+
+.highlight-deficiency {
+    border-color: #ff6b6b;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+}
+
+.highlight-deficiency:hover {
+    border-color: #ff5252;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+}
+
+.cause-item i {
+    color: var(--primary-color);
+    font-size: 20px;
+    margin-top: 4px;
+    min-width: 24px;
+}
+
+.highlight-deficiency i {
+    color: #ff6b6b;
+}
+
+.cause-item h4 {
+    color: var(--text-color);
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.cause-item p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+/* Solutions Section */
+.solutions-section {
+    margin: 20px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.solutions-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.solution-card {
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.solution-card:hover {
+    border-color: var(--success-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.solution-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--success-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: var(--success-color);
+    font-size: 20px;
+}
+
+.solution-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.solution-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.solution-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-right: 20px;
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.solution-card li:before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.solution-card li:last-child {
+    border-bottom: none;
+}
+
+/* Helper Pages Navigation */
+.helper-pages-nav {
+    margin: 20px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.helper-pages-nav h2 {
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.nav-card {
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.nav-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.nav-card i {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.nav-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.nav-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: var(--text-secondary);
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: var(--primary-color);
+}
+
+.modal-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+.modal-content h3 {
+    color: var(--primary-color);
+    margin: 20px 0 12px;
+}
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-content li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-right: 20px;
+}
+
+.modal-content li:before {
+    content: '•';
+    position: absolute;
+    right: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .problems-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .solutions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .causes-categories {
+        gap: 16px;
+    }
+    
+    .cause-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sleep-problems-main,
+    .causes-section,
+    .solutions-section,
+    .helper-pages-nav {
+        margin: 10px;
+        padding: 16px;
+    }
+}
+
+/* الإجراءات السريعة */
+.sleep-actions {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.action-card {
+  background: #ffffff;
+  border: 1px solid #e8f5e8;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
+  border-color: #4CAF50;
+}
+
+.action-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #4CAF50, #81C784);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
+.action-icon i {
+  font-size: 24px;
+  color: white;
+}
+
+.action-content {
+  flex: 1;
+}
+
+.action-content h3 {
+  margin: 0 0 8px 0;
+  color: #2e7d32;
+  font-size: 1.2em;
+}
+
+.action-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.action-arrow {
+  color: #4CAF50;
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+/* النصائح السريعة */
+.quick-tips {
+  background: #f1f8e9;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.quick-tips h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.tip-item {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+}
+
+.tip-item i {
+  color: #4CAF50;
+  font-size: 20px;
+  margin-left: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.tip-item span {
+  color: #333;
+  font-size: 0.95em;
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .action-card {
+    padding: 16px;
+  }
+  
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    margin-left: 15px;
+  }
+  
+  .action-icon i {
+    font-size: 20px;
+  }
+  
+  .action-content h3 {
+    font-size: 1.1em;
+  }
+  
+  .action-content p {
+    font-size: 0.9em;
+  }
+  
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* أنماط خاصة بصفحة التقييم */
+.assessment-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.assessment-progress {
+  background: #e8f5e8;
+  height: 8px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.assessment-progress-fill {
+  background: linear-gradient(90deg, #4CAF50, #81C784);
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.question-section {
+  background: white;
+  border: 1px solid #e8f5e8;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.question-section h3 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.question-item {
+  margin-bottom: 20px;
+}
+
+.question-item label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.question-item input,
+.question-item select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+.question-item input:focus,
+.question-item select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+}
+
+.radio-item input[type="radio"] {
+  width: auto;
+  margin-left: 8px;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.nav-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.nav-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.nav-btn.secondary {
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.nav-btn.secondary:hover {
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+/* Sleep Pages Styles */
+
+/* Header */
+.sleep-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.sleep-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid #4CAF50;
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: #4CAF50;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Navigation Cards */
+.sleep-navigation {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.nav-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+    border-color: #4CAF50;
+}
+
+.nav-card i {
+    font-size: 2.5rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.nav-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.nav-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Quick Tips */
+.quick-tips {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #64B5F6;
+}
+
+.quick-tips h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-tips i {
+    color: #64B5F6;
+}
+
+.tip-content p {
+    margin: 0;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Language Switch */
+.language-switch {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.lang-btn:hover,
+.lang-btn.active {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sleep-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .sleep-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .sleep-navigation {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-card {
+        padding: 1.5rem;
+        text-align: center;
+    }
+}
+
+/* Assessment Specific Styles */
+.assessment-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.question-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.question-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.options-grid {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.option-item:hover {
+    background: #e9ecef;
+    border-color: #4CAF50;
+}
+
+.option-item input[type="radio"] {
+    margin: 0;
+}
+
+/* Results Styles */
+.results-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 1rem 0;
+}
+
+.score-label {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.recommendations {
+    text-align: right;
+    margin-top: 2rem;
+}
+
+.recommendations h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.recommendations ul {
+    list-style: none;
+    padding: 0;
+}
+
+.recommendations li {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-right: 4px solid #4CAF50;
+}
+
+/* Education Page Styles */
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateX(5px);
+}
+
+/* Education Tabs */
+.education-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: #666;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    background: #f8f9fa;
+    color: #4CAF50;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Studies Grid */
+.studies-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.study-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.study-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.study-header {
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.study-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.study-year {
+    background: rgba(255,255,255,0.2);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.study-content {
+    padding: 2rem;
+}
+
+.study-content > p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.study-findings {
+    margin: 1.5rem 0;
+}
+
+.study-findings h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.study-findings ul {
+    list-style: none;
+    padding: 0;
+}
+
+.study-findings li {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 8px;
+    border-right: 4px solid #4CAF50;
+    position: relative;
+}
+
+.study-findings li:before {
+    content: "✓";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.study-source {
+    background: #e8f5e8;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.study-source a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.study-source a:hover {
+    text-decoration: underline;
+}
+
+/* Tips Grid */
+.tips-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.tip-category {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.tip-category h3 {
+    background: linear-gradient(135deg, #64B5F6, #4CAF50);
+    color: white;
+    margin: 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.tips-list {
+    padding: 1.5rem;
+}
+
+.tip-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.tip-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.tip-item i {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    margin-top: 0.2rem;
+}
+
+.tip-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.tip-content p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Sleep Stages */
+.stages-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.stage-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.stage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.stage-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.stage-info h3 {
+    margin: 0 0 0.8rem 0;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.stage-info p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.stage-features {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stage-features span {
+    background: #e8f5e8;
+    color: #4CAF50;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Sleep Disorders */
+.disorders-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.disorder-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    border-top: 4px solid #ff6b6b;
+}
+
+.disorder-card h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.disorder-card h3 i {
+    color: #ff6b6b;
+}
+
+.disorder-info p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.symptoms h4 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.symptoms ul {
+    list-style: none;
+    padding: 0;
+}
+
+.symptoms li {
+    background: #fff5f5;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-right: 3px solid #ff6b6b;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .education-tabs {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        text-align: center;
+    }
+    
+    .stage-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .tip-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .study-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* Study Card Additional Info */
+.study-institution,
+.study-participants,
+.study-duration {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.study-institution i,
+.study-participants i,
+.study-duration i {
+    color: #4CAF50;
+    font-size: 1.1rem;
+}
+
+.study-institution {
+    border-right: 3px solid #64B5F6;
+}
+
+.study-participants {
+    border-right: 3px solid #4CAF50;
+}
+
+.study-duration {
+    border-right: 3px solid #ff9800;
+}
+
+/* Enhanced Study Cards */
+.study-card {
+    border: 1px solid #e9ecef;
+}
+
+.study-card:hover {
+    border-color: #4CAF50;
+}
+
+/* Study Info Grid */
+.study-content > div:not(.study-findings):not(.study-source) {
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments for study info */
+@media (max-width: 768px) {
+    .study-institution,
+    .study-participants,
+    .study-duration {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .study-institution i,
+    .study-participants i,
+    .study-duration i {
+        font-size: 1.3rem;
+    }
+}
+
+/* Research Summary Styles */
+.research-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.summary-header i {
+    font-size: 2rem;
+    color: #ffd700;
+}
+
+.summary-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.key-findings h3,
+.clinical-implications h3 {
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.findings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.finding-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.finding-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.finding-card i {
+    font-size: 2.5rem;
+    color: #ffd700;
+    margin-bottom: 15px;
+}
+
+.finding-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.finding-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.implications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.implication-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.implication-item i {
+    color: #4ade80;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.research-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffd700;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .research-summary {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .summary-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .findings-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .finding-card {
+        padding: 15px;
+    }
+    
+    .research-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .stat-item {
+        padding: 15px 10px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .research-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-item {
+        padding: 20px;
+    }
+}
+
+/* Children Sleep Styles */
+.age-groups-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+.age-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-size: 14px;
+}
+
+.age-btn:hover {
+    background: var(--primary-light);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.age-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.children-content {
+    padding: 0 20px;
+}
+
+.age-section {
+    display: none;
+}
+
+.age-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.sleep-info-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.sleep-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--primary-light);
+    border-radius: 12px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.stat-item i {
+    font-size: 18px;
+}
+
+.tips-section {
+    margin: 24px 0;
+}
+
+.tips-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    font-size: 18px;
+}
+
+.tips-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tips-section li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-right: 24px;
+}
+
+.tips-section li:before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.warning-box, .milestone-box, .challenge-box, .development-box, .academic-box {
+    margin: 20px 0;
+    padding: 16px;
+    border-radius: 12px;
+    border-right: 4px solid;
+}
+
+.warning-box {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+.milestone-box {
+    background: #d1ecf1;
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+.challenge-box {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.development-box {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.academic-box {
+    background: #e2e3e5;
+    border-color: #6c757d;
+    color: #383d41;
+}
+
+.sleep-problems-section {
+    margin: 40px 20px 20px;
+}
+
+.sleep-problems-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.problems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.problem-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border-right: 4px solid var(--accent-color);
+}
+
+.problem-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.problem-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.doctor-consultation {
+    margin: 40px 20px;
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 2px solid #dc3545;
+}
+
+.doctor-consultation h2 {
+    color: #dc3545;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.warning-signs ul {
+    list-style: none;
+    padding: 0;
+}
+
+.warning-signs li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-right: 24px;
+    color: var(--text-color);
+}
+
+.warning-signs li:before {
+    content: '⚠️';
+    position: absolute;
+    right: 0;
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .age-groups-nav {
+        flex-direction: column;
+    }
+    
+    .age-btn {
+        min-width: 100%;
+    }
+    
+    .sleep-stats {
+        flex-direction: column;
+    }
+    
+    .problems-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .children-content {
+        padding: 0 10px;
+    }
+    
+    .sleep-problems-section {
+        margin: 20px 10px;
+    }
+    
+    .doctor-consultation {
+        margin: 20px 10px;
+    }
+}
+
+/* Education Tabs */
+.education-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: #666;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    background: #f8f9fa;
+    color: #4CAF50;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Studies Grid */
+.studies-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.study-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.study-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.study-header {
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.study-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.study-year {
+    background: rgba(255,255,255,0.2);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.study-content {
+    padding: 2rem;
+}
+
+.study-content > p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.study-findings {
+    margin: 1.5rem 0;
+}
+
+.study-findings h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.study-findings ul {
+    list-style: none;
+    padding: 0;
+}
+
+.study-findings li {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 8px;
+    border-right: 4px solid #4CAF50;
+    position: relative;
+}
+
+.study-findings li:before {
+    content: "✓";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.study-source {
+    background: #e8f5e8;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.study-source a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.study-source a:hover {
+    text-decoration: underline;
+}
+
+/* Tips Grid */
+.tips-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.tip-category {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.tip-category h3 {
+    background: linear-gradient(135deg, #64B5F6, #4CAF50);
+    color: white;
+    margin: 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.tips-list {
+    padding: 1.5rem;
+}
+
+.tip-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.tip-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.tip-item i {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    margin-top: 0.2rem;
+}
+
+.tip-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.tip-content p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Sleep Stages */
+.stages-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.stage-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.stage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.stage-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4CAF50, #64B5F6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.stage-info h3 {
+    margin: 0 0 0.8rem 0;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.stage-info p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.stage-features {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stage-features span {
+    background: #e8f5e8;
+    color: #4CAF50;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Sleep Disorders */
+.disorders-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.disorder-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    border-top: 4px solid #ff6b6b;
+}
+
+.disorder-card h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.disorder-card h3 i {
+    color: #ff6b6b;
+}
+
+.disorder-info p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.symptoms h4 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.symptoms ul {
+    list-style: none;
+    padding: 0;
+}
+
+.symptoms li {
+    background: #fff5f5;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-right: 3px solid #ff6b6b;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .education-tabs {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        text-align: center;
+    }
+    
+    .stage-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .tip-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .study-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* Study Card Additional Info */
+.study-institution,
+.study-participants,
+.study-duration {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.study-institution i,
+.study-participants i,
+.study-duration i {
+    color: #4CAF50;
+    font-size: 1.1rem;
+}
+
+.study-institution {
+    border-right: 3px solid #64B5F6;
+}
+
+.study-participants {
+    border-right: 3px solid #4CAF50;
+}
+
+.study-duration {
+    border-right: 3px solid #ff9800;
+}
+
+/* Enhanced Study Cards */
+.study-card {
+    border: 1px solid #e9ecef;
+}
+
+.study-card:hover {
+    border-color: #4CAF50;
+}
+
+/* Study Info Grid */
+.study-content > div:not(.study-findings):not(.study-source) {
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments for study info */
+@media (max-width: 768px) {
+    .study-institution,
+    .study-participants,
+    .study-duration {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .study-institution i,
+    .study-participants i,
+    .study-duration i {
+        font-size: 1.3rem;
+    }
+}

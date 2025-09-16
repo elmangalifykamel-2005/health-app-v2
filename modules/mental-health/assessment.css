@@ -1,0 +1,133 @@
+/* 
+ * ملف الأنماط الخاص بصفحة تقييم الصحة النفسية (Assessment)
+ */
+
+/* أنماط إضافية للتقييم */
+.disclaimer {
+  background: #fffde7;
+  color: #f57c00;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 18px;
+  font-size: 1.05em;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(255,193,7,0.08);
+}
+
+.section-title {
+  font-size: 1.2em;
+  color: #1976d2;
+  font-weight: bold;
+  margin: 32px 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.test-section {
+  margin-bottom: 28px;
+}
+
+.test-card {
+  background: #e1f5fe;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+  padding: 18px 16px;
+  margin-bottom: 18px;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+
+.test-btn {
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1.1em;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+
+.test-btn:hover {
+  background: #2e7d32;
+}
+
+.result-card {
+  background: #fffde7;
+  border-radius: 10px;
+  color: #f57c00;
+  padding: 16px;
+  margin-top: 18px;
+  font-weight: bold;
+  display: none;
+}
+
+.ref-link {
+  color: #1565c0;
+  text-decoration: underline;
+  font-size: 0.95em;
+  margin-right: 8px;
+}
+
+.back-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1.1em;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 24px auto 0 auto;
+  display: block;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: #1565c0;
+}
+
+#detailed-results {
+  margin-bottom: 24px;
+}
+
+.analysis-section {
+  background: #f3e5f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(156,39,176,0.08);
+  padding: 18px 16px;
+  margin-top: 32px;
+  color: #6a1b9a;
+  font-size: 1.1em;
+}
+
+/* تخصيصات إضافية للتقييم */
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-question {
+  margin-bottom: 1.5rem;
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.options-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.option-item {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.option-item input {
+  margin-left: 10px;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أسرار الصحة النفسية: حقائق علمية ستغير نظرتك</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- الأنماط الموحدة -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="mental-health.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- استدعاء الملفات المشتركة -->
+  <script src="../../config/app-config.js"></script>
+  <script src="../../firebase-config.js"></script>
+  <script src="../../config/shared-functions.js"></script>
+  <script src="../../config/navigation-helpers.js"></script>
+  <script src="../../config/navigation-fixes.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="main-title">
+      <i class="fas fa-user-secret"></i>
+      أسرار الصحة النفسية: حقائق علمية ستغير نظرتك
+    </div>
+    <div class="subtitle">
+      اكتشف المفاهيم الحقيقية للصحة النفسية والمرض النفسي، وأجب عن سؤال: هل كلنا مرضى نفسيين؟ كل ذلك مدعوم بأحدث الأبحاث والدراسات العلمية.
+    </div>
+
+    <!-- الصف الرئيسي: تعريف الصحة النفسية، تعريف المرض النفسي، هل كلنا مرضى نفسيين -->
+    <div class="cards-grid">
+      <div class="card" onclick="toggleCard(this)">
+        <i class="fas fa-heart"></i>
+        تعريف الصحة النفسية
+        <div class="card-details">
+          الصحة النفسية هي حالة من العافية يستطيع فيها الفرد أن يدرك إمكاناته، ويتعامل مع ضغوط الحياة الطبيعية، ويعمل بشكل منتج، ويساهم في مجتمعه.<br>
+          <strong>تعريف منظمة الصحة العالمية:</strong>
+          "الصحة النفسية هي حالة من العافية يستطيع فيها كل فرد إدراك إمكاناته الخاصة، والتكيف مع الضغوط العادية للحياة، والعمل بشكل منتج ومثمر، والمساهمة في مجتمعه."
+          <br>
+          <a class="ref-link" href="https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response" target="_blank">
+            مصدر: WHO
+          </a>
+        </div>
+      </div>
+      <div class="card" onclick="toggleCard(this)">
+        <i class="fas fa-user-injured"></i>
+        تعريف المرض النفسي
+        <div class="card-details">
+          المرض النفسي هو اضطراب يؤثر على التفكير أو المزاج أو السلوك، ويؤدي إلى ضعف في الأداء اليومي أو الاجتماعي أو المهني.<br>
+          <strong>أمثلة:</strong> الاكتئاب، القلق، اضطرابات الوسواس القهري، الفصام، اضطرابات النوم.<br>
+          <a class="ref-link" href="https://www.psychiatry.org/patients-families/what-is-mental-illness" target="_blank">
+            الجمعية الأمريكية للطب النفسي
+          </a>
+        </div>
+      </div>
+      <div class="card" onclick="toggleCard(this)">
+        <i class="fas fa-question-circle"></i>
+        هل كلنا مرضى نفسيين؟
+        <div class="card-details">
+          ❓ يعتقد البعض أن كل شخص يعاني من ضغوط أو مشاعر سلبية هو "مريض نفسي". هل هذا صحيح؟<br>
+          <strong>الإجابة العلمية:</strong> لا، ليس كل من يمر بمشاعر سلبية أو ضغوط يعتبر مريضاً نفسياً.<br>
+          <ul style="margin:8px 0 0 0; padding-right:18px;">
+            <li>المشاعر السلبية جزء طبيعي من الحياة.</li>
+            <li>المرض النفسي يُشخّص عندما تؤثر الأعراض على الحياة اليومية بشكل واضح ومستمر.</li>
+            <li>الدراسات تشير أن 1 من كل 4 أشخاص يعاني من اضطراب نفسي في مرحلة ما من حياته <a class="ref-link" href="https://www.who.int/news-room/fact-sheets/detail/mental-disorders" target="_blank">[WHO]</a></li>
+          </ul>
+          <div style="margin-top:8px;">
+            <a class="ref-link" href="https://jamanetwork.com/journals/jamapsychiatry/fullarticle/2762311" target="_blank">
+              دراسة: انتشار الأمراض النفسية عالمياً (JAMA Psychiatry)
+            </a>
+            <br>
+            <a class="ref-link" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4471988/" target="_blank">
+              بحث: الصحة النفسية وجودة الحياة (NCBI)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- الصف الثاني: قيم صحتك النفسية، أساطير حول الصحة النفسية، ابدأ من هنا -->
+    <div class="cards-grid" style="margin-top:0;">
+      <div class="card" onclick="window.location.href='assessment.html'">
+        <i class="fas fa-clipboard-check"></i>
+        قيّم صحتك النفسية
+        <div class="card-details">
+          اختبر حالتك النفسية عبر سلسلة من الاختبارات العلمية المتدرجة.<br>
+          تبدأ بفحص عام، وإذا ظهرت مؤشرات لمشكلة نفسية، تنتقل لاختبارات متخصصة مثل PHQ-9 للاكتئاب وGAD-7 للقلق.<br>
+          <a class="ref-link" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC180947/" target="_blank">GHQ-12</a>
+          <a class="ref-link" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5573766/" target="_blank">PHQ-9</a>
+          <a class="ref-link" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1854886/" target="_blank">GAD-7</a>
+        </div>
+      </div>
+      <div class="card" onclick="window.location.href='myths.html'">
+        <i class="fas fa-flask"></i>
+        أساطير حول الصحة النفسية (العلم الزائف)
+        <div class="card-details">
+          تعرف على أشهر الخرافات والأساطير المنتشرة حول الصحة النفسية مثل الريكي والشكرات واليوجا والتأمل والتنفس، مع تفنيد علمي وروابط لمصادر موثقة.<br>
+          <a class="ref-link" href="https://youtu.be/gCC4tJD07nA?si=z4ufeKdQWEdfBMJt" target="_blank">فيديو الريكي والطاقة</a>
+          <a class="ref-link" href="https://youtu.be/ryzTcbw1RFg?si=-l05fv__VEX_iRhz" target="_blank">فيديو حقيقة اليوجا</a>
+          <a class="ref-link" href="https://ketaeb.com/2024/07/20/%D8%A7%D9%84%D9%8A%D9%88%D8%BA%D8%A7%D8%9B-%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9%D9%8C-%D8%A3%D9%85-%D8%B4%D8%B1%D9%83%D8%9F/" target="_blank">مقال: اليوجا رياضة أم شرك؟</a>
+          <a class="ref-link" href="https://youtube.com/@dr.haitham_talaat?si=XsGFFUw8D1Mm5_3N" target="_blank">قناة د. هيثم طلعت</a>
+        </div>
+      </div>
+      <div class="card" onclick="window.location.href='mental-health-solutions.html'">
+        <i class="fas fa-lightbulb"></i>
+        ابدأ من هنا
+        <div class="card-details">
+          دليل عملي للوقاية والتعافي من المشاكل النفسية، مع حلول مثبتة علمياً ونصائح عملية.<br>
+          <a class="ref-link" href="prevention.html">صفحة الوقاية والتعافي</a>
+          <a class="ref-link" href="https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response" target="_blank">منظمة الصحة العالمية</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // فتح/إغلاق تفاصيل الكارت
+    function toggleCard(card) {
+      document.querySelectorAll('.card').forEach(function(c) {
+        if (c !== card) c.classList.remove('active');
+      });
+      card.classList.toggle('active');
+    }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+
+    // تطبيق إصلاح أزرار التنقل
+    navigationFixes.fixMentalHealthPage();
+  </script>
+</body>
+</html>

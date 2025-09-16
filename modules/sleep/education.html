@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأبحاث والدراسات - النوم الصحي</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="sleep-education.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="page-header">
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <h1 class="page-title" id="pageTitle">الأبحاث والدراسات</h1>
+            <button class="lang-switch" onclick="toggleLanguage()" id="langSwitch">
+                EN
+            </button>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="sleep-tabs">
+            <button class="tab-btn active" data-tab="studies" id="studiesTab">
+                <i class="fas fa-microscope"></i>
+                <span>الدراسات</span>
+            </button>
+            <button class="tab-btn" data-tab="tips" id="tipsTab">
+                <i class="fas fa-lightbulb"></i>
+                <span>النصائح</span>
+            </button>
+            <button class="tab-btn" data-tab="stages" id="stagesTab">
+                <i class="fas fa-moon"></i>
+                <span>مراحل النوم</span>
+            </button>
+            <button class="tab-btn" data-tab="disorders" id="disordersTab">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>اضطرابات النوم</span>
+            </button>
+        </div>
+
+        <!-- Studies Tab -->
+        <div class="tab-content active" id="studies">
+            <!-- Research Summary Section -->
+            <div class="research-summary">
+                <div class="summary-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h2 id="summaryTitle">ملخص الأبحاث العلمية</h2>
+                </div>
+                
+                <div class="key-findings">
+                    <h3 id="keyFindingsTitle">النتائج الرئيسية</h3>
+                    <div class="findings-grid" id="findingsGrid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="clinical-implications">
+                    <h3 id="clinicalTitle">التطبيقات السريرية</h3>
+                    <div class="implications-list" id="implicationsList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="research-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="studiesCount">12</span>
+                        <span class="stat-label" id="studiesLabel">دراسة علمية</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="participantsCount">2M+</span>
+                        <span class="stat-label" id="participantsLabel">مشارك</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="yearsRange">2010-2024</span>
+                        <span class="stat-label" id="yearsLabel">فترة الدراسات</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Studies Container -->
+            <div class="studies-container" id="studiesContainer">
+                <!-- Will be populated by JavaScript from sleep-data.js -->
+            </div>
+        </div>
+
+        <!-- Tips Tab -->
+        <div class="tab-content" id="tips">
+            <div class="tips-section">
+                <h2 id="tipsTitle">نصائح النوم الصحي</h2>
+                
+                <div class="tip-category">
+                    <h3 id="environmentTitle">بيئة النوم</h3>
+                    <div class="tip-card">
+                        <i class="fas fa-thermometer-half"></i>
+                        <div class="tip-content">
+                            <h4 id="tempTitle">درجة الحرارة المثالية</h4>
+                            <p id="tempDesc">حافظ على درجة حرارة الغرفة بين 18-22 درجة مئوية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <i class="fas fa-moon"></i>
+                        <div class="tip-content">
+                            <h4 id="darknessTitle">الظلام التام</h4>
+                            <p id="darknessDesc">استخدم ستائر معتمة أو قناع العين لضمان الظلام التام</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <i class="fas fa-volume-mute"></i>
+                        <div class="tip-content">
+                            <h4 id="quietTitle">الهدوء</h4>
+                            <p id="quietDesc">قلل الضوضاء أو استخدم سدادات الأذن أو الضوضاء البيضاء</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tip-category">
+                    <h3 id="habitsTitle">عادات النوم</h3>
+                    
+                    <!-- إضافة قائمة النصائح الأساسية -->
+                    <div class="basic-tips-section">
+                        <h4>النصائح الأساسية المبنية على الأدلة العلمية</h4>
+                        <div class="basic-tips-list" id="basicTipsList">
+                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Stages Tab -->
+        <div class="tab-content" id="stages">
+            <div class="stages-section">
+                <h2 id="stagesTitle">مراحل النوم</h2>
+                
+                <div class="stage-card">
+                    <div class="stage-header">
+                        <i class="fas fa-bed"></i>
+                        <h3>المرحلة الأولى - النوم الخفيف</h3>
+                    </div>
+                    <p>مرحلة الانتقال من اليقظة إلى النوم، تستغرق 5-10 دقائق</p>
+                </div>
+                
+                <div class="stage-card">
+                    <div class="stage-header">
+                        <i class="fas fa-moon"></i>
+                        <h3>المرحلة الثانية - النوم المتوسط</h3>
+                    </div>
+                    <p>النوم الحقيقي يبدأ، تشكل 45-55% من إجمالي النوم</p>
+                </div>
+                
+                <div class="stage-card">
+                    <div class="stage-header">
+                        <i class="fas fa-brain"></i>
+                        <h3>المرحلة الثالثة - النوم العميق</h3>
+                    </div>
+                    <p>أهم مرحلة للاستشفاء الجسدي وتقوية الذاكرة</p>
+                </div>
+                
+                <div class="stage-card">
+                    <div class="stage-header">
+                        <i class="fas fa-eye"></i>
+                        <h3>مرحلة REM - الأحلام</h3>
+                    </div>
+                    <p>مرحلة الأحلام ومعالجة المشاعر والذكريات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Disorders Tab -->
+        <div class="tab-content" id="disorders">
+            <div class="disorders-section">
+                <h2 id="disordersTitle">اضطرابات النوم الشائعة</h2>
+                
+                <div class="disorder-card">
+                    <div class="disorder-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>الأرق (Insomnia)</h3>
+                    </div>
+                    <div class="disorder-content">
+                        <p><strong>الأعراض:</strong> صعوبة في النوم أو البقاء نائماً</p>
+                        <p><strong>الأسباب:</strong> التوتر، القلق، العادات السيئة</p>
+                        <p><strong>العلاج:</strong> تحسين نظافة النوم، العلاج السلوكي المعرفي</p>
+                    </div>
+                </div>
+                
+                <div class="disorder-card">
+                    <div class="disorder-header">
+                        <i class="fas fa-lungs"></i>
+                        <h3>انقطاع النفس النومي</h3>
+                    </div>
+                    <div class="disorder-content">
+                        <p><strong>الأعراض:</strong> الشخير، توقف التنفس، النعاس النهاري</p>
+                        <p><strong>المخاطر:</strong> أمراض القلب، السكتة الدماغية</p>
+                        <p><strong>العلاج:</strong> جهاز CPAP، تغيير نمط الحياة</p>
+                    </div>
+                </div>
+                
+                <div class="disorder-card">
+                    <div class="disorder-header">
+                        <i class="fas fa-running"></i>
+                        <h3>متلازمة تململ الساقين</h3>
+                    </div>
+                    <div class="disorder-content">
+                        <p><strong>الأعراض:</strong> رغبة قوية في تحريق الساقين</p>
+                        <p><strong>التوقيت:</strong> تزداد في المساء والليل</p>
+                        <p><strong>العلاج:</strong> مكملات الحديد، الأدوية المتخصصة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="sleep-data.js"></script>
+    <script src="sleep-utils.js"></script>
+    <script>
+        // Language content
+        const content = {
+            ar: {
+                pageTitle: 'الأبحاث والدراسات',
+                studiesTab: 'الدراسات',
+                tipsTab: 'النصائح',
+                stagesTab: 'مراحل النوم',
+                disordersTab: 'اضطرابات النوم',
+                summaryTitle: 'ملخص الأبحاث العلمية',
+                keyFindingsTitle: 'النتائج الرئيسية',
+                clinicalTitle: 'التطبيقات السريرية',
+                studiesLabel: 'دراسة علمية',
+                participantsLabel: 'مشارك',
+                yearsLabel: 'فترة الدراسات'
+            },
+            en: {
+                pageTitle: 'Studies and Research',
+                studiesTab: 'Studies',
+                tipsTab: 'Tips',
+                stagesTab: 'Sleep Stages',
+                disordersTab: 'Sleep Disorders',
+                summaryTitle: 'Scientific Research Summary',
+                keyFindingsTitle: 'Key Findings',
+                clinicalTitle: 'Clinical Applications',
+                studiesLabel: 'Scientific Studies',
+                participantsLabel: 'Participants',
+                yearsLabel: 'Study Period'
+            }
+        };
+
+        // Initialize page
+        function initializePage() {
+            initLanguage();
+            loadStudies();
+            loadResearchSummary();
+            loadBasicTips();
+            initTabs();
+        }
+
+        // Load studies from sleep-data.js
+        function loadStudies() {
+            const container = document.getElementById('studiesContainer');
+            const currentLang = getCurrentLanguage();
+            
+            if (sleepData && sleepData.studies) {
+                container.innerHTML = sleepData.studies.map(study => `
+                    <div class="study-card" data-category="${study.category}">
+                        <div class="study-header">
+                            <h3 class="study-title">${study.title}</h3>
+                            <span class="study-year">${study.duration}</span>
+                        </div>
+                        <div class="study-info">
+                            <div class="study-detail">
+                                <i class="fas fa-university"></i>
+                                <span>${study.institution}</span>
+                            </div>
+                            <div class="study-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${study.participants}</span>
+                            </div>
+                        </div>
+                        <div class="study-results">
+                            <h4>النتائج الرئيسية:</h4>
+                            <p>${study.results}</p>
+                        </div>
+                        <div class="study-footer">
+                            <a href="${study.link}" target="_blank" class="study-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                المصدر
+                            </a>
+                            <span class="study-importance ${study.importance}">${study.importance}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Load research summary
+        function loadResearchSummary() {
+            const findingsGrid = document.getElementById('findingsGrid');
+            const implicationsList = document.getElementById('implicationsList');
+            const currentLang = getCurrentLanguage();
+            
+            // Key findings
+            const keyFindings = [
+                { icon: 'fas fa-heart', title: 'النوم وأمراض القلب', desc: 'النوم القصير يزيد خطر أمراض القلب بنسبة 45%' },
+                { icon: 'fas fa-tint', title: 'النوم والسكري', desc: 'قلة النوم تقلل حساسية الأنسولين بـ23%' },
+                { icon: 'fas fa-brain', title: 'النوم وصحة الدماغ', desc: 'تقطع النوم يزيد خطر الزهايمر' },
+                { icon: 'fas fa-clock', title: 'النوم والوفيات', desc: 'انتظام النوم يقلل خطر الوفاة بـ20-48%' },
+                { icon: 'fas fa-pills', title: 'العلاج الغذائي', desc: 'فيتامين د والمغنيسيوم يحسنان جودة النوم' },
+                { icon: 'fas fa-globe', title: 'دراسات عالمية', desc: 'أكثر من 2 مليون مشارك من قارات مختلفة' }
+            ];
+            
+            findingsGrid.innerHTML = keyFindings.map(finding => `
+                <div class="finding-card">
+                    <i class="${finding.icon}"></i>
+                    <h4>${finding.title}</h4>
+                    <p>${finding.desc}</p>
+                </div>
+            `).join('');
+            
+            // Clinical implications
+            if (sleepData && sleepData.evidenceBasedRecommendations) {
+                const recommendations = sleepData.evidenceBasedRecommendations[currentLang] || sleepData.evidenceBasedRecommendations.ar;
+                implicationsList.innerHTML = recommendations.map(rec => `
+                    <div class="implication-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${rec}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Load basic tips
+        function loadBasicTips() {
+            const tipsList = document.getElementById('basicTipsList');
+            const currentLang = getCurrentLanguage();
+            
+            if (sleepData && sleepData.basicTips) {
+                const tips = sleepData.basicTips[currentLang] || sleepData.basicTips.ar;
+                tipsList.innerHTML = tips.map(tip => `
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>${tip}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Tab functionality
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    btn.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        }
+
+        // Language toggle
+        function toggleLanguage() {
+            const currentLang = getCurrentLanguage();
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            setLang(newLang);
+            updateContent(newLang);
+        }
+
+        // Update content based on language
+        function updateContent(lang) {
+            const elements = {
+                pageTitle: document.getElementById('pageTitle'),
+                studiesTab: document.querySelector('[data-tab="studies"] span'),
+                tipsTab: document.querySelector('[data-tab="tips"] span'),
+                stagesTab: document.querySelector('[data-tab="stages"] span'),
+                disordersTab: document.querySelector('[data-tab="disorders"] span'),
+                summaryTitle: document.getElementById('summaryTitle'),
+                keyFindingsTitle: document.getElementById('keyFindingsTitle'),
+                clinicalTitle: document.getElementById('clinicalTitle'),
+                studiesLabel: document.getElementById('studiesLabel'),
+                participantsLabel: document.getElementById('participantsLabel'),
+                yearsLabel: document.getElementById('yearsLabel'),
+                langSwitch: document.getElementById('langSwitch')
+            };
+
+            // Update text content
+            Object.keys(elements).forEach(key => {
+                if (elements[key] && content[lang] && content[lang][key]) {
+                    elements[key].textContent = content[lang][key];
+                }
+            });
+
+            // Update language switch button
+            elements.langSwitch.textContent = lang === 'ar' ? 'EN' : 'ع';
+            
+            // Update document direction
+            document.documentElement.setAttribute('lang', lang);
+            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            
+            // Reload dynamic content
+            loadResearchSummary();
+            loadBasicTips();
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

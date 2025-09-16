@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل نوم الأطفال - تطبيق الحياة الصحية</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../theme.css">
+    <link rel="stylesheet" href="sleep-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="sleep-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h1><i class="fas fa-baby"></i> دليل نوم الأطفال</h1>
+                <div class="language-switch">
+                    <button onclick="toggleLanguage()" class="lang-btn">
+                        <i class="fas fa-globe"></i> EN
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Age Groups Navigation -->
+        <div class="age-groups-nav">
+            <button class="age-btn active" onclick="showAgeGroup('newborn')" data-en="Newborn (0-3 months)">
+                حديثي الولادة (0-3 أشهر)
+            </button>
+            <button class="age-btn" onclick="showAgeGroup('infant')" data-en="Infant (3-12 months)">
+                الرضع (3-12 شهر)
+            </button>
+            <button class="age-btn" onclick="showAgeGroup('toddler')" data-en="Toddler (1-3 years)">
+                الأطفال الصغار (1-3 سنوات)
+            </button>
+            <button class="age-btn" onclick="showAgeGroup('preschool')" data-en="Preschool (3-5 years)">
+                ما قبل المدرسة (3-5 سنوات)
+            </button>
+            <button class="age-btn" onclick="showAgeGroup('school')" data-en="School Age (6-13 years)">
+                سن المدرسة (6-13 سنة)
+            </button>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="children-content">
+            <!-- Newborn Section -->
+            <div class="age-section active" id="newborn">
+                <div class="sleep-info-card">
+                    <h2 data-en="Newborn Sleep (0-3 months)">نوم حديثي الولادة (0-3 أشهر)</h2>
+                    <div class="sleep-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="14-17 hours/day">14-17 ساعة/يوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-moon"></i>
+                            <span data-en="2-4 hour cycles">دورات 2-4 ساعات</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h3 data-en="Sleep Tips">نصائح النوم</h3>
+                        <ul>
+                            <li data-en="Follow safe sleep guidelines (back sleeping)">اتبع إرشادات النوم الآمن (النوم على الظهر)</li>
+                            <li data-en="Create a consistent bedtime routine">أنشئ روتين نوم ثابت</li>
+                            <li data-en="Keep room temperature comfortable (18-20°C)">حافظ على درجة حرارة مريحة (18-20°م)</li>
+                            <li data-en="Use white noise to soothe">استخدم الضوضاء البيضاء للتهدئة</li>
+                            <li data-en="Swaddle for comfort and security">استخدم التقميط للراحة والأمان</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p data-en="Always place babies on their back to sleep to reduce SIDS risk">
+                            ضع الطفل دائماً على ظهره للنوم لتقليل خطر متلازمة موت الرضع المفاجئ
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infant Section -->
+            <div class="age-section" id="infant">
+                <div class="sleep-info-card">
+                    <h2 data-en="Infant Sleep (3-12 months)">نوم الرضع (3-12 شهر)</h2>
+                    <div class="sleep-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="12-15 hours/day">12-15 ساعة/يوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-sun"></i>
+                            <span data-en="2-3 naps">2-3 قيلولات</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h3 data-en="Sleep Tips">نصائح النوم</h3>
+                        <ul>
+                            <li data-en="Establish regular nap schedule">ضع جدول قيلولة منتظم</li>
+                            <li data-en="Start sleep training if desired (4-6 months)">ابدأ تدريب النوم إذا رغبت (4-6 أشهر)</li>
+                            <li data-en="Create calming bedtime routine">أنشئ روتين نوم مهدئ</li>
+                            <li data-en="Watch for sleep regression periods">راقب فترات تراجع النوم</li>
+                            <li data-en="Ensure safe sleep environment">تأكد من بيئة نوم آمنة</li>
+                        </ul>
+                    </div>
+
+                    <div class="milestone-box">
+                        <h4 data-en="Sleep Milestones">معالم النوم</h4>
+                        <ul>
+                            <li data-en="4-6 months: May sleep through the night">4-6 أشهر: قد ينام طوال الليل</li>
+                            <li data-en="6-8 months: 2 regular naps">6-8 أشهر: قيلولتان منتظمتان</li>
+                            <li data-en="9-12 months: Longer night sleep">9-12 شهر: نوم ليلي أطول</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toddler Section -->
+            <div class="age-section" id="toddler">
+                <div class="sleep-info-card">
+                    <h2 data-en="Toddler Sleep (1-3 years)">نوم الأطفال الصغار (1-3 سنوات)</h2>
+                    <div class="sleep-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="11-14 hours/day">11-14 ساعة/يوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-sun"></i>
+                            <span data-en="1-2 naps">1-2 قيلولة</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h3 data-en="Sleep Tips">نصائح النوم</h3>
+                        <ul>
+                            <li data-en="Maintain consistent bedtime routine">حافظ على روتين نوم ثابت</li>
+                            <li data-en="Transition to toddler bed when ready">انتقل لسرير الأطفال عند الاستعداد</li>
+                            <li data-en="Address separation anxiety">تعامل مع قلق الانفصال</li>
+                            <li data-en="Limit screen time before bed">قلل وقت الشاشات قبل النوم</li>
+                            <li data-en="Use comfort objects if helpful">استخدم أشياء مريحة إذا كانت مفيدة</li>
+                        </ul>
+                    </div>
+
+                    <div class="challenge-box">
+                        <h4 data-en="Common Challenges">التحديات الشائعة</h4>
+                        <ul>
+                            <li data-en="Bedtime resistance">مقاومة وقت النوم</li>
+                            <li data-en="Night wakings">الاستيقاظ الليلي</li>
+                            <li data-en="Nap transitions">انتقالات القيلولة</li>
+                            <li data-en="Sleep regressions">تراجع النوم</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preschool Section -->
+            <div class="age-section" id="preschool">
+                <div class="sleep-info-card">
+                    <h2 data-en="Preschool Sleep (3-5 years)">نوم ما قبل المدرسة (3-5 سنوات)</h2>
+                    <div class="sleep-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="10-13 hours/day">10-13 ساعة/يوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-sun"></i>
+                            <span data-en="0-1 nap">0-1 قيلولة</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h3 data-en="Sleep Tips">نصائح النوم</h3>
+                        <ul>
+                            <li data-en="Establish clear bedtime boundaries">ضع حدود واضحة لوقت النوم</li>
+                            <li data-en="Use visual sleep schedules">استخدم جداول نوم مرئية</li>
+                            <li data-en="Address fears and nightmares">تعامل مع المخاوف والكوابيس</li>
+                            <li data-en="Gradually phase out naps if needed">تخلص تدريجياً من القيلولة إذا لزم الأمر</li>
+                            <li data-en="Create calming bedroom environment">أنشئ بيئة غرفة نوم مهدئة</li>
+                        </ul>
+                    </div>
+
+                    <div class="development-box">
+                        <h4 data-en="Sleep Development">تطور النوم</h4>
+                        <ul>
+                            <li data-en="Better understanding of time">فهم أفضل للوقت</li>
+                            <li data-en="Can follow sleep routines independently">يمكن اتباع روتين النوم بشكل مستقل</li>
+                            <li data-en="May experience vivid dreams">قد يواجه أحلام واضحة</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- School Age Section -->
+            <div class="age-section" id="school">
+                <div class="sleep-info-card">
+                    <h2 data-en="School Age Sleep (6-13 years)">نوم سن المدرسة (6-13 سنة)</h2>
+                    <div class="sleep-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="9-11 hours/night">9-11 ساعة/ليلة</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span data-en="School schedule">جدول المدرسة</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h3 data-en="Sleep Tips">نصائح النوم</h3>
+                        <ul>
+                            <li data-en="Maintain consistent sleep schedule">حافظ على جدول نوم ثابت</li>
+                            <li data-en="Create homework and screen time limits">ضع حدود للواجبات ووقت الشاشات</li>
+                            <li data-en="Encourage physical activity during day">شجع النشاط البدني خلال النهار</li>
+                            <li data-en="Address school-related stress">تعامل مع ضغوط المدرسة</li>
+                            <li data-en="Teach good sleep hygiene habits">علم عادات نظافة النوم الجيدة</li>
+                        </ul>
+                    </div>
+
+                    <div class="academic-box">
+                        <h4 data-en="Sleep & Academic Performance">النوم والأداء الأكاديمي</h4>
+                        <p data-en="Adequate sleep is crucial for memory consolidation, attention, and learning">
+                            النوم الكافي ضروري لتوطيد الذاكرة والانتباه والتعلم
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Problems Section -->
+        <div class="sleep-problems-section">
+            <h2 data-en="Common Sleep Problems">مشاكل النوم الشائعة</h2>
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <h3 data-en="Night Terrors">الرعب الليلي</h3>
+                    <p data-en="Usually occur in deep sleep, child appears awake but is not">
+                        يحدث عادة في النوم العميق، يبدو الطفل مستيقظاً لكنه ليس كذلك
+                    </p>
+                </div>
+                <div class="problem-card">
+                    <h3 data-en="Sleepwalking">المشي أثناء النوم</h3>
+                    <p data-en="More common in school-age children, ensure safe environment">
+                        أكثر شيوعاً في أطفال سن المدرسة، تأكد من بيئة آمنة
+                    </p>
+                </div>
+                <div class="problem-card">
+                    <h3 data-en="Bedwetting">التبول اللاإرادي</h3>
+                    <p data-en="Normal until age 5-7, limit fluids before bed">
+                        طبيعي حتى سن 5-7 سنوات، قلل السوائل قبل النوم
+                    </p>
+                </div>
+                <div class="problem-card">
+                    <h3 data-en="Sleep Anxiety">قلق النوم</h3>
+                    <p data-en="Address fears, use comfort items, gradual exposure">
+                        تعامل مع المخاوف، استخدم أشياء مريحة، التعرض التدريجي
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- When to Consult Doctor -->
+        <div class="doctor-consultation">
+            <h2 data-en="When to Consult a Doctor">متى تستشير الطبيب</h2>
+            <div class="warning-signs">
+                <ul>
+                    <li data-en="Persistent sleep problems affecting daily life">مشاكل نوم مستمرة تؤثر على الحياة اليومية</li>
+                    <li data-en="Loud snoring or breathing difficulties">شخير عالي أو صعوبات في التنفس</li>
+                    <li data-en="Excessive daytime sleepiness">نعاس مفرط أثناء النهار</li>
+                    <li data-en="Frequent night wakings after 6 months">استيقاظ ليلي متكرر بعد 6 أشهر</li>
+                    <li data-en="Behavioral problems related to sleep">مشاكل سلوكية مرتبطة بالنوم</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'ar';
+        
+        function showAgeGroup(ageGroup) {
+            // Hide all sections
+            document.querySelectorAll('.age-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.age-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(ageGroup).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            
+            if (currentLanguage === 'en') {
+                document.documentElement.lang = 'en';
+                document.documentElement.dir = 'ltr';
+                document.querySelector('.lang-btn').innerHTML = '<i class="fas fa-globe"></i> AR';
+                
+                // Switch all text to English
+                document.querySelectorAll('[data-en]').forEach(element => {
+                    const englishText = element.getAttribute('data-en');
+                    element.textContent = englishText;
+                });
+                
+                document.querySelector('h1').innerHTML = '<i class="fas fa-baby"></i> Children Sleep Guide';
+            } else {
+                document.documentElement.lang = 'ar';
+                document.documentElement.dir = 'rtl';
+                document.querySelector('.lang-btn').innerHTML = '<i class="fas fa-globe"></i> EN';
+                
+                // Restore Arabic text (reload page for simplicity)
+                location.reload();
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default active section
+            showAgeGroup('newborn');
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

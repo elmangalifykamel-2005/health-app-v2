@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحاليلي الطبية - صحتك بالدنيا</title>
+    
+    <!-- الأنماط الموحدة -->
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="medical-tests.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- ملفات JavaScript -->
+    <script src="medical-tests-db.js"></script>
+    
+    <!-- استدعاء الملفات المشتركة -->
+    <script src="../../config/app-config.js"></script>
+    <script src="../../firebase-config.js"></script>
+    <script src="../../config/shared-functions.js"></script>
+    <script src="../../config/navigation-helpers.js"></script>
+    <script src="../../config/navigation-fixes.js"></script>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" id="btn-go-back">
+            <i class="fas fa-arrow-right"></i>
+            رجوع
+        </button>
+        <div class="header">
+            <h1>🧪 تحاليلي الطبية</h1>
+            <p>تتبع وإدارة نتائج تحاليلك الطبية بسهولة ودقة</p>
+        </div>
+        <button id="btn-export-results" class="save-btn" style="margin-bottom:18px;">
+            <i class="fas fa-save"></i>
+            حفظ الاحتفاظ بالنتائج في ملف JSON
+        </button>
+        <div class="who-guidelines">
+            <h2>تعليمات منظمة الصحة العالمية</h2>
+            <ul>
+                <li>التحاليل الطبية تساعد في الكشف المبكر عن الأمراض وتحسين فرص العلاج.</li>
+                <li>يُنصح بإجراء الفحوصات الدورية حسب العمر والحالة الصحية.</li>
+                <li>نتائج التحاليل يجب تفسيرها بواسطة الطبيب المختص فقط.</li>
+                <li>اتباع نمط حياة صحي (غذاء متوازن، نشاط بدني، نوم كافٍ) يساهم في الوقاية من الأمراض المزمنة.</li>
+                <li>لا تعتمد على التحاليل وحدها لتشخيص أو علاج أي حالة صحية.</li>
+            </ul>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="main-tests"><i class="fas fa-vial"></i> التحاليل الأساسية</button>
+            <button class="tab-btn" data-tab="other-tests"><i class="fas fa-flask"></i> تحاليل أخرى</button>
+            <button class="tab-btn" data-tab="history"><i class="fas fa-history"></i> سجل التحاليل</button>
+        </div>
+        <div class="tab-content active" id="main-tests">
+            <!-- صورة الدم الكاملة -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-tint test-icon"></i>
+                    <span class="test-title">صورة الدم الكاملة (CBC)</span>
+                </div>
+                <form class="test-form" id="cbc-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>تاريخ التحليل</label>
+                            <input type="date" name="test_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المختبر</label>
+                            <input type="text" name="laboratory" placeholder="اسم المختبر">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hemoglobin (Hb)</label>
+                            <input type="number" step="0.1" name="hemoglobin" placeholder="12.5">
+                            <div class="reference-range">رجال 13.8-17.2 g/dL، نساء 12.1-15.1 g/dL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>WBC</label>
+                            <input type="number" step="0.1" name="wbc" placeholder="7.5">
+                            <div class="reference-range">4.5-11.0 × 10³/μL</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Platelets</label>
+                            <input type="number" name="platelets" placeholder="250">
+                            <div class="reference-range">150-450 × 10³/μL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hematocrit (Hct)</label>
+                            <input type="number" step="0.1" name="hematocrit" placeholder="42.0">
+                            <div class="reference-range">رجال 41-50%، نساء 36-44%</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        حفظ النتائج
+                    </button>
+                </form>
+            </div>
+            <!-- تحاليل الدهون -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-heart-pulse test-icon"></i>
+                    <span class="test-title">تحليل الدهون (Lipid Profile)</span>
+                </div>
+                <form class="test-form" id="lipid-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>تاريخ التحليل</label>
+                            <input type="date" name="test_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المختبر</label>
+                            <input type="text" name="laboratory" placeholder="اسم المختبر">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Total Cholesterol</label>
+                            <input type="number" step="0.1" name="total_cholesterol" placeholder="180">
+                            <div class="reference-range">أقل من 200 mg/dL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>LDL</label>
+                            <input type="number" step="0.1" name="ldl" placeholder="100">
+                            <div class="reference-range">أقل من 100 mg/dL</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>HDL</label>
+                            <input type="number" step="0.1" name="hdl" placeholder="50">
+                            <div class="reference-range">رجال >40، نساء >50 mg/dL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Triglycerides</label>
+                            <input type="number" step="0.1" name="triglycerides" placeholder="120">
+                            <div class="reference-range">أقل من 150 mg/dL</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        حفظ النتائج
+                    </button>
+                </form>
+            </div>
+            <!-- تحاليل السكر -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-cube test-icon"></i>
+                    <span class="test-title">تحليل السكر (Glucose)</span>
+                </div>
+                <form class="test-form" id="sugar-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>تاريخ التحليل</label>
+                            <input type="date" name="test_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المختبر</label>
+                            <input type="text" name="laboratory" placeholder="اسم المختبر">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>سكر صائم</label>
+                            <input type="number" step="0.1" name="Fasting" placeholder="90">
+                            <div class="reference-range">70-99 mg/dL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>سكر فاطر</label>
+                            <input type="number" step="0.1" name="Postprandial" placeholder="120">
+                            <div class="reference-range">70-140 mg/dL</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>سكر تراكمي (HbA1c)</label>
+                            <input type="number" step="0.1" name="HbA1c" placeholder="5.5">
+                            <div class="reference-range">4.0-5.6 %</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        حفظ النتائج
+                    </button>
+                </form>
+            </div>
+            <!-- وظائف الكلى -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-water test-icon"></i>
+                    <span class="test-title">وظائف الكلى</span>
+                </div>
+                <form class="test-form" id="kidney-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>تاريخ التحليل</label>
+                            <input type="date" name="test_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المختبر</label>
+                            <input type="text" name="laboratory" placeholder="اسم المختبر">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Creatinine</label>
+                            <input type="number" step="0.01" name="creatinine" placeholder="1.0">
+                            <div class="reference-range">رجال 0.7-1.3 mg/dL، نساء 0.6-1.1 mg/dL</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Urea</label>
+                            <input type="number" step="0.1" name="urea" placeholder="30">
+                            <div class="reference-range">15-45 mg/dL</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        حفظ النتائج
+                    </button>
+                </form>
+            </div>
+            <!-- وظائف الكبد -->
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-vial test-icon"></i>
+                    <span class="test-title">وظائف الكبد</span>
+                </div>
+                <form class="test-form" id="liver-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>تاريخ التحليل</label>
+                            <input type="date" name="test_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المختبر</label>
+                            <input type="text" name="laboratory" placeholder="اسم المختبر">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ALT</label>
+                            <input type="number" step="0.1" name="alt" placeholder="20">
+                            <div class="reference-range">7-56 U/L</div>
+                        </div>
+                        <div class="form-group">
+                            <label>AST</label>
+                            <input type="number" step="0.1" name="ast" placeholder="20">
+                            <div class="reference-range">10-40 U/L</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ALP</label>
+                            <input type="number" step="0.1" name="alp" placeholder="100">
+                            <div class="reference-range">44-147 U/L</div>
+                        </div>
+                        <div class="form-group">
+                            <label>GGT</label>
+                            <input type="number" step="0.1" name="ggt" placeholder="30">
+                            <div class="reference-range">رجال: 9-48 U/L، نساء: 9-32 U/L</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i>
+                        حفظ النتائج
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="tab-content" id="other-tests"></div>
+        <div class="tab-content" id="history">
+            <div class="test-card">
+                <div class="test-header">
+                    <i class="fas fa-history"></i>
+                    <span class="test-title">سجل التحاليل الطبية</span>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>نوع التحليل</th>
+                            <th>النتيجة</th>
+                            <th>مسح</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        // التبويبات
+        document.querySelectorAll('.tab-btn').forEach(tab=>{
+            tab.onclick = function(){
+                document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+                document.getElementById(tab.dataset.tab).classList.add('active');
+                if(tab.dataset.tab==='history') loadHistory();
+            }
+        });
+
+        // حفظ التحاليل الأساسية
+        function saveTestResults(testType, form) {
+            // التحقق من وجود مستخدم مسجل دخول
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يجب تسجيل الدخول لحفظ نتائج التحاليل!');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const testData = {
+                type: testType,
+                date: formData.get('test_date'),
+                laboratory: formData.get('laboratory'),
+                results: {},
+                userId: user.uid // إضافة معرف المستخدم إلى البيانات
+            };
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'test_date' && key !== 'laboratory') {
+                    testData.results[key] = value;
+                }
+            }
+            let savedTests = JSON.parse(localStorage.getItem('medicalTests') || '[]');
+            savedTests.push({
+                ...testData,
+                id: Date.now(),
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('medicalTests', JSON.stringify(savedTests));
+            alert('تم حفظ نتائج التحليل بنجاح!');
+            form.reset();
+            if (document.getElementById('history').classList.contains('active')) {
+                loadHistory();
+            }
+        }
+        
+        document.getElementById('cbc-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTestResults('cbc', this);
+        });
+        document.getElementById('lipid-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTestResults('lipid', this);
+        });
+        document.getElementById('sugar-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTestResults('sugar', this);
+        });
+        document.getElementById('kidney-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTestResults('kidney', this);
+        });
+        document.getElementById('liver-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTestResults('liver', this);
+        });
+
+        // تحاليل أخرى من قاعدة البيانات
+        function renderOtherTests() {
+            const excludeSections = ['blood', 'enzymes'];
+            const otherTestsDiv = document.getElementById('other-tests');
+            otherTestsDiv.innerHTML = '';
+            for (const [section, tests] of Object.entries(testDatabase)) {
+                if (excludeSections.includes(section)) continue;
+                for (const [testId, testObj] of Object.entries(tests)) {
+                    const card = document.createElement('div');
+                    card.className = 'test-card';
+                    card.innerHTML = `
+                        <div class="test-header">
+                            <i class="fas fa-flask test-icon"></i>
+                            <span class="test-title">${testObj.name}</span>
+                            <span style="color:#888;font-size:0.95em;margin-right:auto;">قسم: ${section}</span>
+                        </div>
+                        <form class="test-form" id="other-${testId}-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>تاريخ التحليل</label>
+                                    <input type="date" name="test_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>المختبر</label>
+                                    <input type="text" name="laboratory" placeholder="اسم المختبر">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>النتيجة</label>
+                                    <input type="text" name="result" placeholder="أدخل القيمة أو الوصف">
+                                    <div class="reference-range">المرجع: ${testObj.ranges}</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="save-btn">
+                                <i class="fas fa-save"></i>
+                                حفظ النتائج
+                            </button>
+                        </form>
+                    `;
+                    otherTestsDiv.appendChild(card);
+
+                    card.querySelector('form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        // التحقق من وجود مستخدم مسجل دخول
+                        const user = firebase.auth().currentUser;
+                        if (!user) {
+                            alert('يجب تسجيل الدخول لحفظ نتائج التحاليل!');
+                            return;
+                        }
+
+                        const formData = new FormData(this);
+                        const testData = {
+                            type: testId,
+                            section: section,
+                            date: formData.get('test_date'),
+                            laboratory: formData.get('laboratory'),
+                            result: formData.get('result'),
+                            userId: user.uid // إضافة معرف المستخدم إلى البيانات
+                        };
+                        let savedTests = JSON.parse(localStorage.getItem('medicalTests') || '[]');
+                        savedTests.push({
+                            ...testData,
+                            id: Date.now(),
+                            timestamp: new Date().toISOString()
+                        });
+                        localStorage.setItem('medicalTests', JSON.stringify(savedTests));
+                        alert('تم حفظ نتائج التحليل بنجاح!');
+                        this.reset();
+                        if (document.getElementById('history').classList.contains('active')) {
+                            loadHistory();
+                        }
+                    });
+                }
+            }
+        }
+        renderOtherTests();
+
+        // سجل التحاليل مع زر المسح وترتيب من الأحدث للأقدم
+        function loadHistory(){
+            // التحقق من وجود مستخدم مسجل دخول
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                document.getElementById('history-tbody').innerHTML = '<tr><td colspan="4">يجب تسجيل الدخول لعرض التحاليل</td></tr>';
+                return;
+            }
+
+            let allTests = JSON.parse(localStorage.getItem('medicalTests')||'[]');
+            
+            // فلترة التحاليل للمستخدم الحالي فقط
+            let userTests = allTests.filter(test => {
+                // تحقق من وجود معرف المستخدم في السجل وأنه يطابق المستخدم الحالي
+                return test.userId === user.uid;
+            });
+            
+            userTests.sort((a, b) => new Date(b.date || b.timestamp) - new Date(a.date || a.timestamp));
+            let tbody = document.getElementById('history-tbody');
+            tbody.innerHTML = '';
+            
+            if (userTests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">لا توجد تحاليل مسجلة</td></tr>';
+                return;
+            }
+            
+            userTests.forEach(test=>{
+                let date = new Date(test.date).toLocaleDateString('ar-EG');
+                let type = test.section ? `${test.section} - ${test.type}` : test.type;
+                let result = test.results ? Object.entries(test.results).map(([k,v])=>`${k}: ${v}`).join(', ') : (test.result || '');
+                tbody.innerHTML += `<tr>
+                    <td>${date}</td>
+                    <td>${type}</td>
+                    <td>${result}</td>
+                    <td>
+                        <button onclick="deleteTest(${test.id})" style="background:#f44336;color:#fff;border:none;border-radius:8px;padding:6px 16px;cursor:pointer;">
+                            <i class="fas fa-trash"></i> مسح
+                        </button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function deleteTest(id){
+            // التحقق من وجود مستخدم مسجل دخول
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يجب تسجيل الدخول لحذف التحاليل!');
+                return;
+            }
+
+            let tests = JSON.parse(localStorage.getItem('medicalTests')||'[]');
+            
+            // التحقق من أن التحليل ينتمي للمستخدم الحالي قبل الحذف
+            const testToDelete = tests.find(test => test.id === id);
+            
+            if (!testToDelete) {
+                alert('لم يتم العثور على التحليل المطلوب حذفه!');
+                return;
+            }
+            
+            if (testToDelete.userId !== user.uid) {
+                alert('لا يمكنك حذف تحاليل غير خاصة بك!');
+                return;
+            }
+            
+            // حذف التحليل بعد التأكد من أنه خاص بالمستخدم الحالي
+            tests = tests.filter(test => test.id !== id);
+            localStorage.setItem('medicalTests', JSON.stringify(tests));
+            loadHistory();
+            
+            alert('تم حذف التحليل بنجاح');
+        }
+
+        // دالة تصدير النتائج إلى ملف JSON
+        function exportResultsToJSON() {
+            // التحقق من وجود مستخدم مسجل دخول
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                alert('يجب تسجيل الدخول لتصدير التحاليل!');
+                return;
+            }
+
+            // الحصول على جميع التحاليل
+            const allTests = JSON.parse(localStorage.getItem('medicalTests') || '[]');
+            
+            // فلترة التحاليل للمستخدم الحالي فقط
+            const userTests = allTests.filter(test => test.userId === user.uid);
+            
+            if (userTests.length === 0) {
+                alert('لا توجد تحاليل مسجلة لتصديرها');
+                return;
+            }
+
+            const resultObj = {};
+            userTests.forEach(test => {
+                const key = test.type;
+                if (!resultObj[key]) resultObj[key] = [];
+                let entry = {
+                    test_date: test.date,
+                    laboratory: test.laboratory,
+                    ...(test.results || {}),
+                    ...(test.result ? { result: test.result } : {})
+                };
+                resultObj[key].push(entry);
+            });
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(resultObj, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `medical-tests-results-${user.uid}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            
+            alert('تم تصدير نتائج التحاليل بنجاح!');
+        }
+        
+        // فحص حالة المستخدم وتطبيق إصلاحات التنقل عند تحميل الصفحة
+        window.onload = function() {
+            // تطبيق إصلاحات التنقل
+            if (window.navigationFixes && typeof navigationFixes.fixMedicalFilePage === 'function') {
+                navigationFixes.fixMedicalFilePage();
+            }
+            
+            // التحقق من وجود مستخدم مسجل دخول
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (!user) {
+                    // إظهار رسالة للمستخدم غير المسجل
+                    const warningDiv = document.createElement('div');
+                    warningDiv.style.backgroundColor = '#ffcdd2';
+                    warningDiv.style.color = '#b71c1c';
+                    warningDiv.style.padding = '10px';
+                    warningDiv.style.borderRadius = '8px';
+                    warningDiv.style.margin = '15px 0';
+                    warningDiv.style.textAlign = 'center';
+                    warningDiv.style.fontWeight = 'bold';
+                    warningDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> يجب تسجيل الدخول لإدارة التحاليل الطبية الخاصة بك.';
+                    
+                    // إضافة الرسالة في أعلى الصفحة مباشرة بعد العنوان
+                    const headerDiv = document.querySelector('.header');
+                    headerDiv.parentNode.insertBefore(warningDiv, headerDiv.nextSibling);
+                    
+                    // إذا كانت علامة التبويب الحالية هي سجل التحاليل، عرض رسالة في جدول التاريخ
+                    if (document.getElementById('history').classList.contains('active')) {
+                        loadHistory(); // ستعرض رسالة أنه يجب تسجيل الدخول
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
